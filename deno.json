@@ -1,0 +1,14 @@
+{
+  "workspace": ["./packages/remix-dpop", "./reference"],
+  "nodeModulesDir": "auto",
+  "imports": {
+    "jose": "npm:jose@^6"
+  },
+  "tasks": {
+    "dev": "cd reference && deno task dev",
+    "build": "cd reference && deno task build",
+    "start": "cd reference && deno task start",
+    "test": "deno test --allow-all packages/",
+    "check": "deno check packages/remix-dpop/mod.ts"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "@repo/reference",
+  "exports": "./server.ts",
+  "imports": {
+    "@remix-run/fetch-router": "npm:@remix-run/fetch-router",
+    "@remix-run/html-template": "npm:@remix-run/html-template",
+    "@remix-run/static-middleware": "npm:@remix-run/static-middleware",
+    "@remix-run/cors-middleware": "npm:@remix-run/cors-middleware",
+    "@remix-run/logger-middleware": "npm:@remix-run/logger-middleware",
+    "@remix-run/response/html": "npm:@remix-run/response/html"
+  },
+  "tasks": {
+    "start": "deno run -A ./server.ts"
+  }
+}
