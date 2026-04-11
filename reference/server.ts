@@ -2,7 +2,7 @@
  * Reference app server — Remix v3 + Deno + DPoP session middleware.
  *
  * Uses Remix v3's fetch-router with:
- * - DPoP session middleware from @repo/remix-dpop
+ * - DPoP session middleware from @scope/dpop-middleware
  * - Static file serving for /public
  * - HTML template rendering
  */
@@ -15,8 +15,8 @@ import {
   createDPoPMiddleware,
   DPoPSessionKey,
   DPoPThumbprintKey,
-} from "@repo/remix-dpop";
-import type { DPoPSession } from "@repo/remix-dpop";
+} from "@scope/dpop-middleware";
+import type { DPoPSession } from "@scope/dpop-middleware";
 
 // ---------------------------------------------------------------------------
 // Router setup
