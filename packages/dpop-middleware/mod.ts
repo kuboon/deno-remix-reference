@@ -8,26 +8,7 @@
 import { verifyDpopProofFromRequest } from "@scope/dpop";
 import type { VerifyDpopProofOptions } from "@scope/dpop/types.ts";
 import type { VerifyDpopProofResult } from "@scope/dpop/server/types.ts";
-import { base64UrlEncode } from "@scope/dpop/common.ts";
-
-// ---------------------------------------------------------------------------
-// JWK Thumbprint (RFC 7638) — SHA-256
-// ---------------------------------------------------------------------------
-
-async function jwkThumbprint(jwk: JsonWebKey): Promise<string> {
-  // Required members for EC keys in lexicographic order
-  const canonical = JSON.stringify({
-    crv: jwk.crv,
-    kty: jwk.kty,
-    x: jwk.x,
-    y: jwk.y,
-  });
-  const hash = await crypto.subtle.digest(
-    "SHA-256",
-    new TextEncoder().encode(canonical),
-  );
-  return base64UrlEncode(new Uint8Array(hash));
-}
+import { computeThumbprint } from "@scope/dpop/common.ts";
 
 // ---------------------------------------------------------------------------
 // Session store
@@ -175,7 +156,7 @@ export function createDPoPMiddleware<T = Record<string, any>>(
     }
 
     // Compute JWK thumbprint as session key
-    const thumbprint = await jwkThumbprint(result.jwk);
+    const thumbprint = await computeThumbprint(result.jwk);
 
     // Get or create session
     let data: T = (await sessionStore.get(thumbprint)) as T;

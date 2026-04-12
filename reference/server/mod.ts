@@ -24,7 +24,7 @@ import type { DPoPSession } from "@scope/dpop-middleware";
 
 const router = createRouter({
   middleware: [
-    staticFiles(new URL("./public", import.meta.url).pathname),
+    staticFiles(new URL("../public", import.meta.url).pathname),
   ],
 });
 
@@ -89,7 +89,8 @@ router.get("/", (_ctx) => {
         <div class="card">
           <h2>構成</h2>
           <ul>
-            <li><code>packages/remix-dpop/</code> — DPoP セッションマネージャー (middleware)</li>
+            <li><code>packages/dpop/</code> — DPoP proof 生成・検証ライブラリ</li>
+            <li><code>packages/dpop-middleware/</code> — DPoP セッション middleware</li>
             <li><code>reference/</code> — この Web アプリ</li>
           </ul>
         </div>
@@ -113,16 +114,16 @@ router.get("/demo", (_ctx) => {
       "DPoP Demo",
       html`
         <h1>DPoP インタラクティブデモ</h1>
-        <p>ブラウザ上で鍵ペアを生成し、DPoP proof を作成して API を呼び出します。</p>
+        <p>ページロード時に自動で鍵ペアを生成し、DPoP proof 付きで API を呼び出します。
+        鍵ペアは IndexedDB に保存され、リロード後も同じセッションを維持します。</p>
 
         <div class="card">
-          <h2>1. 鍵ペアの生成</h2>
-          <button id="btn-keygen">鍵ペアを生成</button>
-          <pre id="keygen-result">まだ生成されていません</pre>
+          <h2>鍵情報</h2>
+          <p>Thumbprint: <code id="thumbprint">(loading...)</code></p>
         </div>
 
         <div class="card">
-          <h2>2. セッション操作</h2>
+          <h2>セッション操作</h2>
           <button id="btn-get">GET /api/protected</button>
           <button id="btn-post">POST データを保存</button>
           <button id="btn-post2">POST 別のデータ</button>
@@ -134,120 +135,7 @@ router.get("/demo", (_ctx) => {
           <div id="log"></div>
         </div>
 
-        <script type="module">
-          // --- jose is loaded from esm.sh CDN for client-side DPoP proof generation ---
-          const jose = await import("https://esm.sh/jose@6");
-
-          const log = document.getElementById("log");
-          function appendLog(msg, cls) {
-            const line = document.createElement("div");
-            if (cls) line.className = cls;
-            line.textContent = msg;
-            log.appendChild(line);
-            log.scrollTop = log.scrollHeight;
-          }
-
-          let keyPair = null;
-          let publicJwk = null;
-
-          // 1. Key generation
-          document.getElementById("btn-keygen").addEventListener("click", async () => {
-            keyPair = await crypto.subtle.generateKey(
-              { name: "ECDSA", namedCurve: "P-256" },
-              true,
-              ["sign", "verify"]
-            );
-            publicJwk = await crypto.subtle.exportKey("jwk", keyPair.publicKey);
-            // Keep only required JWK fields for DPoP
-            const minimalJwk = { kty: publicJwk.kty, crv: publicJwk.crv, x: publicJwk.x, y: publicJwk.y };
-            document.getElementById("keygen-result").textContent = JSON.stringify(minimalJwk, null, 2);
-            const thumbprint = await jose.calculateJwkThumbprint(minimalJwk, "sha256");
-            appendLog("鍵ペアを生成しました。Thumbprint: " + thumbprint, "success");
-          });
-
-          // DPoP proof 作成ヘルパー
-          async function createDPoPProof(method, url) {
-            if (!keyPair) { appendLog("先に鍵ペアを生成してください", "error"); return null; }
-            const minimalJwk = { kty: publicJwk.kty, crv: publicJwk.crv, x: publicJwk.x, y: publicJwk.y };
-
-            // Build JWT header and payload manually, then sign
-            const header = { typ: "dpop+jwt", alg: "ES256", jwk: minimalJwk };
-            const payload = {
-              htm: method,
-              htu: url,
-              jti: crypto.randomUUID(),
-              iat: Math.floor(Date.now() / 1000),
-            };
-
-            // Encode
-            const enc = new TextEncoder();
-            function b64url(data) {
-              return btoa(String.fromCharCode(...new Uint8Array(data)))
-                .replace(/\\+/g, "-").replace(/\\//g, "_").replace(/=+$/, "");
-            }
-            const headerB64 = b64url(enc.encode(JSON.stringify(header)));
-            const payloadB64 = b64url(enc.encode(JSON.stringify(payload)));
-            const signingInput = enc.encode(headerB64 + "." + payloadB64);
-            const sig = await crypto.subtle.sign(
-              { name: "ECDSA", hash: "SHA-256" },
-              keyPair.privateKey,
-              signingInput,
-            );
-            return headerB64 + "." + payloadB64 + "." + b64url(sig);
-          }
-
-          // 2a. GET
-          document.getElementById("btn-get").addEventListener("click", async () => {
-            const url = new URL("/api/protected", location.origin);
-            const proof = await createDPoPProof("GET", url.origin + url.pathname);
-            if (!proof) return;
-            appendLog("→ GET /api/protected");
-            try {
-              const res = await fetch(url, { headers: { "DPoP": proof } });
-              const body = await res.json();
-              appendLog("← " + res.status + " " + JSON.stringify(body, null, 2), res.ok ? "success" : "error");
-            } catch (e) { appendLog("Error: " + e.message, "error"); }
-          });
-
-          // 2b. POST
-          document.getElementById("btn-post").addEventListener("click", async () => {
-            const url = new URL("/api/protected", location.origin);
-            const proof = await createDPoPProof("POST", url.origin + url.pathname);
-            if (!proof) return;
-            const data = { name: "Alice", timestamp: new Date().toISOString() };
-            appendLog("→ POST /api/protected " + JSON.stringify(data));
-            try {
-              const res = await fetch(url, {
-                method: "POST",
-                headers: { "DPoP": proof, "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-              });
-              const body = await res.json();
-              appendLog("← " + res.status + " " + JSON.stringify(body, null, 2), res.ok ? "success" : "error");
-            } catch (e) { appendLog("Error: " + e.message, "error"); }
-          });
-
-          // 2c. POST (different data)
-          document.getElementById("btn-post2").addEventListener("click", async () => {
-            const url = new URL("/api/protected", location.origin);
-            const proof = await createDPoPProof("POST", url.origin + url.pathname);
-            if (!proof) return;
-            const data = { name: "Bob", role: "admin", timestamp: new Date().toISOString() };
-            appendLog("→ POST /api/protected " + JSON.stringify(data));
-            try {
-              const res = await fetch(url, {
-                method: "POST",
-                headers: { "DPoP": proof, "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-              });
-              const body = await res.json();
-              appendLog("← " + res.status + " " + JSON.stringify(body, null, 2), res.ok ? "success" : "error");
-            } catch (e) { appendLog("Error: " + e.message, "error"); }
-          });
-
-          // Clear
-          document.getElementById("btn-clear").addEventListener("click", () => { log.innerHTML = ""; });
-        </script>
+        <script type="module" src="/demo.js"></script>
       `,
     ));
 });

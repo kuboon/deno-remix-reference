@@ -1,6 +1,9 @@
 {
   "name": "@repo/reference",
-  "exports": "./server.ts",
+  "exports": "./server/mod.ts",
+  "compilerOptions": {
+    "lib": ["deno.ns", "deno.unstable", "dom"]
+  },
   "imports": {
     "@remix-run/fetch-router": "npm:@remix-run/fetch-router",
     "@remix-run/html-template": "npm:@remix-run/html-template",
@@ -9,7 +12,8 @@
     "@remix-run/logger-middleware": "npm:@remix-run/logger-middleware"
   },
   "tasks": {
-    "dev": "deno run -A --watch ./server.ts",
-    "start": "deno run -A ./server.ts"
+    "build": "deno bundle --platform browser --minify -o ./public/demo.js ./client/demo.ts",
+    "dev": "deno task build && deno run -A --watch ./server/mod.ts",
+    "start": "deno run -A ./server/mod.ts"
   }
 }
