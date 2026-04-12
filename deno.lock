@@ -4,6 +4,9 @@
     "jsr:@std/assert@*": "1.0.19",
     "jsr:@std/encoding@1.0.10": "1.0.10",
     "jsr:@std/internal@^1.0.12": "1.0.12",
+    "npm:@remix-run/fetch-router@*": "0.18.0",
+    "npm:@remix-run/html-template@*": "0.3.0",
+    "npm:@remix-run/static-middleware@*": "0.4.5",
     "npm:remix@3.0.0-alpha.4": "3.0.0-alpha.4"
   },
   "jsr": {
@@ -295,6 +298,15 @@
         "dependencies": [
           "jsr:@std/assert@*",
           "jsr:@std/encoding@1.0.10"
+        ]
+      },
+      "reference": {
+        "dependencies": [
+          "npm:@remix-run/cors-middleware@*",
+          "npm:@remix-run/fetch-router@*",
+          "npm:@remix-run/html-template@*",
+          "npm:@remix-run/logger-middleware@*",
+          "npm:@remix-run/static-middleware@*"
         ]
       }
     }
