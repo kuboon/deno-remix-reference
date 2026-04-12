@@ -2,9 +2,14 @@
   "name": "@repo/reference",
   "exports": "./server/mod.ts",
   "compilerOptions": {
-    "lib": ["deno.ns", "deno.unstable", "dom"]
+    "lib": ["deno.ns", "deno.unstable", "dom"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "@remix-run/component"
   },
   "imports": {
+    "@remix-run/component": "npm:@remix-run/component@^0.6.0",
+    "@remix-run/component/server": "npm:@remix-run/component@^0.6.0/server",
+    "@remix-run/component/jsx-runtime": "npm:@remix-run/component@^0.6.0/jsx-runtime",
     "@remix-run/fetch-router": "npm:@remix-run/fetch-router",
     "@remix-run/html-template": "npm:@remix-run/html-template",
     "@remix-run/static-middleware": "npm:@remix-run/static-middleware",
@@ -12,7 +17,7 @@
     "@remix-run/logger-middleware": "npm:@remix-run/logger-middleware"
   },
   "tasks": {
-    "build": "deno bundle --platform browser --minify -o ./public/demo.js ./client/demo.ts && deno bundle --platform browser --minify -o ./public/hydration.js ./client/hydration.ts",
+    "build": "deno bundle --platform browser --minify -o ./public/demo.js ./client/demo.ts && deno bundle --platform browser --minify -o ./public/counter.js ./client/counter.tsx && deno bundle --platform browser --minify -o ./public/hydration.js ./client/hydration.ts",
     "dev": "deno task build && deno run -A --watch ./server/mod.ts",
     "start": "deno run -A ./server/mod.ts"
   }

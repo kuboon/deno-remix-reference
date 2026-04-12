@@ -17,7 +17,8 @@ import {
   DPoPThumbprintKey,
 } from "@scope/dpop-middleware";
 import type { DPoPSession } from "@scope/dpop-middleware";
-import { renderCounter } from "../shared/counter.ts";
+import { renderToStream } from "@remix-run/component/server";
+import { Counter } from "../client/counter.tsx";
 
 // ---------------------------------------------------------------------------
 // Router setup
@@ -64,10 +65,6 @@ const layout = (title: string, body: SafeHtml) => html`<!DOCTYPE html>
     .card { border: 1px solid #ddd; border-radius: 8px; padding: 1.5rem; margin: 1rem 0; }
     nav { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #ddd; }
     nav a { margin-right: 1rem; }
-    .counter { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; }
-    .counter output { min-width: 3ch; text-align: center; font-variant-numeric: tabular-nums; font-weight: 600; }
-    .counter-label { color: #666; font-size: 0.9rem; margin-left: 0.5rem; }
-    .counter[data-hydrated="true"] { outline: 2px solid #16a34a; outline-offset: 4px; border-radius: 4px; }
   </style>
 </head>
 <body>
@@ -145,51 +142,86 @@ router.get("/demo", (_ctx) => {
     ));
 });
 
-// GET /hydration — component hydration demo
+// GET /hydration — component hydration demo using @remix-run/component
+//
+// The entire page is rendered by `renderToStream` from a single JSX tree.
+// `<Counter />` is a `clientEntry` (see ../client/counter.tsx), so the
+// server emits its initial HTML plus a hydration marker. On the client,
+// `run()` in /hydration.js picks up the marker, dynamically imports
+// /counter.js (the second bundle of counter.tsx), and hydrates the DOM
+// in place — preserving the server HTML.
 router.get("/hydration", (_ctx) => {
-  // Initial state is computed on the server (e.g. could be from DB, session,
-  // or a random seed). It's sent to the client both as rendered HTML and as
-  // a JSON data island that the client reads to rebuild its in-memory state.
-  const initialState = {
-    count: Math.floor(Math.random() * 10),
-    label: `server-rendered at ${new Date().toISOString()}`,
-  };
+  // `setup` is sent to the component's setup function once per instance.
+  // Props (e.g. `label`) are passed to the render function on every update.
+  const initialCount = Math.floor(Math.random() * 10);
+  const label = `server-rendered at ${new Date().toISOString()}`;
 
-  return htmlResponse(layout(
-    "Hydration Demo",
-    html`
-      <h1>コンポーネントハイドレーションのサンプル</h1>
-      <p>サーバーとクライアントで <strong>同じ <code>renderCounter()</code> 関数</strong> を共有し、
-      まずサーバーで HTML を生成 (SSR) → クライアントでイベントハンドラーを付与 (hydrate) → 以降は
-      クライアントで state 更新するたびに同じ関数で再描画するパターンです。</p>
-
-      <div class="card">
-        <h2>Counter (SSR + hydrate)</h2>
-        <p>初期カウント・ラベルはサーバーが決定しています。ハイドレート完了後に緑の枠線が付きます。</p>
-        <div id="counter-root">${renderCounter(initialState)}</div>
-        <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
-          JavaScript を無効にしてリロードしても、カウンター自体は表示されます (ボタンは動きません)。
+  const stream = renderToStream(
+    <html lang="ja">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Hydration Demo — @remix-run/component</title>
+        <script async type="module" src="/hydration.js" />
+        <style>{`
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          body { font-family: system-ui, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 2rem; color: #1a1a1a; }
+          h1 { margin-bottom: 1rem; }
+          h2 { margin-top: 2rem; margin-bottom: 0.5rem; }
+          code { font-family: 'Fira Code', monospace; background: #f5f5f5; padding: 0.1rem 0.3rem; border-radius: 3px; }
+          a { color: #0066cc; margin-right: 1rem; }
+          button { padding: 0.5rem 1rem; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-size: 1rem; }
+          button:hover { background: #e8e8e8; }
+          .card { border: 1px solid #ddd; border-radius: 8px; padding: 1.5rem; margin: 1rem 0; }
+          nav { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #ddd; }
+        `}</style>
+      </head>
+      <body>
+        <nav>
+          <a href="/">Home</a>
+          <a href="/demo">DPoP Demo</a>
+          <a href="/hydration">Hydration</a>
+        </nav>
+        <h1>コンポーネントハイドレーションのサンプル</h1>
+        <p>
+          <code>@remix-run/component</code> の <code>clientEntry</code> を使った SSR + hydrate。
+          同じコンポーネント定義 (<code>reference/client/counter.tsx</code>) を、
+          サーバーでは直接 JSX ツリーに埋め込んで <code>renderToStream</code> で HTML 化し、
+          クライアントでは <code>run()</code> が hydration マーカーから動的 import で
+          <code>/counter.js</code> を読み込んで in-place にハイドレートします。
         </p>
-      </div>
 
-      <div class="card">
-        <h2>仕組み</h2>
-        <ol style="padding-left: 1.5rem;">
-          <li>サーバーが <code>renderCounter(state)</code> で HTML を生成し、
-            <code>&lt;script type="application/json" id="__HYDRATION_STATE__"&gt;</code>
-            に初期 state を JSON で埋め込む</li>
-          <li>ブラウザは <code>/hydration.js</code> をロードし、JSON を読んで state を復元</li>
-          <li>既存 DOM にイベントハンドラーを付けるだけで <em>hydrate</em> 完了</li>
-          <li>クリック後は同じ <code>renderCounter()</code> を呼び、<code>innerHTML</code> を差し替えて再描画</li>
-        </ol>
-      </div>
+        <div class="card">
+          <h2>Counter (clientEntry)</h2>
+          <p>初期カウントはサーバーが決定。ボタンはクライアントのハイドレート後に動きます。</p>
+          <Counter setup={initialCount} label={label} />
+          <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+            JavaScript 無効でもカウンターの初期値は表示されます (progressive enhancement)。
+          </p>
+        </div>
 
-      <script type="application/json" id="__HYDRATION_STATE__">${
-        html.raw`${JSON.stringify(initialState).replaceAll("</", "<\\/")}`
-      }</script>
-      <script type="module" src="/hydration.js"></script>
-    `,
-  ));
+        <div class="card">
+          <h2>仕組み</h2>
+          <ol style="padding-left: 1.5rem;">
+            <li>
+              サーバー: <code>renderToStream(&lt;JSX tree with &lt;Counter /&gt;&gt;)</code> が
+              HTML と hydration メタデータ (<code>moduleUrl</code>, <code>exportName</code>, <code>props</code>) を出力
+            </li>
+            <li>ブラウザ: <code>/hydration.js</code> (= <code>run()</code> を呼ぶ boot) がロードされる</li>
+            <li>
+              <code>run()</code> が hydration マーカーを発見し、<code>loadModule("/counter.js", "Counter")</code>
+              → 動的 import で Counter コンポーネントを取得
+            </li>
+            <li>Counter の render 関数を再実行し、既存 DOM にイベントハンドラーを付与 (= hydrate)</li>
+          </ol>
+        </div>
+      </body>
+    </html>,
+  );
+
+  return new Response(stream, {
+    headers: { "Content-Type": "text/html; charset=utf-8" },
+  });
 });
 
 // ---------------------------------------------------------------------------
