@@ -1,3 +1,8 @@
+---
+name: add-middleware
+description: Use when creating a new Remix v3 fetch-router middleware. Covers the middleware signature, context keys, and router/route-level application.
+---
+
 # Add Middleware
 
 Remix v3 (fetch-router) のミドルウェアを作成・追加する。
@@ -49,5 +54,5 @@ router.get("/protected", {
 
 ## 参考ファイル
 
-- `packages/remix-dpop/middleware.ts` — DPoP ミドルウェア実装例
+- `packages/dpop-middleware/mod.ts` — DPoP ミドルウェア実装例
 - `reference/server.ts` — ミドルウェアの使用例

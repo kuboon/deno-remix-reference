@@ -1,6 +1,11 @@
+---
+name: add-route
+description: Use when adding a new route to the Remix v3 fetch-router reference app. Covers HTML pages, JSON APIs, and DPoP-protected routes.
+---
+
 # Add Route
 
-Remix v3 (fetch-router) のルートを reference/ アプリに追加する。
+Remix v3 (fetch-router) のルートを `reference/` アプリに追加する。
 
 ## ルート追加手順
 
@@ -12,11 +17,14 @@ Remix v3 (fetch-router) のルートを reference/ アプリに追加する。
 ## DPoP 保護ルートの追加
 
 ```ts
+import { DPoPSessionKey, DPoPThumbprintKey } from "@scope/dpop-middleware";
+import type { DPoPSession } from "@scope/dpop-middleware";
+
 router.get("/api/new-route", {
   middleware: [dpopMiddleware],
   handler(ctx) {
-    const session = ctx.get(DPOP_SESSION_KEY) as DPoPSession;
-    const thumbprint = ctx.get(DPOP_THUMBPRINT_KEY) as string;
+    const session = ctx.get(DPoPSessionKey) as DPoPSession;
+    const thumbprint = ctx.get(DPoPThumbprintKey) as string;
     return Response.json({ thumbprint, data: session.data });
   },
 });
@@ -36,4 +44,4 @@ router.get("/new-page", (_ctx) => {
 ## ファイル
 
 - `reference/server.ts` — 全ルート定義
-- `packages/remix-dpop/mod.ts` — DPoP middleware エクスポート
+- `packages/dpop-middleware/mod.ts` — DPoP middleware エクスポート

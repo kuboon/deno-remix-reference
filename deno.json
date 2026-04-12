@@ -2,7 +2,7 @@
   "workspace": ["./packages/dpop", "./packages/dpop-middleware", "./reference"],
   "nodeModulesDir": "auto",
   "tasks": {
-    "dev": "cd reference && deno task start",
+    "dev": "deno task --cwd reference dev",
     "test": "deno test --allow-all packages/",
     "check": "deno check packages/dpop-middleware/mod.ts reference/server.ts"
   }
