@@ -7,10 +7,10 @@
  * - HTML template rendering
  */
 
-import { createRouter, createContextKey } from "@remix-run/fetch-router";
-import { html } from "@remix-run/html-template";
-import type { SafeHtml } from "@remix-run/html-template";
-import { staticFiles } from "@remix-run/static-middleware";
+import { createRouter, createContextKey } from "npm:remix@3.0.0-alpha.4/fetch-router";
+import { html } from "npm:remix@3.0.0-alpha.4/html-template";
+import type { SafeHtml } from "npm:remix@3.0.0-alpha.4/html-template";
+import { staticFiles } from "npm:remix@3.0.0-alpha.4/static-middleware";
 import {
   createDPoPMiddleware,
   DPoPSessionKey,
