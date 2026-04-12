@@ -12,7 +12,7 @@
     "@remix-run/logger-middleware": "npm:@remix-run/logger-middleware"
   },
   "tasks": {
-    "build": "deno bundle --platform browser --minify -o ./public/demo.js ./client/demo.ts",
+    "build": "deno bundle --platform browser --minify -o ./public/demo.js ./client/demo.ts && deno bundle --platform browser --minify -o ./public/hydration.js ./client/hydration.ts",
     "dev": "deno task build && deno run -A --watch ./server/mod.ts",
     "start": "deno run -A ./server/mod.ts"
   }

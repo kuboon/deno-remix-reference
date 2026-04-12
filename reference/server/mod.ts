@@ -17,6 +17,7 @@ import {
   DPoPThumbprintKey,
 } from "@scope/dpop-middleware";
 import type { DPoPSession } from "@scope/dpop-middleware";
+import { renderCounter } from "../shared/counter.ts";
 
 // ---------------------------------------------------------------------------
 // Router setup
@@ -63,10 +64,14 @@ const layout = (title: string, body: SafeHtml) => html`<!DOCTYPE html>
     .card { border: 1px solid #ddd; border-radius: 8px; padding: 1.5rem; margin: 1rem 0; }
     nav { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #ddd; }
     nav a { margin-right: 1rem; }
+    .counter { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; }
+    .counter output { min-width: 3ch; text-align: center; font-variant-numeric: tabular-nums; font-weight: 600; }
+    .counter-label { color: #666; font-size: 0.9rem; margin-left: 0.5rem; }
+    .counter[data-hydrated="true"] { outline: 2px solid #16a34a; outline-offset: 4px; border-radius: 4px; }
   </style>
 </head>
 <body>
-  <nav><a href="/">Home</a><a href="/demo">DPoP Demo</a></nav>
+  <nav><a href="/">Home</a><a href="/demo">DPoP Demo</a><a href="/hydration">Hydration</a></nav>
   ${body}
 </body>
 </html>`;
@@ -138,6 +143,53 @@ router.get("/demo", (_ctx) => {
         <script type="module" src="/demo.js"></script>
       `,
     ));
+});
+
+// GET /hydration — component hydration demo
+router.get("/hydration", (_ctx) => {
+  // Initial state is computed on the server (e.g. could be from DB, session,
+  // or a random seed). It's sent to the client both as rendered HTML and as
+  // a JSON data island that the client reads to rebuild its in-memory state.
+  const initialState = {
+    count: Math.floor(Math.random() * 10),
+    label: `server-rendered at ${new Date().toISOString()}`,
+  };
+
+  return htmlResponse(layout(
+    "Hydration Demo",
+    html`
+      <h1>コンポーネントハイドレーションのサンプル</h1>
+      <p>サーバーとクライアントで <strong>同じ <code>renderCounter()</code> 関数</strong> を共有し、
+      まずサーバーで HTML を生成 (SSR) → クライアントでイベントハンドラーを付与 (hydrate) → 以降は
+      クライアントで state 更新するたびに同じ関数で再描画するパターンです。</p>
+
+      <div class="card">
+        <h2>Counter (SSR + hydrate)</h2>
+        <p>初期カウント・ラベルはサーバーが決定しています。ハイドレート完了後に緑の枠線が付きます。</p>
+        <div id="counter-root">${renderCounter(initialState)}</div>
+        <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+          JavaScript を無効にしてリロードしても、カウンター自体は表示されます (ボタンは動きません)。
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>仕組み</h2>
+        <ol style="padding-left: 1.5rem;">
+          <li>サーバーが <code>renderCounter(state)</code> で HTML を生成し、
+            <code>&lt;script type="application/json" id="__HYDRATION_STATE__"&gt;</code>
+            に初期 state を JSON で埋め込む</li>
+          <li>ブラウザは <code>/hydration.js</code> をロードし、JSON を読んで state を復元</li>
+          <li>既存 DOM にイベントハンドラーを付けるだけで <em>hydrate</em> 完了</li>
+          <li>クリック後は同じ <code>renderCounter()</code> を呼び、<code>innerHTML</code> を差し替えて再描画</li>
+        </ol>
+      </div>
+
+      <script type="application/json" id="__HYDRATION_STATE__">${
+        html.raw`${JSON.stringify(initialState).replaceAll("</", "<\\/")}`
+      }</script>
+      <script type="module" src="/hydration.js"></script>
+    `,
+  ));
 });
 
 // ---------------------------------------------------------------------------
