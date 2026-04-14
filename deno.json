@@ -3,6 +3,6 @@
   "tasks": {
     "dev": "deno task --cwd reference dev",
     "test": "deno test --allow-all packages/",
-    "check": "deno check packages/dpop-middleware/mod.ts reference/server/mod.tsx reference/client/counter.tsx reference/client/hydration.ts reference/client/demo.ts"
+    "check": "deno check packages/dpop-middleware/mod.ts reference/server/mod.ts reference/server/routes/index.tsx reference/server/routes/hydration.tsx reference/client/counter.tsx reference/client/hydration.ts reference/client/demo.ts"
   }
 }
