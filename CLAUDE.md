@@ -1,0 +1,24 @@
+# deno-remix-reference
+
+Remix v3 + Deno のリファレンス実装。DPoP (RFC 9449) セッションマネージャーを含む。
+
+## 構造
+
+- `packages/dpop/` — DPoP proof 生成・検証ライブラリ（クライアント・サーバー両対応）
+- `packages/dpop-middleware/` — DPoP セッション middleware（Remix v3 fetch-router 用）
+- `reference/` — Remix v3 リファレンス Web アプリ
+
+## 開発
+
+```bash
+deno task dev      # reference アプリの開発サーバー起動
+deno task test     # パッケージのテスト実行
+deno task check    # 型チェック
+```
+
+## コーディング規約
+
+- Deno ファースト（Web API 優先、Node.js API は必要最小限）
+- TypeScript strict mode
+- テストは `Deno.test()` + `@std/assert`
+- ファイル名はスネークケース（例: `dpop_test.ts`）
