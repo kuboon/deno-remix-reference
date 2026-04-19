@@ -18,7 +18,17 @@ import {
 } from "@scope/dpop-middleware";
 
 import { createRouter } from "@remix-run/fetch-router";
+import { route } from "@remix-run/fetch-router/routes";
 import { staticFiles } from "@remix-run/static-middleware";
+
+const routes = route({
+  home: "/",
+  signin: "/signin",
+  hydration: "/hydration",
+  api: {
+    protected: "/api/protected",
+  },
+});
 
 const router = createRouter({
   middleware: [
@@ -32,12 +42,12 @@ const dpopMiddleware = createDPoPMiddleware({ requireDPoP: true });
 // Pages
 // ---------------------------------------------------------------------------
 
-router.get("/", indexRoute);
-router.get("/hydration", hydrationRoute);
-router.get("/signin", signinRoute);
+router.get(routes.home, indexRoute);
+router.get(routes.hydration, hydrationRoute);
+router.get(routes.signin, signinRoute);
 
 // GET /api/protected — read session
-router.get("/api/protected", {
+router.get(routes.api.protected, {
   middleware: [dpopMiddleware],
   handler(ctx) {
     const session = ctx.get(DPoPSessionKey) as DPoPSession;
@@ -51,7 +61,7 @@ router.get("/api/protected", {
 });
 
 // POST /api/protected — write session data
-router.post("/api/protected", {
+router.post(routes.api.protected, {
   middleware: [dpopMiddleware],
   async handler(ctx) {
     const session = ctx.get(DPoPSessionKey) as DPoPSession;

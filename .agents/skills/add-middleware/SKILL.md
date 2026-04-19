@@ -13,13 +13,14 @@ Remix v3 (fetch-router) のミドルウェアを作成・追加する。
 // ミドルウェア関数の型
 type Middleware = (
   context: RequestContext,
-  next: () => Promise<Response>
+  next: () => Promise<Response>,
 ) => Response | void | Promise<Response | void>;
 ```
 
 ## ミドルウェア作成手順
 
-1. `RequestContext` の `request`, `get()`, `set()`, `has()` を使ってリクエストを処理
+1. `RequestContext` の `request`, `get()`, `set()`, `has()`
+   を使ってリクエストを処理
 2. `next()` を呼ぶと次のミドルウェア/ハンドラに渡る
 3. Response を返すとチェーンを中断
 
