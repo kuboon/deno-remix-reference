@@ -2,7 +2,10 @@
   "version": "5",
   "specifiers": {
     "jsr:@kuboon/dpop@~0.1.1": "0.1.2",
+    "jsr:@std/assert@^1.0.19": "1.0.19",
     "jsr:@std/encoding@1.0.10": "1.0.10",
+    "jsr:@std/internal@^1.0.12": "1.0.12",
+    "jsr:@std/ulid@1": "1.0.0",
     "npm:@remix-run/component@0.6": "0.6.0",
     "npm:@remix-run/cors-middleware@*": "0.1.0",
     "npm:@remix-run/fetch-router@*": "0.18.0",
@@ -19,8 +22,20 @@
         "jsr:@std/encoding"
       ]
     },
+    "@std/assert@1.0.19": {
+      "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
     "@std/encoding@1.0.10": {
       "integrity": "8783c6384a2d13abd5e9e87a7ae0520a30e9f56aeeaa3bdf910a3eaaf5c811a1"
+    },
+    "@std/internal@1.0.12": {
+      "integrity": "972a634fd5bc34b242024402972cd5143eac68d8dffaca5eaa4dba30ce17b027"
+    },
+    "@std/ulid@1.0.0": {
+      "integrity": "d41c3d27a907714413649fee864b7cde8d42ee68437d22b79d5de4f81d808780"
     }
   },
   "npm": {
@@ -297,6 +312,12 @@
       "packages/dpop-middleware": {
         "dependencies": [
           "jsr:@kuboon/dpop@~0.1.1"
+        ]
+      },
+      "packages/kv": {
+        "dependencies": [
+          "jsr:@std/assert@^1.0.19",
+          "jsr:@std/ulid@1"
         ]
       },
       "reference/client": {

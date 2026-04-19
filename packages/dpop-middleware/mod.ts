@@ -2,7 +2,9 @@
  * DPoP session middleware for Remix v3 (fetch-router).
  *
  * Uses @kuboon/dpop for proof verification and adds session management
- * keyed by the JWK thumbprint of the DPoP public key.
+ * keyed by the JWK thumbprint of the DPoP public key. Session storage is
+ * provided by any @scope/kv `KvRepo` — defaults to an in-memory repo with a
+ * 1-hour TTL.
  */
 
 import {
@@ -11,52 +13,8 @@ import {
 } from "@kuboon/dpop/server.ts";
 import type { VerifyDpopProofOptions } from "@kuboon/dpop/types.ts";
 import { computeThumbprint } from "@kuboon/dpop/common.ts";
-
-// ---------------------------------------------------------------------------
-// Session store
-// ---------------------------------------------------------------------------
-
-// deno-lint-ignore no-explicit-any
-export interface SessionStore<T = Record<string, any>> {
-  get(thumbprint: string): Promise<T | null>;
-  set(thumbprint: string, data: T): Promise<void>;
-  delete(thumbprint: string): Promise<void>;
-}
-
-// deno-lint-ignore no-explicit-any
-export class InMemorySessionStore<T = Record<string, any>>
-  implements SessionStore<T> {
-  private store = new Map<string, { data: T; expiresAt: number }>();
-  private defaultTtl: number;
-
-  constructor(defaultTtlMs = 3_600_000) {
-    this.defaultTtl = defaultTtlMs;
-  }
-
-  // deno-lint-ignore require-await
-  async get(thumbprint: string): Promise<T | null> {
-    const entry = this.store.get(thumbprint);
-    if (!entry) return null;
-    if (entry.expiresAt < Date.now()) {
-      this.store.delete(thumbprint);
-      return null;
-    }
-    return entry.data;
-  }
-
-  // deno-lint-ignore require-await
-  async set(thumbprint: string, data: T): Promise<void> {
-    this.store.set(thumbprint, {
-      data,
-      expiresAt: Date.now() + this.defaultTtl,
-    });
-  }
-
-  // deno-lint-ignore require-await
-  async delete(thumbprint: string): Promise<void> {
-    this.store.delete(thumbprint);
-  }
-}
+import { MemoryKvRepo } from "@scope/kv/memory.ts";
+import type { KvRepo } from "@scope/kv/types.ts";
 
 // ---------------------------------------------------------------------------
 // DPoP Session
@@ -95,7 +53,13 @@ export class InMemoryReplayDetector implements ReplayDetector {
 
 // deno-lint-ignore no-explicit-any
 export interface DPoPMiddlewareOptions<T = Record<string, any>> {
-  sessionStore?: SessionStore<T>;
+  /**
+   * KV repository used to persist sessions keyed by JWK thumbprint. Any
+   * `@scope/kv` `KvRepo` works — `MemoryKvRepo`, `DenoKvRepo`,
+   * `CloudflareKvRepo`, or your own. Defaults to a `MemoryKvRepo` with a
+   * 1-hour TTL.
+   */
+  sessionRepo?: KvRepo<T>;
   replayDetector?: ReplayDetector;
   maxAgeSeconds?: number;
   clockSkewSeconds?: number;
@@ -120,7 +84,9 @@ export function createDPoPMiddleware<T = Record<string, any>>(
   options: DPoPMiddlewareOptions<T> = {},
 ) {
   const {
-    sessionStore = new InMemorySessionStore<T>() as SessionStore<T>,
+    sessionRepo = new MemoryKvRepo<T>(["dpop-session"], {
+      expireIn: 3_600_000,
+    }),
     replayDetector = new InMemoryReplayDetector(),
     maxAgeSeconds = 300,
     clockSkewSeconds = 60,
@@ -164,23 +130,24 @@ export function createDPoPMiddleware<T = Record<string, any>>(
 
     // Compute JWK thumbprint as session key
     const thumbprint = await computeThumbprint(result.jwk);
+    const sessionEntry = sessionRepo.entry(thumbprint);
 
     // Get or create session
-    let data: T = (await sessionStore.get(thumbprint)) as T;
+    let data: T | null = await sessionEntry.get();
     if (data === null || data === undefined) {
       data = defaultSessionData ? defaultSessionData() : ({} as T);
-      await sessionStore.set(thumbprint, data);
+      await sessionEntry.update(() => data);
     }
 
     const session: DPoPSession<T> = {
       thumbprint,
       jwk: result.jwk,
-      data,
+      data: data as T,
       async save() {
-        await sessionStore.set(thumbprint, this.data);
+        await sessionEntry.update(() => this.data);
       },
       async destroy() {
-        await sessionStore.delete(thumbprint);
+        await sessionEntry.update(() => null);
       },
     };
 
