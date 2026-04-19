@@ -57,7 +57,11 @@ document.getElementById("btn-post")!.addEventListener("click", () => {
 });
 
 document.getElementById("btn-post2")!.addEventListener("click", () => {
-  callApi("POST", { name: "Bob", role: "admin", timestamp: new Date().toISOString() });
+  callApi("POST", {
+    name: "Bob",
+    role: "admin",
+    timestamp: new Date().toISOString(),
+  });
 });
 
 document.getElementById("btn-clear")!.addEventListener("click", () => {

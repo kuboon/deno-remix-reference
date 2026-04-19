@@ -1,5 +1,4 @@
 {
-  "name": "@repo/client",
   "compilerOptions": {
     "lib": ["dom", "es2024"],
     "jsx": "react-jsx",
@@ -8,8 +7,5 @@
   "imports": {
     "@remix-run/component": "npm:@remix-run/component@^0.6.0",
     "@remix-run/fetch-router": "npm:@remix-run/fetch-router"
-  },
-  "tasks": {
-    "build": "deno bundle --platform browser --minify -o ../public/client.js ./client/mod.ts && deno bundle --platform browser --minify -o ../public/signin.js ./client/signin.ts"
   }
 }

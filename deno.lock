@@ -9,6 +9,7 @@
     "npm:@remix-run/fetch-router@*": "0.18.0",
     "npm:@remix-run/html-template@*": "0.3.0",
     "npm:@remix-run/logger-middleware@*": "0.1.4",
+    "npm:@remix-run/response@*": "0.3.2",
     "npm:@remix-run/static-middleware@*": "0.4.5",
     "npm:remix@3.0.0-alpha.4": "3.0.0-alpha.4"
   },
@@ -316,6 +317,7 @@
           "npm:@remix-run/fetch-router@*",
           "npm:@remix-run/html-template@*",
           "npm:@remix-run/logger-middleware@*",
+          "npm:@remix-run/response@*",
           "npm:@remix-run/static-middleware@*"
         ]
       }

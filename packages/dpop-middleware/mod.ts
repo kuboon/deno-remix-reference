@@ -23,8 +23,7 @@ export interface SessionStore<T = Record<string, any>> {
 
 // deno-lint-ignore no-explicit-any
 export class InMemorySessionStore<T = Record<string, any>>
-  implements SessionStore<T>
-{
+  implements SessionStore<T> {
   private store = new Map<string, { data: T; expiresAt: number }>();
   private defaultTtl: number;
 
@@ -45,7 +44,10 @@ export class InMemorySessionStore<T = Record<string, any>>
 
   // deno-lint-ignore require-await
   async set(thumbprint: string, data: T): Promise<void> {
-    this.store.set(thumbprint, { data, expiresAt: Date.now() + this.defaultTtl });
+    this.store.set(thumbprint, {
+      data,
+      expiresAt: Date.now() + this.defaultTtl,
+    });
   }
 
   // deno-lint-ignore require-await
@@ -138,7 +140,10 @@ export function createDPoPMiddleware<T = Record<string, any>>(
   ): Promise<Response | void> {
     const request: Request = ctx.request;
 
-    if (!requireDPoP && !request.headers.has("DPoP") && !request.headers.has("dpop")) {
+    if (
+      !requireDPoP && !request.headers.has("DPoP") &&
+      !request.headers.has("dpop")
+    ) {
       return next();
     }
 

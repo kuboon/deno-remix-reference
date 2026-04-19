@@ -1,5 +1,9 @@
 {
-  "name": "@repo/reference-server",
+  "tasks": {
+    "bundle": "deno run -A ./bundle.ts",
+    "dev": "deno task bundle && deno serve -P --watch ./mod.ts",
+    "serve": "deno serve -P ./mod.ts"
+  },
   "compilerOptions": {
     "lib": ["deno.ns", "deno.unstable", "dom"],
     "jsx": "react-jsx",
@@ -7,16 +11,17 @@
   },
   "imports": {
     "@remix-run/component": "npm:@remix-run/component@^0.6.0",
-    "@remix-run/component/server": "npm:@remix-run/component@^0.6.0/server",
-    "@remix-run/component/jsx-runtime": "npm:@remix-run/component@^0.6.0/jsx-runtime",
-    "@remix-run/fetch-router": "npm:@remix-run/fetch-router",
-    "@remix-run/html-template": "npm:@remix-run/html-template",
-    "@remix-run/static-middleware": "npm:@remix-run/static-middleware",
     "@remix-run/cors-middleware": "npm:@remix-run/cors-middleware",
-    "@remix-run/logger-middleware": "npm:@remix-run/logger-middleware"
+    "@remix-run/fetch-router": "npm:@remix-run/fetch-router",
+    "@remix-run/logger-middleware": "npm:@remix-run/logger-middleware",
+    "@remix-run/html-template": "npm:@remix-run/html-template",
+    "@remix-run/response": "npm:@remix-run/response",
+    "@remix-run/static-middleware": "npm:@remix-run/static-middleware"
   },
-  "tasks": {
-    "dev": "deno task build && deno run -A --watch ./server/mod.ts",
-    "start": "deno run -A ./server/mod.ts"
+  "permissions": {
+    "default": {
+      "env": ["IDP_ORIGIN"],
+      "read": ["../public"]
+    }
   }
 }

@@ -15,8 +15,8 @@
 
 import {
   clientEntry,
-  on,
   type Handle,
+  on,
   type SerializableValue,
 } from "@remix-run/component";
 

@@ -11,9 +11,13 @@
  */
 
 import { run } from "@remix-run/component";
+import { Counter } from "./counter.tsx";
 
 const app = run({
   async loadModule(moduleUrl: string, exportName: string) {
+    if (moduleUrl === "/counter.js" && exportName === "Counter") {
+      return Counter;
+    }
     const mod = await import(moduleUrl);
     return mod[exportName];
   },

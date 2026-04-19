@@ -41,8 +41,12 @@ async function createTestProof(
     ...payloadOverrides,
   };
 
-  const encodedHeader = base64UrlEncode(textEncoder.encode(JSON.stringify(header)));
-  const encodedPayload = base64UrlEncode(textEncoder.encode(JSON.stringify(payload)));
+  const encodedHeader = base64UrlEncode(
+    textEncoder.encode(JSON.stringify(header)),
+  );
+  const encodedPayload = base64UrlEncode(
+    textEncoder.encode(JSON.stringify(payload)),
+  );
   const signingInput = `${encodedHeader}.${encodedPayload}`;
 
   const signature = await crypto.subtle.sign(
@@ -224,7 +228,9 @@ Deno.test("verifyDpopProof - invalid signature", async () => {
   const payloadBytes = decodeBase64Url(parts[1]);
   const payload = JSON.parse(textDecoder.decode(payloadBytes));
   payload.jti = "tampered-jti"; // Change something that doesn't affect earlier checks
-  const tamperedPayload = base64UrlEncode(textEncoder.encode(JSON.stringify(payload)));
+  const tamperedPayload = base64UrlEncode(
+    textEncoder.encode(JSON.stringify(payload)),
+  );
   const tamperedProof = `${parts[0]}.${tamperedPayload}.${parts[2]}`;
 
   const result = await verifyDpopProof({

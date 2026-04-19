@@ -2,42 +2,47 @@
  * GET / — landing page introducing the project.
  */
 
-import { html } from "@remix-run/html-template";
 import type { RequestHandler } from "@remix-run/fetch-router";
-import { htmlResponse, layout } from "../lib/layout.ts";
+import { renderLayout } from "../lib/layout.tsx";
 
 export const indexRoute: RequestHandler = (_ctx) => {
-  return htmlResponse(layout(
+  return renderLayout(
     "Home",
-    html`
+    <main>
       <h1>Remix v3 + DPoP Session Manager</h1>
       <p>Deno + Remix v3 (fetch-router) リファレンス実装。</p>
 
       <div class="card">
-        <h2>DPoP (RFC 9449) とは</h2>
-        <p>DPoP はクライアントの公開鍵でリクエストに暗号署名を添付し、
-        その公開鍵のフィンガープリント (JWK Thumbprint) をセッションキーとして使う仕組みです。
-        Cookie を使わずにセッションを特定のクライアントに紐付けられます。</p>
-      </div>
-
-      <div class="card">
         <h2>構成</h2>
         <ul>
-          <li><code>packages/dpop/</code> — DPoP proof 生成・検証ライブラリ</li>
-          <li><code>packages/dpop-middleware/</code> — DPoP セッション middleware</li>
-          <li><code>reference/</code> — この Web アプリ</li>
+          <li>
+            <code>packages/dpop/</code> — DPoP proof 生成・検証ライブラリ
+          </li>
+          <li>
+            <code>packages/dpop-middleware/</code> — DPoP セッション middleware
+          </li>
+          <li>
+            <code>reference/</code> — この Web アプリ
+          </li>
         </ul>
       </div>
 
       <div class="card">
         <h2>API エンドポイント</h2>
         <ul>
-          <li><code>GET /api/protected</code> — DPoP 保護。セッション情報を返す</li>
-          <li><code>POST /api/protected</code> — DPoP 保護。セッションにデータを書き込む</li>
+          <li>
+            <code>GET /api/protected</code> — DPoP 保護。セッション情報を返す
+          </li>
+          <li>
+            <code>POST /api/protected</code>{" "}
+            — DPoP 保護。セッションにデータを書き込む
+          </li>
         </ul>
       </div>
 
-      <p style="margin-top: 2rem;"><a href="/demo">→ インタラクティブデモを試す</a></p>
-    `,
-  ));
+      <p style="margin-top: 2rem;">
+        <a href="/demo">→ インタラクティブデモを試す</a>
+      </p>
+    </main>,
+  );
 };

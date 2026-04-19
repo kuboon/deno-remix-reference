@@ -25,8 +25,9 @@ export const hydrationRoute: RequestHandler = (_ctx) => {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Hydration Demo — @remix-run/component</title>
-        <script async type="module" src="/hydration.js" />
-        <style>{`
+        <script async type="module" src="/mod.js" />
+        <style>
+          {`
           * { box-sizing: border-box; margin: 0; padding: 0; }
           body { font-family: system-ui, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 2rem; color: #1a1a1a; }
           h1 { margin-bottom: 1rem; }
@@ -37,7 +38,8 @@ export const hydrationRoute: RequestHandler = (_ctx) => {
           button:hover { background: #e8e8e8; }
           .card { border: 1px solid #ddd; border-radius: 8px; padding: 1.5rem; margin: 1rem 0; }
           nav { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #ddd; }
-        `}</style>
+        `}
+        </style>
       </head>
       <body>
         <nav>
@@ -47,19 +49,24 @@ export const hydrationRoute: RequestHandler = (_ctx) => {
         </nav>
         <h1>コンポーネントハイドレーションのサンプル</h1>
         <p>
-          <code>@remix-run/component</code> の <code>clientEntry</code> を使った SSR + hydrate。
-          同じコンポーネント定義 (<code>reference/client/counter.tsx</code>) を、
-          サーバーでは直接 JSX ツリーに埋め込んで <code>renderToStream</code> で HTML 化し、
-          クライアントでは <code>run()</code> が hydration マーカーから動的 import で
+          <code>@remix-run/component</code> の <code>clientEntry</code>{" "}
+          を使った SSR + hydrate。 同じコンポーネント定義 (<code>
+            reference/client/counter.tsx
+          </code>) を、 サーバーでは直接 JSX ツリーに埋め込んで{" "}
+          <code>renderToStream</code> で HTML 化し、 クライアントでは{" "}
+          <code>run()</code> が hydration マーカーから動的 import で
           <code>/counter.js</code> を読み込んで in-place にハイドレートします。
         </p>
 
         <div class="card">
           <h2>Counter (clientEntry)</h2>
-          <p>初期カウントはサーバーが決定。ボタンはクライアントのハイドレート後に動きます。</p>
+          <p>
+            初期カウントはサーバーが決定。ボタンはクライアントのハイドレート後に動きます。
+          </p>
           <Counter setup={initialCount} label={label} />
           <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
-            JavaScript 無効でもカウンターの初期値は表示されます (progressive enhancement)。
+            JavaScript 無効でもカウンターの初期値は表示されます (progressive
+            enhancement)。
           </p>
         </div>
 
@@ -67,15 +74,27 @@ export const hydrationRoute: RequestHandler = (_ctx) => {
           <h2>仕組み</h2>
           <ol style="padding-left: 1.5rem;">
             <li>
-              サーバー: <code>renderToStream(&lt;JSX tree with &lt;Counter /&gt;&gt;)</code> が
-              HTML と hydration メタデータ (<code>moduleUrl</code>, <code>exportName</code>, <code>props</code>) を出力
+              サーバー:{" "}
+              <code>
+                renderToStream(&lt;JSX tree with &lt;Counter /&gt;&gt;)
+              </code>{" "}
+              が HTML と hydration メタデータ (<code>moduleUrl</code>,{" "}
+              <code>exportName</code>, <code>props</code>) を出力
             </li>
-            <li>ブラウザ: <code>/hydration.js</code> (= <code>run()</code> を呼ぶ boot) がロードされる</li>
             <li>
-              <code>run()</code> が hydration マーカーを発見し、<code>loadModule("/counter.js", "Counter")</code>
+              ブラウザ: <code>/hydration.js</code> (= <code>run()</code>{" "}
+              を呼ぶ boot) がロードされる
+            </li>
+            <li>
+              <code>run()</code> が hydration マーカーを発見し、<code>
+                loadModule("/counter.js", "Counter")
+              </code>
               → 動的 import で Counter コンポーネントを取得
             </li>
-            <li>Counter の render 関数を再実行し、既存 DOM にイベントハンドラーを付与 (= hydrate)</li>
+            <li>
+              Counter の render 関数を再実行し、既存 DOM
+              にイベントハンドラーを付与 (= hydrate)
+            </li>
           </ol>
         </div>
       </body>

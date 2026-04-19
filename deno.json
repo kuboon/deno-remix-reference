@@ -1,7 +1,12 @@
 {
-  "workspace": ["./packages/dpop", "./packages/dpop-middleware", "./reference/server", "./reference/client"],
+  "workspace": [
+    "./packages/dpop",
+    "./packages/dpop-middleware",
+    "./reference/server",
+    "./reference/client"
+  ],
   "tasks": {
-    "dev": "deno task --cwd reference/client dev",
+    "dev": "deno task --cwd reference/server dev",
     "test": "deno test -P",
     "check": "deno check && deno lint && deno fmt --check"
   },
@@ -10,5 +15,6 @@
   },
   "test": {
     "permissions": "default"
-  }
+  },
+  "unstable": ["bundle"]
 }
