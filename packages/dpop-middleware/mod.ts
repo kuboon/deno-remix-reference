@@ -1,14 +1,16 @@
 /**
  * DPoP session middleware for Remix v3 (fetch-router).
  *
- * Uses @scope/dpop for proof verification and adds session management
+ * Uses @kuboon/dpop for proof verification and adds session management
  * keyed by the JWK thumbprint of the DPoP public key.
  */
 
-import { verifyDpopProofFromRequest } from "@scope/dpop";
-import type { VerifyDpopProofOptions } from "@scope/dpop/types.ts";
-import type { VerifyDpopProofResult } from "@scope/dpop/server/types.ts";
-import { computeThumbprint } from "@scope/dpop/common.ts";
+import {
+  verifyDpopProofFromRequest,
+  type VerifyDpopProofResult,
+} from "@kuboon/dpop/server.ts";
+import type { VerifyDpopProofOptions } from "@kuboon/dpop/types.ts";
+import { computeThumbprint } from "@kuboon/dpop/common.ts";
 
 // ---------------------------------------------------------------------------
 // Session store

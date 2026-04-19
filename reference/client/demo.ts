@@ -1,7 +1,7 @@
 /**
  * DPoP demo client — runs in the browser.
  *
- * Uses @scope/dpop/client.ts to:
+ * Uses @kuboon/dpop to:
  * - Generate (or load from IndexedDB) an ECDSA P-256 key pair
  * - Compute the JWK SHA-256 thumbprint
  * - Expose `fetchDpop` that attaches a DPoP proof to every request
@@ -10,7 +10,7 @@
  * and loaded by the /demo page as `<script type="module" src="/demo.js">`.
  */
 
-import { init } from "@scope/dpop/client.ts";
+import { init } from "@kuboon/dpop";
 
 const log = document.getElementById("log")!;
 const thumbprintEl = document.getElementById("thumbprint")!;

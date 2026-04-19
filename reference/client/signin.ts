@@ -8,7 +8,7 @@
  *    bound a userId to our jkt, show it.
  */
 
-import { init } from "@scope/dpop/client.ts";
+import { init } from "@kuboon/dpop";
 
 const idpOriginMeta = document.querySelector(
   'meta[name="idp-origin"]',

@@ -1,6 +1,5 @@
 {
   "workspace": [
-    "./packages/dpop",
     "./packages/dpop-middleware",
     "./reference/server",
     "./reference/client"

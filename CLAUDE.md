@@ -5,10 +5,9 @@ Remix v3 + Deno のリファレンス実装。DPoP (RFC 9449)
 
 ## 構造
 
-- `packages/dpop/` — DPoP proof
-  生成・検証ライブラリ（クライアント・サーバー両対応）
 - `packages/dpop-middleware/` — DPoP セッション middleware（Remix v3
-  fetch-router 用）
+  fetch-router 用）。DPoP proof 生成・検証は
+  [jsr:@kuboon/dpop](https://jsr.io/@kuboon/dpop) を利用。
 - `reference/` — Remix v3 リファレンス Web アプリ
   - `/signin` — id.kbn.one を IdP として使うサインインフローのサンプル
 

@@ -5,6 +5,7 @@
     "jsxImportSource": "@remix-run/component"
   },
   "imports": {
+    "@kuboon/dpop": "jsr:@kuboon/dpop@^0.1.1",
     "@remix-run/component": "npm:@remix-run/component@^0.6.0",
     "@remix-run/fetch-router": "npm:@remix-run/fetch-router"
   }

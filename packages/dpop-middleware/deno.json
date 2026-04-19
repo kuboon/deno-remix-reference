@@ -1,5 +1,8 @@
 {
   "name": "@scope/dpop-middleware",
   "version": "0.1.0",
-  "exports": "./mod.ts"
+  "exports": "./mod.ts",
+  "imports": {
+    "@kuboon/dpop": "jsr:@kuboon/dpop@^0.1.1"
+  }
 }
