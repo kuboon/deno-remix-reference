@@ -303,7 +303,13 @@
           "jsr:@std/encoding@1.0.10"
         ]
       },
-      "reference": {
+      "reference/client": {
+        "dependencies": [
+          "npm:@remix-run/component@0.6",
+          "npm:@remix-run/fetch-router@*"
+        ]
+      },
+      "reference/server": {
         "dependencies": [
           "npm:@remix-run/component@0.6",
           "npm:@remix-run/cors-middleware@*",

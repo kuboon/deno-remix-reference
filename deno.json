@@ -1,8 +1,14 @@
 {
-  "workspace": ["./packages/dpop", "./packages/dpop-middleware", "./reference"],
+  "workspace": ["./packages/dpop", "./packages/dpop-middleware", "./reference/server", "./reference/client"],
   "tasks": {
-    "dev": "deno task --cwd reference dev",
-    "test": "deno test --allow-all packages/",
-    "check": "deno check packages/dpop-middleware/mod.ts reference/server/mod.ts reference/server/routes/index.tsx reference/server/routes/hydration.tsx reference/client/counter.tsx reference/client/hydration.ts reference/client/demo.ts"
+    "dev": "deno task --cwd reference/client dev",
+    "test": "deno test -P",
+    "check": "deno check && deno lint && deno fmt --check"
+  },
+  "permissions": {
+    "default": {}
+  },
+  "test": {
+    "permissions": "default"
   }
 }
