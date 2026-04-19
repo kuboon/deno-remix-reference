@@ -19,6 +19,7 @@ import type { DPoPSession } from "@scope/dpop-middleware";
 import { htmlResponse, layout } from "./lib/layout.ts";
 import { indexRoute } from "./routes/index.tsx";
 import { hydrationRoute } from "./routes/hydration.tsx";
+import { signinRoute } from "./routes/signin.ts";
 
 // ---------------------------------------------------------------------------
 // Router setup
@@ -39,6 +40,7 @@ const dpopMiddleware = createDPoPMiddleware({ requireDPoP: true });
 
 router.get("/", indexRoute);
 router.get("/hydration", hydrationRoute);
+router.get("/signin", signinRoute);
 
 // GET /demo — interactive DPoP demo page
 router.get("/demo", (_ctx) => {
@@ -46,8 +48,10 @@ router.get("/demo", (_ctx) => {
     "DPoP Demo",
     html`
       <h1>DPoP インタラクティブデモ</h1>
-      <p>ページロード時に自動で鍵ペアを生成し、DPoP proof 付きで API を呼び出します。
-      鍵ペアは IndexedDB に保存され、リロード後も同じセッションを維持します。</p>
+      <p>
+        ページロード時に自動で鍵ペアを生成し、DPoP proof 付きで API を呼び出します。
+        鍵ペアは IndexedDB に保存され、リロード後も同じセッションを維持します。
+      </p>
 
       <div class="card">
         <h2>鍵情報</h2>

@@ -10,6 +10,6 @@
     "@remix-run/fetch-router": "npm:@remix-run/fetch-router"
   },
   "tasks": {
-    "build": "deno bundle --platform browser --minify -o ../public/client.js ./client/mod.ts",
+    "build": "deno bundle --platform browser --minify -o ../public/client.js ./client/mod.ts && deno bundle --platform browser --minify -o ../public/signin.js ./client/signin.ts"
   }
 }
