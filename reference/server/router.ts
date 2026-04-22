@@ -7,6 +7,7 @@
  */
 
 import { indexRoute } from "./routes/index.tsx";
+import { welcomeRoute } from "./routes/welcome.tsx";
 import { hydrationRoute } from "./routes/hydration.tsx";
 import { signinRoute } from "./routes/signin.tsx";
 
@@ -23,6 +24,7 @@ import { staticFiles } from "@remix-run/static-middleware";
 
 const routes = route({
   home: "/",
+  welcome: "/welcome",
   signin: "/signin",
   hydration: "/hydration",
   api: {
@@ -43,6 +45,7 @@ const dpopMiddleware = createDPoPMiddleware({ requireDPoP: true });
 // ---------------------------------------------------------------------------
 
 router.get(routes.home, indexRoute);
+router.get(routes.welcome, welcomeRoute);
 router.get(routes.hydration, hydrationRoute);
 router.get(routes.signin, signinRoute);
 

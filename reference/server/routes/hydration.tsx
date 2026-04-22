@@ -43,8 +43,8 @@ export const hydrationRoute: RequestHandler = (_ctx) => {
       </head>
       <body>
         <nav>
-          <a href="/">Home</a>
-          <a href="/demo">DPoP Demo</a>
+          <a href="/welcome">Home</a>
+          <a href="/signin">Sign In</a>
           <a href="/hydration">Hydration</a>
         </nav>
         <h1>コンポーネントハイドレーションのサンプル</h1>

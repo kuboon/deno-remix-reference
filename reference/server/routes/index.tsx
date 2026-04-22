@@ -1,48 +1,48 @@
 /**
- * GET / — landing page introducing the project.
+ * GET / — top page shell.
+ *
+ * Renders a persistent top navigation and an `<iframe name="content">`
+ * that hosts the real pages. Nav links carry `target="content"` so
+ * clicking them swaps the frame without reloading the outer shell.
+ * The frame starts on /welcome (the former home intro).
  */
 
 import type { RequestHandler } from "@remix-run/fetch-router";
-import { renderLayout } from "../lib/layout.tsx";
+import { renderToStream } from "@remix-run/component/server";
 
 export const indexRoute: RequestHandler = (_ctx) => {
-  return renderLayout(
-    "Home",
-    <main>
-      <h1>Remix v3 + DPoP Session Manager</h1>
-      <p>Deno + Remix v3 (fetch-router) リファレンス実装。</p>
-
-      <div class="card">
-        <h2>構成</h2>
-        <ul>
-          <li>
-            <code>packages/dpop/</code> — DPoP proof 生成・検証ライブラリ
-          </li>
-          <li>
-            <code>packages/dpop-middleware/</code> — DPoP セッション middleware
-          </li>
-          <li>
-            <code>reference/</code> — この Web アプリ
-          </li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <h2>API エンドポイント</h2>
-        <ul>
-          <li>
-            <code>GET /api/protected</code> — DPoP 保護。セッション情報を返す
-          </li>
-          <li>
-            <code>POST /api/protected</code>{" "}
-            — DPoP 保護。セッションにデータを書き込む
-          </li>
-        </ul>
-      </div>
-
-      <p style="margin-top: 2rem;">
-        <a href="/demo">→ インタラクティブデモを試す</a>
-      </p>
-    </main>,
+  const stream = renderToStream(
+    <html lang="ja">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>DPoP Reference</title>
+        <link rel="icon" href="data:image/png;base64,iVBORw0KGgo=" />
+        <style>
+          {`
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          html, body { height: 100%; }
+          body { display: flex; flex-direction: column; font-family: system-ui, sans-serif; color: #1a1a1a; }
+          header { padding: 1rem 2rem; border-bottom: 1px solid #ddd; background: #fafafa; }
+          header nav a { color: #0066cc; margin-right: 1rem; text-decoration: none; }
+          header nav a:hover { text-decoration: underline; }
+          iframe[name="content"] { flex: 1; width: 100%; border: 0; background: #fff; }
+        `}
+        </style>
+      </head>
+      <body>
+        <header>
+          <nav>
+            <a href="/welcome" target="content">Home</a>
+            <a href="/signin" target="content">Sign In</a>
+            <a href="/hydration" target="content">Hydration</a>
+          </nav>
+        </header>
+        <iframe name="content" src="/welcome" title="content"></iframe>
+      </body>
+    </html>,
   );
+  return new Response(stream, {
+    headers: { "Content-Type": "text/html; charset=utf-8" },
+  });
 };

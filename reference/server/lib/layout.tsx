@@ -7,7 +7,17 @@
 import { RemixNode } from "@remix-run/component";
 import { renderToStream } from "@remix-run/component/server";
 
-export const renderLayout = (title: string, body: RemixNode): Response => {
+export type LayoutOptions = {
+  /** Render the top navigation bar. Disable for pages shown inside the / frame. */
+  showNav?: boolean;
+};
+
+export const renderLayout = (
+  title: string,
+  body: RemixNode,
+  options: LayoutOptions = {},
+): Response => {
+  const { showNav = true } = options;
   const stream = renderToStream(
     <html lang="ja">
       <head>
@@ -17,11 +27,13 @@ export const renderLayout = (title: string, body: RemixNode): Response => {
         <link rel="icon" href="data:image/png;base64,iVBORw0KGgo=" />
       </head>
       <body>
-        <nav>
-          <a href="/">Home</a>
-          <a href="/signin">Sign In</a>
-          <a href="/hydration">Hydration</a>
-        </nav>
+        {showNav && (
+          <nav>
+            <a href="/welcome">Home</a>
+            <a href="/signin">Sign In</a>
+            <a href="/hydration">Hydration</a>
+          </nav>
+        )}
         ${body}
       </body>
     </html>,
