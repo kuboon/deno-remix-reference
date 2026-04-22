@@ -4,11 +4,16 @@
  * Wires together the fetch-router, middleware, and per-route handlers
  * defined under ./routes/. Each page handler lives in its own file to
  * keep this module focused on routing config + server bootstrap.
+ *
+ * Content routes are factories that take a `dispatch` function so the
+ * shell's `resolveFrame` can re-enter the router to fetch fragments.
  */
 
-import { indexRoute } from "./routes/index.tsx";
-import { hydrationRoute } from "./routes/hydration.tsx";
-import { signinRoute } from "./routes/signin.tsx";
+import { createIndexRoute } from "./routes/index.tsx";
+import { createWelcomeRoute } from "./routes/welcome.tsx";
+import { createHydrationRoute } from "./routes/hydration.tsx";
+import { createSigninRoute } from "./routes/signin.tsx";
+import type { Dispatch } from "./lib/layout.tsx";
 
 import {
   createDPoPMiddleware,
@@ -23,6 +28,7 @@ import { staticFiles } from "@remix-run/static-middleware";
 
 const routes = route({
   home: "/",
+  welcome: "/welcome",
   signin: "/signin",
   hydration: "/hydration",
   api: {
@@ -36,15 +42,18 @@ const router = createRouter({
   ],
 });
 
+const dispatch: Dispatch = (request) => router.fetch(request);
+
 const dpopMiddleware = createDPoPMiddleware({ requireDPoP: true });
 
 // ---------------------------------------------------------------------------
 // Pages
 // ---------------------------------------------------------------------------
 
-router.get(routes.home, indexRoute);
-router.get(routes.hydration, hydrationRoute);
-router.get(routes.signin, signinRoute);
+router.get(routes.home, createIndexRoute(dispatch));
+router.get(routes.welcome, createWelcomeRoute(dispatch));
+router.get(routes.hydration, createHydrationRoute(dispatch));
+router.get(routes.signin, createSigninRoute(dispatch));
 
 // GET /api/protected — read session
 router.get(routes.api.protected, {
