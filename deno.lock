@@ -336,6 +336,7 @@
       },
       "reference/server": {
         "dependencies": [
+          "jsr:@std/assert@^1.0.19",
           "npm:@remix-run/component@0.7",
           "npm:@remix-run/cors-middleware@0.1.1",
           "npm:@remix-run/fetch-router@0.18.1",
@@ -343,6 +344,11 @@
           "npm:@remix-run/logger-middleware@0.1.5",
           "npm:@remix-run/response@0.3.2",
           "npm:@remix-run/static-middleware@0.4.6"
+        ]
+      },
+      "reference/tests": {
+        "dependencies": [
+          "jsr:@std/assert@^1.0.19"
         ]
       }
     }

@@ -14,8 +14,8 @@ import type { RequestHandler } from "@remix-run/fetch-router";
 import { Counter } from "../../client/counter.tsx";
 import { type Dispatch, renderPage } from "../lib/layout.tsx";
 
-export const createHydrationRoute = (dispatch: Dispatch): RequestHandler =>
-  (ctx) => {
+export const createHydrationRoute =
+  (dispatch: Dispatch): RequestHandler => (ctx) => {
     // `setup` is sent to the component's setup function once per instance.
     // Props (e.g. `label`) are passed to the render function on every update.
     const initialCount = Math.floor(Math.random() * 10);

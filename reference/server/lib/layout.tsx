@@ -89,7 +89,11 @@ export function renderFrameShell(
         <Frame
           name="content"
           src={initialSrc}
-          fallback={<main><p>Loading…</p></main>}
+          fallback={
+            <main>
+              <p>Loading…</p>
+            </main>
+          }
         />
       </body>
     </html>,

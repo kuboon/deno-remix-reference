@@ -11,8 +11,8 @@ import { type Dispatch, renderPage } from "../lib/layout.tsx";
 
 const idpOrigin = "https://id.kbn.one";
 
-export const createSigninRoute = (dispatch: Dispatch): RequestHandler =>
-  (ctx) =>
+export const createSigninRoute =
+  (dispatch: Dispatch): RequestHandler => (ctx) =>
     renderPage(
       ctx.request,
       <main>
@@ -55,8 +55,9 @@ export const createSigninRoute = (dispatch: Dispatch): RequestHandler =>
               でこの thumbprint に userId を紐付け
             </li>
             <li>
-              戻ってきたページで{" "}
-              <code>fetchDpop GET ${idpOrigin}/session</code> が userId を返す
+              戻ってきたページで <code>fetchDpop GET ${idpOrigin}/session</code>
+              {" "}
+              が userId を返す
             </li>
           </ol>
         </div>
