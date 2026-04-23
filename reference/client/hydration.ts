@@ -37,4 +37,6 @@ const app = run({
 
 await app.ready();
 
+(globalThis as unknown as { __rmxReady?: boolean }).__rmxReady = true;
+
 console.log("[hydration] runtime ready");

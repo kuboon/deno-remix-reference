@@ -8,8 +8,8 @@
 import type { RequestHandler } from "@remix-run/fetch-router";
 import { type Dispatch, renderPage } from "../lib/layout.tsx";
 
-export const createWelcomeRoute = (dispatch: Dispatch): RequestHandler =>
-  (ctx) =>
+export const createWelcomeRoute =
+  (dispatch: Dispatch): RequestHandler => (ctx) =>
     renderPage(
       ctx.request,
       <main>

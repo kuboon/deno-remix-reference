@@ -3,11 +3,13 @@
     "./packages/kv",
     "./packages/dpop-middleware",
     "./reference/server",
-    "./reference/client"
+    "./reference/client",
+    "./reference/tests"
   ],
   "tasks": {
     "dev": "deno task --cwd reference/server dev",
-    "test": "deno test -P",
+    "test": "deno test -P --ignore=reference/tests",
+    "test:browser": "deno task --cwd reference/tests pretest && deno task --cwd reference/tests test",
     "check": "deno check && deno lint && deno fmt --check"
   },
   "permissions": {

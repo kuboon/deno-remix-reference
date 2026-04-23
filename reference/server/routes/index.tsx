@@ -6,5 +6,5 @@
 import type { RequestHandler } from "@remix-run/fetch-router";
 import { type Dispatch, renderFrameShell } from "../lib/layout.tsx";
 
-export const createIndexRoute = (dispatch: Dispatch): RequestHandler =>
-  (ctx) => renderFrameShell(ctx.request, dispatch);
+export const createIndexRoute = (dispatch: Dispatch): RequestHandler => (ctx) =>
+  renderFrameShell(ctx.request, dispatch);

@@ -11,13 +11,14 @@
     "jsxImportSource": "@remix-run/component"
   },
   "imports": {
-    "@remix-run/component": "npm:@remix-run/component@^0.6.0",
-    "@remix-run/cors-middleware": "npm:@remix-run/cors-middleware",
-    "@remix-run/fetch-router": "npm:@remix-run/fetch-router",
-    "@remix-run/logger-middleware": "npm:@remix-run/logger-middleware",
-    "@remix-run/html-template": "npm:@remix-run/html-template",
-    "@remix-run/response": "npm:@remix-run/response",
-    "@remix-run/static-middleware": "npm:@remix-run/static-middleware"
+    "@std/assert": "jsr:@std/assert@^1.0.19",
+    "@remix-run/component": "npm:@remix-run/component@^0.7.0",
+    "@remix-run/cors-middleware": "npm:@remix-run/cors-middleware@0.1.1",
+    "@remix-run/fetch-router": "npm:@remix-run/fetch-router@0.18.1",
+    "@remix-run/logger-middleware": "npm:@remix-run/logger-middleware@0.1.5",
+    "@remix-run/html-template": "npm:@remix-run/html-template@0.3.0",
+    "@remix-run/response": "npm:@remix-run/response@0.3.2",
+    "@remix-run/static-middleware": "npm:@remix-run/static-middleware@0.4.6"
   },
   "permissions": {
     "default": {

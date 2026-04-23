@@ -1,0 +1,12 @@
+{
+  "tasks": {
+    "pretest": "deno task --cwd ../server bundle",
+    "test": "deno test -A ./"
+  },
+  "compilerOptions": {
+    "lib": ["deno.ns", "deno.unstable", "dom"]
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@^1.0.19"
+  }
+}
