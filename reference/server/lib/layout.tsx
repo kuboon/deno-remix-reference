@@ -16,7 +16,7 @@
 
 import { Frame, type RemixNode } from "@remix-run/component";
 import { renderToStream } from "@remix-run/component/server";
-import { createHtmlResponse } from "@remix-run/response";
+import { createHtmlResponse } from "@remix-run/response/html";
 
 export type Dispatch = (request: Request) => Promise<Response>;
 
