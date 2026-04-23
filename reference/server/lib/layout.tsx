@@ -16,6 +16,7 @@
 
 import { Frame, type RemixNode } from "@remix-run/component";
 import { renderToStream } from "@remix-run/component/server";
+import { createHtmlResponse } from "@remix-run/response";
 
 export type Dispatch = (request: Request) => Promise<Response>;
 
@@ -109,7 +110,5 @@ export function renderFrameShell(
       },
     },
   );
-  return new Response(stream, {
-    headers: { "Content-Type": "text/html; charset=utf-8" },
-  });
+  return createHtmlResponse(stream);
 }
