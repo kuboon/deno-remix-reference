@@ -1,7 +1,7 @@
 /**
  * GET /hydration — component hydration demo using `@remix-run/component`.
  *
- * `<Counter />` is a `clientEntry` (see ../../client/counter.tsx); the
+ * `<Counter />` is a `clientEntry` (see reference/client/counter.tsx); the
  * server emits its initial HTML + a hydration marker, and the client's
  * `run()` hydrates it in place after loading /counter.js.
  *
@@ -10,19 +10,20 @@
  * diff and the Counter stays interactive after navigation.
  */
 
-import type { RequestHandler } from "@remix-run/fetch-router";
+import type { BuildAction } from "@remix-run/fetch-router";
 import { Counter } from "../../client/counter.tsx";
-import { type Dispatch, renderPage } from "../lib/layout.tsx";
+import type { routes } from "../routes.ts";
+import { renderPage } from "../utils/render.tsx";
 
-export const createHydrationRoute =
-  (dispatch: Dispatch): RequestHandler => (ctx) => {
+export const hydrationAction = {
+  handler(context) {
     // `setup` is sent to the component's setup function once per instance.
     // Props (e.g. `label`) are passed to the render function on every update.
     const initialCount = Math.floor(Math.random() * 10);
     const label = `server-rendered at ${new Date().toISOString()}`;
 
     return renderPage(
-      ctx.request,
+      context,
       <main>
         <h1>コンポーネントハイドレーションのサンプル</h1>
         <p>
@@ -75,6 +76,6 @@ export const createHydrationRoute =
           </ol>
         </div>
       </main>,
-      dispatch,
     );
-  };
+  },
+} satisfies BuildAction<"GET", typeof routes.hydration>;

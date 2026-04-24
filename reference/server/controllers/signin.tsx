@@ -6,15 +6,16 @@
  * the `<meta name="idp-origin">` tag and drives the IdP probe/redirect flow.
  */
 
-import type { RequestHandler } from "@remix-run/fetch-router";
-import { type Dispatch, renderPage } from "../lib/layout.tsx";
+import type { BuildAction } from "@remix-run/fetch-router";
+import type { routes } from "../routes.ts";
+import { renderPage } from "../utils/render.tsx";
 
 const idpOrigin = "https://id.kbn.one";
 
-export const createSigninRoute =
-  (dispatch: Dispatch): RequestHandler => (ctx) =>
-    renderPage(
-      ctx.request,
+export const signinAction = {
+  handler(context) {
+    return renderPage(
+      context,
       <main>
         <meta name="idp-origin" content={idpOrigin} />
         <h1>id.kbn.one でサインイン</h1>
@@ -64,5 +65,6 @@ export const createSigninRoute =
 
         <script type="module" src="/signin.js"></script>
       </main>,
-      dispatch,
     );
+  },
+} satisfies BuildAction<"GET", typeof routes.signin>;

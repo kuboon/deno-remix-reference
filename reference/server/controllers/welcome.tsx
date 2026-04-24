@@ -1,17 +1,18 @@
 /**
  * GET /welcome — landing fragment shown in the shell's content frame.
  *
- * On a direct browser load, the shell is rendered and this same route
- * is re-entered through the frame resolver to provide the fragment.
+ * On a direct browser load, the shell is rendered and this same route is
+ * re-entered through the frame resolver to provide the fragment.
  */
 
-import type { RequestHandler } from "@remix-run/fetch-router";
-import { type Dispatch, renderPage } from "../lib/layout.tsx";
+import type { BuildAction } from "@remix-run/fetch-router";
+import type { routes } from "../routes.ts";
+import { renderPage } from "../utils/render.tsx";
 
-export const createWelcomeRoute =
-  (dispatch: Dispatch): RequestHandler => (ctx) =>
-    renderPage(
-      ctx.request,
+export const welcomeAction = {
+  handler(context) {
+    return renderPage(
+      context,
       <main>
         <h1>Remix v3 + DPoP Session Manager</h1>
         <p>Deno + Remix v3 (fetch-router) リファレンス実装。</p>
@@ -45,5 +46,6 @@ export const createWelcomeRoute =
           </ul>
         </div>
       </main>,
-      dispatch,
     );
+  },
+} satisfies BuildAction<"GET", typeof routes.welcome>;
