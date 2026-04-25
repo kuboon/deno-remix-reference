@@ -11,25 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
-        with:
-          deno-version: v2.x
-      - run: deno fmt --check
-      - run: deno check
+      - run: deno task check
       - run: deno task test
-
-  test-browser:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: denoland/setup-deno@v2
-        with:
-          deno-version: v2.x
-      - name: Install lightpanda
-        run: |
-          mkdir -p "$HOME/.local/bin"
-          curl -fsSL -o "$HOME/.local/bin/lightpanda" \
-            https://github.com/lightpanda-io/browser/releases/latest/download/lightpanda-x86_64-linux
-          chmod +x "$HOME/.local/bin/lightpanda"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-      - run: lightpanda version
       - run: deno task test:browser
