@@ -18,5 +18,12 @@
   "test": {
     "permissions": "default"
   },
-  "unstable": ["bundle"]
+  "nodeModulesDir": "auto",
+  "unstable": ["bundle"],
+  "imports": {
+    "@lightpanda/browser": "npm:@lightpanda/browser@^1.2.0"
+  },
+  "allowScripts": {
+    "allow": ["npm:@lightpanda/browser@1.2.0"]
+  }
 }

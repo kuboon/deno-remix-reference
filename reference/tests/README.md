@@ -11,19 +11,12 @@ task test:browser` で明示的に起動する。
   `deno task
   --cwd ../server bundle` を呼ぶので通常は気にしなくて良い）
 
-### lightpanda のインストール (Linux x86_64)
+### lightpanda のインストール
 
 ```bash
-mkdir -p ~/.local/bin
-curl -L -o ~/.local/bin/lightpanda \
-  https://github.com/lightpanda-io/browser/releases/latest/download/lightpanda-x86_64-linux
-chmod +x ~/.local/bin/lightpanda
-export PATH="$HOME/.local/bin:$PATH"
+curl -fsSL https://pkg.lightpanda.io/install.sh | bash
 lightpanda version
 ```
-
-macOS / Windows はサポート外。詳細は
-<https://lightpanda.io/docs/open-source/installation> を参照。
 
 ## 実行
 
