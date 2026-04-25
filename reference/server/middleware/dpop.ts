@@ -1,17 +1,23 @@
 /**
  * DPoP middleware — verifies RFC 9449 DPoP proofs on incoming requests and
- * exposes the session + thumbprint via context keys.
+ * exposes the session via `context.get(DpopSession)`.
  *
- * Thin wrapper over `@scope/dpop-middleware` so controllers can import a
- * pre-configured middleware + re-export the context keys from one place.
+ * Thin wrapper over `@scope/remix-dpop-session-middleware` so controllers can
+ * import a pre-configured middleware + re-export the context key from one
+ * place. Sessions are persisted in memory with a 1-hour TTL.
  */
 
-import { createDPoPMiddleware } from "@scope/dpop-middleware";
+import { MemoryKvRepo } from "@scope/kv/memory.ts";
+import { dpopSession } from "@scope/remix-dpop-session-middleware";
+import { createKvSessionStorage } from "@scope/session-storage-kv";
+import type { Session } from "@remix-run/session";
 
-export {
-  type DPoPSession,
-  DPoPSessionKey,
-  DPoPThumbprintKey,
-} from "@scope/dpop-middleware";
+export { DpopSession } from "@scope/remix-dpop-session-middleware";
 
-export const dpop = createDPoPMiddleware({ requireDPoP: true });
+const sessionStorage = createKvSessionStorage(
+  new MemoryKvRepo<Session["data"]>(["dpop-session"], {
+    expireIn: 3_600_000,
+  }),
+);
+
+export const dpop = dpopSession({ sessionStorage });

@@ -24,8 +24,12 @@ export const welcomeAction = {
               <code>packages/dpop/</code> — DPoP proof 生成・検証ライブラリ
             </li>
             <li>
-              <code>packages/dpop-middleware/</code>{" "}
-              — DPoP セッション middleware
+              <code>packages/remix-dpop-session-middleware/</code>{" "}
+              — DPoP セッション middleware (Remix v3 fetch-router)
+            </li>
+            <li>
+              <code>packages/session-storage-kv/</code>{" "}
+              — Remix v3 SessionStorage を KvRepo で実装
             </li>
             <li>
               <code>reference/</code> — この Web アプリ

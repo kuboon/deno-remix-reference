@@ -55,5 +55,7 @@ router.get("/protected", {
 
 ## 参考ファイル
 
-- `packages/dpop-middleware/mod.ts` — DPoP ミドルウェア実装例
-- `reference/server.ts` — ミドルウェアの使用例
+- `packages/remix-dpop-session-middleware/mod.ts` — DPoP
+  セッションミドルウェア実装例
+- `reference/server/middleware/dpop.ts` — ミドルウェアの設定例
+- `reference/server/router.ts` — ミドルウェアの使用例

@@ -9,8 +9,8 @@ Remix v3 (fetch-router) のルートを `reference/` アプリに追加する。
 
 ## ルート追加手順
 
-1. `reference/server.ts` に `router.get()` / `router.post()` / `router.map()`
-   でルートを登録
+1. `reference/server/router.ts` に `router.get()` / `router.post()` /
+   `router.map()` でルートを登録
 2. ハンドラは `(ctx: RequestContext) => Response | Promise<Response>` 形式
 3. HTML ページの場合は `layout()` と `html` テンプレートタグを使用
 4. JSON API の場合は `Response.json()` を返す
@@ -18,15 +18,16 @@ Remix v3 (fetch-router) のルートを `reference/` アプリに追加する。
 ## DPoP 保護ルートの追加
 
 ```ts
-import { DPoPSessionKey, DPoPThumbprintKey } from "@scope/dpop-middleware";
-import type { DPoPSession } from "@scope/dpop-middleware";
+import { dpop, DpopSession } from "../middleware/dpop.ts";
 
 router.get("/api/new-route", {
-  middleware: [dpopMiddleware],
+  middleware: [dpop],
   handler(ctx) {
-    const session = ctx.get(DPoPSessionKey) as DPoPSession;
-    const thumbprint = ctx.get(DPoPThumbprintKey) as string;
-    return Response.json({ thumbprint, data: session.data });
+    const session = ctx.get(DpopSession);
+    return Response.json({
+      thumbprint: session.thumbprint,
+      data: session.data,
+    });
   },
 });
 ```
@@ -47,5 +48,7 @@ router.get("/new-page", (_ctx) => {
 
 ## ファイル
 
-- `reference/server.ts` — 全ルート定義
-- `packages/dpop-middleware/mod.ts` — DPoP middleware エクスポート
+- `reference/server/router.ts` — 全ルート定義
+- `reference/server/middleware/dpop.ts` — DPoP middleware の設定
+- `packages/remix-dpop-session-middleware/mod.ts` — `dpopSession()` /
+  `DpopSession` のソース

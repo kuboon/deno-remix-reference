@@ -7,38 +7,33 @@
 
 import type { Controller } from "@remix-run/fetch-router";
 
-import {
-  dpop,
-  type DPoPSession,
-  DPoPSessionKey,
-  DPoPThumbprintKey,
-} from "../../middleware/dpop.ts";
+import { dpop, DpopSession } from "../../middleware/dpop.ts";
 import type { routes } from "../../routes.ts";
 
 export const apiController = {
   middleware: [dpop],
   actions: {
     protectedGet(context) {
-      const session = context.get(DPoPSessionKey) as DPoPSession;
-      const thumbprint = context.get(DPoPThumbprintKey) as string;
+      const session = context.get(DpopSession);
+      const [data] = session.data;
       return Response.json({
-        thumbprint,
-        sessionData: session.data,
+        thumbprint: session.thumbprint,
+        sessionData: data,
         message: "DPoP proof verified successfully",
       });
     },
 
     async protectedPost(context) {
-      const session = context.get(DPoPSessionKey) as DPoPSession;
-      const thumbprint = context.get(DPoPThumbprintKey) as string;
-
-      const body = await context.request.json();
-      session.data = { ...session.data, ...body };
-      await session.save();
+      const session = context.get(DpopSession);
+      const body = await context.request.json() as Record<string, unknown>;
+      for (const [k, v] of Object.entries(body)) {
+        session.set(k, v);
+      }
+      const [data] = session.data;
 
       return Response.json({
-        thumbprint,
-        sessionData: session.data,
+        thumbprint: session.thumbprint,
+        sessionData: data,
         message: "Session data updated",
       });
     },
