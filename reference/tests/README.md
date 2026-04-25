@@ -6,8 +6,7 @@ task test:browser` で明示的に起動する。
 
 ## 前提
 
-- `lightpanda` コマンドが PATH にあること
-- `reference/public/*.js` が bundle 済であること（`pretest` タスクが
+- `reference/bundled/*.js` が bundle 済であること（`pretest` タスクが
   `deno task
   --cwd ../server bundle` を呼ぶので通常は気にしなくて良い）
 

@@ -4,10 +4,10 @@
  *
  * Thin wrapper over `@scope/remix-dpop-session-middleware` so controllers can
  * import a pre-configured middleware + re-export the context key from one
- * place. Sessions are persisted in memory with a 1-hour TTL.
+ * place. Sessions are persisted in a Deno KV store with a 1-hour TTL.
  */
 
-import { MemoryKvRepo } from "@scope/kv/memory.ts";
+import { DenoKvRepo } from "@scope/kv/denoKv.ts";
 import { dpopSession } from "@scope/remix-dpop-session-middleware";
 import { createKvSessionStorage } from "@scope/session-storage-kv";
 import type { Session } from "@remix-run/session";
@@ -15,7 +15,7 @@ import type { Session } from "@remix-run/session";
 export { DpopSession } from "@scope/remix-dpop-session-middleware";
 
 const sessionStorage = createKvSessionStorage(
-  new MemoryKvRepo<Session["data"]>(["dpop-session"], {
+  new DenoKvRepo<Session["data"]>(["dpop-session"], {
     expireIn: 3_600_000,
   }),
 );

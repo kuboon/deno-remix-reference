@@ -24,7 +24,7 @@
   "permissions": {
     "default": {
       "env": ["IDP_ORIGIN"],
-      "read": ["../public"]
+      "read": ["../bundled"]
     }
   }
 }

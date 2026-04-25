@@ -18,7 +18,7 @@ import { routes } from "./routes.ts";
 
 const router = createRouter({
   middleware: [
-    staticFiles(new URL("../public", import.meta.url).pathname),
+    staticFiles(new URL("../bundled", import.meta.url).pathname),
   ],
 });
 

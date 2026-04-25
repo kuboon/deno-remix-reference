@@ -1,7 +1,7 @@
 /**
  * Client runtime boot for the shell + frame navigation.
  *
- * Bundled into `public/mod.js` (via ./mod.ts) and loaded by every shell
+ * Bundled into `bundled/mod.js` (via ./mod.ts) and loaded by every shell
  * response as `<script type="module" src="/mod.js">`.
  *
  * `run()` walks the document, finds every `clientEntry` marker emitted by

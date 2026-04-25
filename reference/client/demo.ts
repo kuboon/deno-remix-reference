@@ -6,7 +6,7 @@
  * - Compute the JWK SHA-256 thumbprint
  * - Expose `fetchDpop` that attaches a DPoP proof to every request
  *
- * Built with `deno bundle --platform browser` into reference/public/demo.js
+ * Built with `deno bundle --platform browser` into reference/bundled/demo.js
  * and loaded by the /demo page as `<script type="module" src="/demo.js">`.
  */
 

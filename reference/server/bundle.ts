@@ -9,7 +9,7 @@ function bundle({
 }) {
   return Deno.bundle({
     entrypoints,
-    outputDir: "../public",
+    outputDir: "../bundled",
     platform: "browser",
     sourcemap: "linked",
     minify,
