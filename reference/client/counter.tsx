@@ -36,20 +36,11 @@ export const Counter = clientEntry(
 
     // Render phase — runs on first render and every `handle.update()`.
     return (props: CounterProps) => (
-      <div
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "0.75rem",
-          padding: "0.5rem 1rem",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          fontSize: "1.25rem",
-        }}
-      >
+      <div class="inline-flex items-center gap-3 rounded-box border border-base-300 px-4 py-2">
         <button
           type="button"
           aria-label="decrement"
+          class="btn btn-sm btn-circle btn-outline"
           mix={[
             on("click", () => {
               count--;
@@ -59,19 +50,13 @@ export const Counter = clientEntry(
         >
           −
         </button>
-        <output
-          style={{
-            minWidth: "3ch",
-            textAlign: "center",
-            fontVariantNumeric: "tabular-nums",
-            fontWeight: 600,
-          }}
-        >
+        <output class="min-w-[3ch] text-center font-semibold text-xl tabular-nums">
           {count}
         </output>
         <button
           type="button"
           aria-label="increment"
+          class="btn btn-sm btn-circle btn-primary"
           mix={[
             on("click", () => {
               count++;
@@ -81,7 +66,7 @@ export const Counter = clientEntry(
         >
           +
         </button>
-        <span style={{ color: "#666", fontSize: "0.9rem" }}>
+        <span class="text-sm text-base-content/60">
           {props.label}
         </span>
       </div>

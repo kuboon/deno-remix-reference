@@ -13,6 +13,46 @@ type DocumentProps = {
   initialSrc: string;
 };
 
+const THEMES = [
+  { value: "", label: "Auto" },
+  { value: "light", label: "Light" },
+  { value: "dark", label: "Dark" },
+  { value: "cupcake", label: "Cupcake" },
+  { value: "synthwave", label: "Synthwave" },
+  { value: "retro", label: "Retro" },
+  { value: "dracula", label: "Dracula" },
+  { value: "business", label: "Business" },
+  { value: "nord", label: "Nord" },
+  { value: "lofi", label: "Lo-Fi" },
+] as const;
+
+// Runs synchronously before paint to avoid FOUC, and delegates clicks on
+// the theme dropdown to update both `<html data-theme>` and localStorage.
+const THEME_SCRIPT = `
+(function () {
+  var root = document.documentElement;
+  try {
+    var saved = localStorage.getItem('theme');
+    if (saved) root.setAttribute('data-theme', saved);
+  } catch (e) {}
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('[data-theme-set]');
+    if (!btn) return;
+    var v = btn.getAttribute('data-theme-set');
+    if (v) {
+      root.setAttribute('data-theme', v);
+      try { localStorage.setItem('theme', v); } catch (e) {}
+    } else {
+      root.removeAttribute('data-theme');
+      try { localStorage.removeItem('theme'); } catch (e) {}
+    }
+    if (document.activeElement && document.activeElement.blur) {
+      document.activeElement.blur();
+    }
+  });
+})();
+`;
+
 export function Document() {
   return ({ initialSrc }: DocumentProps) => (
     <html lang="ja">
@@ -21,34 +61,72 @@ export function Document() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>DPoP Reference</title>
         <link rel="icon" href="data:image/png;base64,iVBORw0KGgo=" />
+        <script innerHTML={THEME_SCRIPT}></script>
         <script async type="module" src="/mod.js"></script>
         <link rel="stylesheet" href="/style.css" />
-        <style>
-          {`
-          main { padding: 2rem; max-width: 800px; width: 100%; margin: 0 auto; }
-          h1 { margin-bottom: 1rem; }
-          h2 { margin-top: 2rem; margin-bottom: 0.5rem; }
-          p { margin-bottom: 0.75rem; }
-          code { font-family: 'Fira Code', monospace; padding: 0.1rem 0.3rem; border-radius: 3px; }
-          button { padding: 0.5rem 1rem; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-size: 1rem; }
-          button:hover { background: #e8e8e8; }
-          .card { border: 1px solid #ddd; border-radius: 8px; padding: 1.5rem; margin: 1rem 0; }
-          `}
-        </style>
       </head>
-      <body>
-        <header>
-          <nav>
-            <a href={routes.welcome.href()} rmx-target="content">Home</a>
-            <a href={routes.signin.href()} rmx-target="content">Sign In</a>
-            <a href={routes.hydration.href()} rmx-target="content">Hydration</a>
+      <body class="min-h-screen bg-base-100 text-base-content">
+        <header class="navbar bg-base-200 shadow-sm">
+          <div class="navbar-start">
+            <a
+              class="btn btn-ghost text-xl"
+              href={routes.home.href()}
+              rmx-target="content"
+            >
+              DPoP Reference
+            </a>
+          </div>
+          <nav class="navbar-end gap-2">
+            <ul class="menu menu-horizontal px-1">
+              <li>
+                <a href={routes.welcome.href()} rmx-target="content">Home</a>
+              </li>
+              <li>
+                <a href={routes.signin.href()} rmx-target="content">Sign In</a>
+              </li>
+              <li>
+                <a href={routes.hydration.href()} rmx-target="content">
+                  Hydration
+                </a>
+              </li>
+            </ul>
+            <div class="dropdown dropdown-end">
+              <div
+                tabindex={0}
+                role="button"
+                class="btn btn-ghost btn-sm"
+                aria-label="Theme"
+              >
+                Theme
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path d="M5 7l5 5 5-5H5z" />
+                </svg>
+              </div>
+              <ul
+                tabindex={0}
+                class="dropdown-content menu bg-base-100 rounded-box z-10 w-44 p-2 shadow"
+              >
+                {THEMES.map(({ value, label }) => (
+                  <li>
+                    <button type="button" data-theme-set={value}>
+                      {label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </nav>
         </header>
         <Frame
           name="content"
           src={initialSrc}
           fallback={
-            <main>
+            <main class="mx-auto w-full max-w-3xl p-8">
               <p>Loading…</p>
             </main>
           }
