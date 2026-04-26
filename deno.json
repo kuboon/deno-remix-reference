@@ -3,6 +3,8 @@
     "./packages/kv",
     "./packages/session-storage-kv",
     "./packages/remix-dpop-session-middleware",
+    "./reference",
+    "./reference/bundler",
     "./reference/server",
     "./reference/client",
     "./reference/tests"
@@ -20,7 +22,7 @@
     "permissions": "default"
   },
   "nodeModulesDir": "auto",
-  "unstable": ["bundle"],
+  "unstable": ["bundle", "kv"],
   "imports": {
     "@lightpanda/browser": "npm:@lightpanda/browser@^1.2.0"
   },

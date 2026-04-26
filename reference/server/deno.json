@@ -1,7 +1,7 @@
 {
   "tasks": {
     "check": "deno check; deno lint; deno test -P; deno fmt --check",
-    "bundle": "deno run -A ./bundle.ts",
+    "bundle": "deno task --cwd ../bundler build",
     "dev": "deno task bundle && deno serve -P --watch ./router.ts",
     "serve": "deno serve -P ./router.ts"
   },
