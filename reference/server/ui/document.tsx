@@ -14,7 +14,6 @@ type DocumentProps = {
 };
 
 const THEMES = [
-  { value: "", label: "Auto" },
   { value: "light", label: "Light" },
   { value: "dark", label: "Dark" },
   { value: "cupcake", label: "Cupcake" },
@@ -26,33 +25,6 @@ const THEMES = [
   { value: "lofi", label: "Lo-Fi" },
 ] as const;
 
-// Runs synchronously before paint to avoid FOUC, and delegates clicks on
-// the theme dropdown to update both `<html data-theme>` and localStorage.
-const THEME_SCRIPT = `
-(function () {
-  var root = document.documentElement;
-  try {
-    var saved = localStorage.getItem('theme');
-    if (saved) root.setAttribute('data-theme', saved);
-  } catch (e) {}
-  document.addEventListener('click', function (e) {
-    var btn = e.target.closest && e.target.closest('[data-theme-set]');
-    if (!btn) return;
-    var v = btn.getAttribute('data-theme-set');
-    if (v) {
-      root.setAttribute('data-theme', v);
-      try { localStorage.setItem('theme', v); } catch (e) {}
-    } else {
-      root.removeAttribute('data-theme');
-      try { localStorage.removeItem('theme'); } catch (e) {}
-    }
-    if (document.activeElement && document.activeElement.blur) {
-      document.activeElement.blur();
-    }
-  });
-})();
-`;
-
 export function Document() {
   return ({ initialSrc }: DocumentProps) => (
     <html lang="ja">
@@ -61,7 +33,6 @@ export function Document() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>DPoP Reference</title>
         <link rel="icon" href="data:image/png;base64,iVBORw0KGgo=" />
-        <script innerHTML={THEME_SCRIPT}></script>
         <script async type="module" src="/mod.js"></script>
         <link rel="stylesheet" href="/style.css" />
       </head>
@@ -103,19 +74,24 @@ export function Document() {
                   height="12"
                   viewBox="0 0 20 20"
                   fill="currentColor"
+                  class="inline-block opacity-60"
                 >
                   <path d="M5 7l5 5 5-5H5z" />
                 </svg>
               </div>
               <ul
-                tabindex={0}
-                class="dropdown-content menu bg-base-100 rounded-box z-10 w-44 p-2 shadow"
+                tabindex={-1}
+                class="dropdown-content bg-base-300 rounded-box z-10 w-52 p-2 shadow-2xl"
               >
                 {THEMES.map(({ value, label }) => (
                   <li>
-                    <button type="button" data-theme-set={value}>
-                      {label}
-                    </button>
+                    <input
+                      type="radio"
+                      name="theme-dropdown"
+                      class="theme-controller w-full btn btn-sm btn-block btn-ghost justify-start"
+                      aria-label={label}
+                      value={value}
+                    />
                   </li>
                 ))}
               </ul>
