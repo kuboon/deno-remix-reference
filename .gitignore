@@ -1,3 +1,10 @@
 node_modules/
 reference/bundled/
 reference/.bin/
+
+
+# APM dependencies
+apm.lock.yaml
+apm_modules/
+.claude/skills
+.github/skills
