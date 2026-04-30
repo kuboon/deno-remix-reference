@@ -7,7 +7,7 @@
  * place. Sessions are persisted in a Deno KV store with a 1-hour TTL.
  */
 
-import { DenoKvRepo } from "@scope/kv/denoKv.ts";
+import { DenoKvRepo } from "@kuboon/kv/denoKv.ts";
 import { dpopSession } from "@scope/remix-dpop-session-middleware";
 import { createKvSessionStorage } from "@scope/session-storage-kv";
 import type { Session } from "@remix-run/session";

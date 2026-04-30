@@ -1,5 +1,5 @@
 import { assert, assertEquals, assertNotEquals } from "@std/assert";
-import { MemoryKvRepo } from "@scope/kv/memory.ts";
+import { MemoryKvRepo } from "@kuboon/kv/memory.ts";
 import type { Session } from "@remix-run/session";
 
 import { createKvSessionStorage } from "./mod.ts";

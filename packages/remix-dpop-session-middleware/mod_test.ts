@@ -7,7 +7,7 @@ import {
 import { createRouter } from "@remix-run/fetch-router";
 import { createSession, Session } from "@remix-run/session";
 import { init, InMemoryKeyRepository } from "@kuboon/dpop";
-import { MemoryKvRepo } from "@scope/kv/memory.ts";
+import { MemoryKvRepo } from "@kuboon/kv/memory.ts";
 import { createKvSessionStorage } from "@scope/session-storage-kv";
 
 import { DpopSession, dpopSession } from "./mod.ts";

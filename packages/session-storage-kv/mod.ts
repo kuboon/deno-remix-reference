@@ -11,7 +11,7 @@ import {
   type Session,
   type SessionStorage,
 } from "@remix-run/session";
-import type { KvRepo } from "@scope/kv/types.ts";
+import type { KvRepo } from "@kuboon/kv";
 
 type SessionDataTuple = Session["data"];
 
