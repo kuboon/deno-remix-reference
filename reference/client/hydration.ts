@@ -11,7 +11,7 @@
  * full page navigation.
  */
 
-import { run } from "@remix-run/component";
+import { run } from "@remix-run/ui";
 import { Counter } from "./counter.tsx";
 
 const FRAME_HEADER = "rmx-frame";

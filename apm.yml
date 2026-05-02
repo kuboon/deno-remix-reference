@@ -4,7 +4,7 @@ description: APM project for deno-remix-reference
 author: Ohkubo KOHEI
 dependencies:
   apm:
-  - remix-run/remix/skills/remix-ui
+    - remix-run/remix/skills/remix-ui
   mcp: []
 includes: auto
 scripts: {}

@@ -1,5 +1,5 @@
 /**
- * GET /hydration — component hydration demo using `@remix-run/component`.
+ * GET /hydration — component hydration demo using `@remix-run/ui`.
  *
  * `<Counter />` is a `clientEntry` (see reference/client/counter.tsx); the
  * server emits its initial HTML + a hydration marker, and the client's
@@ -17,8 +17,8 @@ import { renderPage } from "../utils/render.tsx";
 
 export const hydrationAction = {
   handler(context) {
-    // `setup` is sent to the component's setup function once per instance.
-    // Props (e.g. `label`) are passed to the render function on every update.
+    // `initialCount` seeds the component state once during setup.
+    // Other props (e.g. `label`) flow through `handle.props` on every render.
     const initialCount = Math.floor(Math.random() * 10);
     const label = `server-rendered at ${new Date().toISOString()}`;
 
@@ -29,7 +29,7 @@ export const hydrationAction = {
           コンポーネントハイドレーションのサンプル
         </h1>
         <p>
-          <code>@remix-run/component</code> の <code>clientEntry</code>{" "}
+          <code>@remix-run/ui</code> の <code>clientEntry</code>{" "}
           を使った SSR + hydrate。 同じコンポーネント定義 (<code>
             reference/client/counter.tsx
           </code>) を、 サーバーでは直接 JSX ツリーに埋め込んで{" "}
@@ -45,7 +45,7 @@ export const hydrationAction = {
               初期カウントはサーバーが決定。ボタンはクライアントのハイドレート後に動きます。
             </p>
             <div class="my-2">
-              <Counter setup={initialCount} label={label} />
+              <Counter initialCount={initialCount} label={label} />
             </div>
             <p class="text-sm text-base-content/60">
               JavaScript 無効でもカウンターの初期値は表示されます (progressive

@@ -1,5 +1,5 @@
 /**
- * Counter — a @remix-run/component `clientEntry`.
+ * Counter — a @remix-run/ui `clientEntry`.
  *
  * This file is the single source of truth for the Counter component:
  * - The server imports it directly and uses it inside its JSX tree; the
@@ -18,24 +18,26 @@ import {
   type Handle,
   on,
   type SerializableValue,
-} from "@remix-run/component";
+} from "@remix-run/ui";
 
 // Render props must satisfy `SerializableProps`, which is an index signature.
 // Declaring the index signature here keeps `label` strongly typed while
 // satisfying the constraint.
 export interface CounterProps {
+  initialCount: number;
   label: string;
   [key: string]: SerializableValue;
 }
 
 export const Counter = clientEntry(
   "/counter.js#Counter",
-  function Counter(handle: Handle, setup: number) {
-    // Setup phase — runs once per instance (server + client).
-    let count = setup;
+  function Counter(handle: Handle<CounterProps>) {
+    // Setup phase — runs once per instance (server + client). Read the
+    // initial value from props; subsequent prop changes do not reset count.
+    let count = handle.props.initialCount;
 
     // Render phase — runs on first render and every `handle.update()`.
-    return (props: CounterProps) => (
+    return () => (
       <div class="inline-flex items-center gap-3 rounded-box border border-base-300 px-4 py-2">
         <button
           type="button"
@@ -67,7 +69,7 @@ export const Counter = clientEntry(
           +
         </button>
         <span class="text-sm text-base-content/60">
-          {props.label}
+          {handle.props.label}
         </span>
       </div>
     );
