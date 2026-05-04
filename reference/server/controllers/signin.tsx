@@ -2,11 +2,15 @@
  * GET /signin — sign-in via id.kbn.one (IdP).
  *
  * Rendered as a shell+frame on direct access and as a fragment when loaded
- * via the shell's content frame. The inline `/signin.js` script picks up
- * the `<meta name="idp-origin">` tag and drives the IdP probe/redirect flow.
+ * via the shell's content frame. The status card is a `clientEntry`
+ * (`SignInCard` in reference/client/signin_card.tsx); the server emits its
+ * initial HTML + a hydration marker, and the shell's `run()` hydrates it
+ * after navigation — this works for both direct loads and frame swaps,
+ * unlike a `<script type="module">` tag that wouldn't execute on swap.
  */
 
 import type { BuildAction } from "@remix-run/fetch-router";
+import { SignInCard } from "../../client/signin_card.tsx";
 import type { routes } from "../routes.ts";
 import { renderPage } from "../utils/render.tsx";
 
@@ -25,31 +29,7 @@ export const signinAction = {
           してもらうことで Cookie レスにセッションを共有します。
         </p>
 
-        <div class="card card-border bg-base-100">
-          <div class="card-body">
-            <h2 class="card-title">状態</h2>
-            <div role="alert" class="alert alert-info alert-soft">
-              <span id="status"></span>
-            </div>
-            <p id="user-info" class="mt-2">…</p>
-            <p>
-              このブラウザの DPoP thumbprint: <code id="thumbprint">…</code>
-            </p>
-            <div class="card-actions mt-2">
-              <button type="button" id="signin" class="btn btn-primary" hidden>
-                id.kbn.one でサインイン
-              </button>
-              <button
-                type="button"
-                id="signout"
-                class="btn btn-outline"
-                hidden
-              >
-                サインアウト
-              </button>
-            </div>
-          </div>
-        </div>
+        <SignInCard idpOrigin={idpOrigin} />
 
         <div class="card card-border bg-base-100">
           <div class="card-body">
@@ -74,8 +54,6 @@ export const signinAction = {
             </ol>
           </div>
         </div>
-
-        <script type="module" src="/signin.js"></script>
       </main>,
     );
   },

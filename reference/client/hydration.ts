@@ -12,15 +12,11 @@
  */
 
 import { run } from "@remix-run/ui";
-import { Counter } from "./counter.tsx";
 
 const FRAME_HEADER = "rmx-frame";
 
 const app = run({
   async loadModule(moduleUrl: string, exportName: string) {
-    if (moduleUrl === "/counter.js" && exportName === "Counter") {
-      return Counter;
-    }
     const mod = await import(moduleUrl);
     return mod[exportName];
   },
