@@ -21,10 +21,19 @@ export interface DpopSession {
 }
 
 export async function loadDpopSession(idpOrigin: string): Promise<DpopSession> {
+  // `thumbprint` comes from the DPoP key itself and must survive a failing
+  // `/session` probe — when signed out the cross-origin request can 401 or
+  // reject, and callers still need the thumbprint to start the sign-in flow.
   const { fetchDpop, thumbprint } = await init();
-  const response = await fetchDpop(`${idpOrigin}/session`);
-  const session = response.ok
-    ? (await response.json()) as { userId: string | null }
-    : null;
-  return { fetchDpop, thumbprint, userId: session?.userId ?? null };
+  let userId: string | null = null;
+  try {
+    const response = await fetchDpop(`${idpOrigin}/session`);
+    if (response.ok) {
+      const session = (await response.json()) as { userId: string | null };
+      userId = session.userId ?? null;
+    }
+  } catch {
+    userId = null;
+  }
+  return { fetchDpop, thumbprint, userId };
 }
