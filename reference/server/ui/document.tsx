@@ -41,10 +41,10 @@ export function Document(handle: Handle<DocumentProps>) {
           <div class="navbar-start">
             <a
               class="btn btn-ghost text-xl"
-              href={routes.home.href()}
+              href={routes.welcome.href()}
               rmx-target="content"
             >
-              DPoP Reference
+              Remix3 on Deno
             </a>
           </div>
           <nav class="navbar-end gap-2">
