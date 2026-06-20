@@ -13,11 +13,11 @@ Remix v3 + Deno のリファレンス実装。DPoP (RFC 9449)
   `@remix-run/session` の `Session` と共存可能。DPoP proof 生成・検証は
   [jsr:@kuboon/dpop](https://jsr.io/@kuboon/dpop) を利用。
 - `reference/` — Remix v3 リファレンス Web アプリ
-  - `/signin` — id.kbn.one を IdP として使うサインインフローのサンプル
+  - `/my` — id.kbn.one を IdP として使うサインインフローのサンプル
 
 ## 環境変数
 
-- `IDP_ORIGIN` — 外部 IdP の origin (例: `http://localhost:8000`)。 `/signin`
+- `IDP_ORIGIN` — 外部 IdP の origin (例: `http://localhost:8000`)。 `/my`
   ページが `${IDP_ORIGIN}/authorize` へ DPoP thumbprint と redirect_uri
   を付けて遷移し、戻った後 `${IDP_ORIGIN}/session` で userId を取得する。
 

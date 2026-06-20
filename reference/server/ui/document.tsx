@@ -47,52 +47,23 @@ export function Document(handle: Handle<DocumentProps>) {
               Remix3 on Deno
             </a>
           </div>
-          <nav class="navbar-end gap-2">
+          <div class="navbar-center">
             <ul class="menu menu-horizontal px-1">
-              <li>
-                <a href={routes.signin.href()} rmx-target="content">Sign In</a>
-              </li>
               <li>
                 <a href={routes.hydration.href()} rmx-target="content">
                   Hydration
                 </a>
               </li>
             </ul>
-            <div class="dropdown dropdown-end">
-              <div
-                tabindex={0}
-                role="button"
-                class="btn btn-ghost btn-sm"
-                aria-label="Theme"
-              >
-                Theme
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  class="inline-block opacity-60"
-                >
-                  <path d="M5 7l5 5 5-5H5z" />
-                </svg>
-              </div>
-              <ul
-                tabindex={-1}
-                class="dropdown-content bg-base-300 rounded-box z-10 w-52 p-2 shadow-2xl"
-              >
-                {THEMES.map(({ value, label }) => (
-                  <li>
-                    <input
-                      type="radio"
-                      name="theme-dropdown"
-                      class="theme-controller w-full btn btn-sm btn-block btn-ghost justify-start"
-                      aria-label={label}
-                      value={value}
-                    />
-                  </li>
-                ))}
-              </ul>
-            </div>
+          </div>
+          <nav class="navbar-end">
+            <a
+              class="btn btn-ghost btn-sm"
+              href={routes.my.href()}
+              rmx-target="content"
+            >
+              Sign In
+            </a>
           </nav>
         </header>
         <Frame
@@ -104,6 +75,43 @@ export function Document(handle: Handle<DocumentProps>) {
             </main>
           }
         />
+        <footer class="footer footer-center bg-base-200 text-base-content gap-2 p-4">
+          <div class="dropdown dropdown-top">
+            <div
+              tabindex={0}
+              role="button"
+              class="btn btn-ghost btn-sm"
+              aria-label="Theme"
+            >
+              Theme
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                class="inline-block opacity-60"
+              >
+                <path d="M5 7l5 5 5-5H5z" />
+              </svg>
+            </div>
+            <ul
+              tabindex={-1}
+              class="dropdown-content bg-base-300 rounded-box z-10 w-52 p-2 shadow-2xl"
+            >
+              {THEMES.map(({ value, label }) => (
+                <li>
+                  <input
+                    type="radio"
+                    name="theme-dropdown"
+                    class="theme-controller w-full btn btn-sm btn-block btn-ghost justify-start"
+                    aria-label={label}
+                    value={value}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </footer>
       </body>
     </html>
   );

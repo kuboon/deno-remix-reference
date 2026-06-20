@@ -1,5 +1,5 @@
 /**
- * GET /signin — sign-in via id.kbn.one (IdP).
+ * GET /my — sign-in / my page via id.kbn.one (IdP).
  *
  * Rendered as a shell+frame on direct access and as a fragment when loaded
  * via the shell's content frame. The status card is a `clientEntry`
@@ -16,7 +16,7 @@ import { renderPage } from "../utils/render.tsx";
 
 const idpOrigin = "https://id.kbn.one";
 
-export const signinAction = {
+export const myAction = {
   handler(context) {
     return renderPage(
       context,
@@ -57,4 +57,4 @@ export const signinAction = {
       </main>,
     );
   },
-} satisfies BuildAction<"GET", typeof routes.signin>;
+} satisfies BuildAction<"GET", typeof routes.my>;

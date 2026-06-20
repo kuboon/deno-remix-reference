@@ -12,7 +12,7 @@ import { staticFiles } from "@remix-run/static-middleware";
 import { apiController } from "./controllers/api/controller.ts";
 import { homeAction } from "./controllers/home.tsx";
 import { hydrationAction } from "./controllers/hydration.tsx";
-import { signinAction } from "./controllers/signin.tsx";
+import { myAction } from "./controllers/my.tsx";
 import { routes } from "./routes.ts";
 
 const router = createRouter({
@@ -23,7 +23,7 @@ const router = createRouter({
 
 router.get(routes.home, homeAction);
 router.get(routes.hydration, hydrationAction);
-router.get(routes.signin, signinAction);
+router.get(routes.my, myAction);
 router.map(routes.api, apiController);
 
 export default router;
