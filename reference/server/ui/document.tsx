@@ -7,6 +7,7 @@
  */
 
 import { Frame, type Handle } from "@remix-run/ui";
+import { NavAuth } from "../../client/nav_auth.tsx";
 import { routes } from "../routes.ts";
 
 type DocumentProps = {
@@ -57,13 +58,7 @@ export function Document(handle: Handle<DocumentProps>) {
             </ul>
           </div>
           <nav class="navbar-end">
-            <a
-              class="btn btn-ghost btn-sm"
-              href={routes.my.href()}
-              rmx-target="content"
-            >
-              Sign In
-            </a>
+            <NavAuth myHref={routes.my.href()} />
           </nav>
         </header>
         <Frame
