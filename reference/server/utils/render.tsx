@@ -15,7 +15,6 @@ import { renderToStream } from "@remix-run/ui/server";
 import type { RequestContext, Router } from "@remix-run/fetch-router";
 import { createHtmlResponse } from "@remix-run/response/html";
 
-import { routes } from "../routes.ts";
 import { Document } from "../ui/document.tsx";
 
 export const FRAME_HEADER = "rmx-frame";
@@ -44,9 +43,7 @@ export function renderPage(
 export function renderShell(context: RequestContext): Response {
   const { request, router } = context;
   const url = new URL(request.url);
-  const initialSrc = url.pathname === "/"
-    ? routes.welcome.href()
-    : url.pathname + url.search;
+  const initialSrc = url.pathname + url.search;
 
   const stream = renderToStream(<Document initialSrc={initialSrc} />, {
     frameSrc: request.url,

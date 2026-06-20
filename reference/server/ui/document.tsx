@@ -31,7 +31,7 @@ export function Document(handle: Handle<DocumentProps>) {
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>DPoP Reference</title>
+        <title>Remix3 on Deno</title>
         <link rel="icon" href="data:image/png;base64,iVBORw0KGgo=" />
         <script async type="module" src="/mod.js"></script>
         <link rel="stylesheet" href="/style.css" />
@@ -44,14 +44,11 @@ export function Document(handle: Handle<DocumentProps>) {
               href={routes.home.href()}
               rmx-target="content"
             >
-              DPoP Reference
+              Remix3 on Deno
             </a>
           </div>
           <nav class="navbar-end gap-2">
             <ul class="menu menu-horizontal px-1">
-              <li>
-                <a href={routes.welcome.href()} rmx-target="content">Home</a>
-              </li>
               <li>
                 <a href={routes.signin.href()} rmx-target="content">Sign In</a>
               </li>

@@ -13,7 +13,6 @@ import { apiController } from "./controllers/api/controller.ts";
 import { homeAction } from "./controllers/home.tsx";
 import { hydrationAction } from "./controllers/hydration.tsx";
 import { signinAction } from "./controllers/signin.tsx";
-import { welcomeAction } from "./controllers/welcome.tsx";
 import { routes } from "./routes.ts";
 
 const router = createRouter({
@@ -23,7 +22,6 @@ const router = createRouter({
 });
 
 router.get(routes.home, homeAction);
-router.get(routes.welcome, welcomeAction);
 router.get(routes.hydration, hydrationAction);
 router.get(routes.signin, signinAction);
 router.map(routes.api, apiController);

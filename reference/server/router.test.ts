@@ -10,12 +10,11 @@ Deno.test("GET / returns shell HTML with frame-target nav", async () => {
   const html = await res.text();
   assertStringIncludes(html, "<!DOCTYPE html>");
   assertStringIncludes(html, 'rmx-target="content"');
-  assertStringIncludes(html, "/welcome");
 });
 
-Deno.test("GET /welcome with rmx-frame returns fragment", async () => {
+Deno.test("GET / with rmx-frame returns landing fragment", async () => {
   const res = await router.fetch(
-    new Request("http://x/welcome", { headers: FRAME_HEADERS }),
+    new Request("http://x/", { headers: FRAME_HEADERS }),
   );
   assertEquals(res.status, 200);
   const html = await res.text();
