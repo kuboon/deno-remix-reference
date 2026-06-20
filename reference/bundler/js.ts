@@ -11,6 +11,7 @@ const CLIENT_ENTRIES = [
   "demo.ts",
   "counter.tsx",
   "signin_card.tsx",
+  "nav_auth.tsx",
 ] as const;
 
 export async function buildJs(

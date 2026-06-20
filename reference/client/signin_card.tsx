@@ -1,8 +1,12 @@
 /**
- * SignInCard — a @remix-run/ui `clientEntry` for the /signin page.
+ * SignInCard — a @remix-run/ui `clientEntry` for the /my page.
+ *
+ * Shows the DPoP session status, thumbprint, and a sign-out button. Signing in
+ * is initiated from the navbar (NavAuth); when signed out this card just points
+ * the user there.
  *
  * Replaces the old `<script type="module" src="/signin.js">` approach, which
- * did not run when /signin was loaded via a Frame request (newly inserted
+ * did not run when /my was loaded via a Frame request (newly inserted
  * `<script>` nodes in a fragment swap don't execute). As a clientEntry, the
  * server emits a hydration marker that survives frame navigation, and the
  * shell's `run()` (./hydration.ts) picks it up and hydrates in place.
@@ -11,7 +15,6 @@
  * IndexedDB, IdP probing) is gated on `typeof document !== "undefined"`.
  */
 
-import { init } from "@kuboon/dpop";
 import {
   clientEntry,
   type Handle,
@@ -19,12 +22,12 @@ import {
   type SerializableValue,
 } from "@remix-run/ui";
 
+import { type FetchDpop, loadDpopSession } from "./session.ts";
+
 export interface SignInCardProps {
   idpOrigin: string;
   [key: string]: SerializableValue;
 }
-
-type FetchDpop = (input: string, init?: RequestInit) => Promise<Response>;
 
 export const SignInCard = clientEntry(
   "/signin_card.js#SignInCard",
@@ -49,15 +52,11 @@ export const SignInCard = clientEntry(
     if (typeof document !== "undefined") {
       (async () => {
         try {
-          const result = await init();
-          fetchDpop = result.fetchDpop;
-          thumbprint = result.thumbprint;
+          const session = await loadDpopSession(handle.props.idpOrigin);
+          fetchDpop = session.fetchDpop;
+          thumbprint = session.thumbprint;
 
-          const response = await fetchDpop(`${handle.props.idpOrigin}/session`);
-          const session = response.ok
-            ? (await response.json()) as { userId: string | null }
-            : null;
-          if (session?.userId) {
+          if (session.userId) {
             signedIn = true;
             userInfo = `サインイン中: ${session.userId}`;
             setStatus("セッションを取得しました。", "success");
@@ -77,15 +76,6 @@ export const SignInCard = clientEntry(
         }
       })();
     }
-
-    const onSigninClick = () => {
-      const params = new URLSearchParams({
-        dpop_jkt: thumbprint,
-        redirect_uri: globalThis.location.href,
-      });
-      globalThis.location.href =
-        `${handle.props.idpOrigin}/authorize?${params.toString()}`;
-    };
 
     const onSignoutClick = async () => {
       if (!fetchDpop) return;
@@ -124,18 +114,15 @@ export const SignInCard = clientEntry(
             <p>
               このブラウザの DPoP thumbprint: <code>{thumbprint}</code>
             </p>
+            {ready && !signedIn
+              ? (
+                <p class="text-sm text-base-content/70">
+                  サインインするには、ナビバー右上の「Sign
+                  In」ボタンを使用してください。
+                </p>
+              )
+              : null}
             <div class="card-actions mt-2">
-              {ready && !signedIn
-                ? (
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    mix={[on("click", onSigninClick)]}
-                  >
-                    id.kbn.one でサインイン
-                  </button>
-                )
-                : null}
               {ready && signedIn
                 ? (
                   <button

@@ -1,5 +1,5 @@
 /**
- * GET /signin — sign-in via id.kbn.one (IdP).
+ * GET /my — sign-in / my page via id.kbn.one (IdP).
  *
  * Rendered as a shell+frame on direct access and as a fragment when loaded
  * via the shell's content frame. The status card is a `clientEntry`
@@ -10,23 +10,25 @@
  */
 
 import type { BuildAction } from "@remix-run/fetch-router";
+import { IDP_ORIGIN } from "../../client/idp.ts";
 import { SignInCard } from "../../client/signin_card.tsx";
 import type { routes } from "../routes.ts";
 import { renderPage } from "../utils/render.tsx";
 
-const idpOrigin = "https://id.kbn.one";
+const idpOrigin = IDP_ORIGIN;
 
-export const signinAction = {
+export const myAction = {
   handler(context) {
     return renderPage(
       context,
       <main class="mx-auto w-full max-w-3xl p-8 space-y-6">
         <meta name="idp-origin" content={idpOrigin} />
-        <h1 class="text-3xl font-bold">id.kbn.one でサインイン</h1>
+        <h1 class="text-3xl font-bold">マイページ</h1>
         <p>
           このページは外部 IdP (id.kbn.one) を使ったサインイン UX
           のサンプルです。 DPoP 鍵を生成し、IdP に thumbprint を bind
           してもらうことで Cookie レスにセッションを共有します。
+          サインインはナビバー右上の「Sign In」から行います。
         </p>
 
         <SignInCard idpOrigin={idpOrigin} />
@@ -57,4 +59,4 @@ export const signinAction = {
       </main>,
     );
   },
-} satisfies BuildAction<"GET", typeof routes.signin>;
+} satisfies BuildAction<"GET", typeof routes.my>;

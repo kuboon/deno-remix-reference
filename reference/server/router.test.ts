@@ -34,9 +34,9 @@ Deno.test("GET /hydration fragment includes clientEntry marker", async () => {
   assertStringIncludes(html, 'aria-label="increment"');
 });
 
-Deno.test("GET /signin fragment embeds idp-origin meta", async () => {
+Deno.test("GET /my fragment embeds idp-origin meta", async () => {
   const res = await router.fetch(
-    new Request("http://x/signin", { headers: FRAME_HEADERS }),
+    new Request("http://x/my", { headers: FRAME_HEADERS }),
   );
   assertEquals(res.status, 200);
   const html = await res.text();
