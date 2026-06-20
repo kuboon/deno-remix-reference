@@ -41,7 +41,7 @@ export function Document(handle: Handle<DocumentProps>) {
           <div class="navbar-start">
             <a
               class="btn btn-ghost text-xl"
-              href={routes.welcome.href()}
+              href={routes.home.href()}
               rmx-target="content"
             >
               Remix3 on Deno
@@ -50,7 +50,7 @@ export function Document(handle: Handle<DocumentProps>) {
           <nav class="navbar-end gap-2">
             <ul class="menu menu-horizontal px-1">
               <li>
-                <a href={routes.welcome.href()} rmx-target="content">Home</a>
+                <a href={routes.home.href()} rmx-target="content">Home</a>
               </li>
               <li>
                 <a href={routes.signin.href()} rmx-target="content">Sign In</a>
