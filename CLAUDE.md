@@ -13,13 +13,42 @@ Remix v3 + Deno のリファレンス実装。DPoP (RFC 9449)
   `@remix-run/session` の `Session` と共存可能。DPoP proof 生成・検証は
   [jsr:@kuboon/dpop](https://jsr.io/@kuboon/dpop) を利用。
 - `reference/` — Remix v3 リファレンス Web アプリ
-  - `/my` — id.kbn.one を IdP として使うサインインフローのサンプル
+  - `/my` — id.kbn.one を IdP として使うサインインフロー +
+    プッシュ通知のサンプル
+
+## プッシュ通知 (id.kbn.one 連携)
+
+id.kbn.one を Web Push のバックエンドとして使う最小構成。購読情報は IdP
+が保持し、RP (このアプリ) は購読 UI と送信トリガーだけを持つ。
+
+- ブラウザ側 (`reference/client/lib/push/`, `push_card.tsx`, `sw.js`):
+  - `/sw.js` をこのオリジンに登録し push を受信。
+  - 購読の取得/登録/改名/削除/テストは DPoP-bound fetch で IdP の
+    `${IDP_ORIGIN}/push/*` を直接叩く (cross-origin)。VAPID 公開鍵も IdP
+    のもの。
+- サーバ側 (`reference/server/lib/push/client.ts`, `lib/signing-key.ts`):
+  - `POST /api/notify` がサーバ起点で通知を送る。RP は ES256 鍵で
+    `private_key_jwt` クライアントアサーション ([RFC 7521]/[RFC 7523]) を作り、
+    IdP の `POST /rp/notifications` へ送信する。
+  - `GET /.well-known/jwks.json` で RP の公開鍵を配布し、IdP
+    がアサーションを検証 する (共通鍵不要。IdP は RP の JWKS を取得するだけ)。
+  - RP の `clientId` はこのアプリの origin (`RP_ORIGIN`) で、IdP の
+    `AUTHORIZE_WHITELIST` に含まれている必要がある。
+
+[RFC 7521]: https://www.rfc-editor.org/rfc/rfc7521
+[RFC 7523]: https://www.rfc-editor.org/rfc/rfc7523
 
 ## 環境変数
 
 - `IDP_ORIGIN` — 外部 IdP の origin (例: `http://localhost:8000`)。 `/my`
   ページが `${IDP_ORIGIN}/authorize` へ DPoP thumbprint と redirect_uri
   を付けて遷移し、戻った後 `${IDP_ORIGIN}/session` で userId を取得する。
+- `RP_ORIGIN` — このアプリの公開 origin。`POST /api/notify` のクライアント
+  アサーションの `clientId`/`iss`/`sub` に使う。IdP の `AUTHORIZE_WHITELIST`
+  に登録が必要。未設定だと送信時にエラーになる。
+- `RP_SIGNING_KEY_JWK` — 任意。ES256 秘密鍵 (JWK JSON)。未設定ならプロセス毎に
+  生成
+  (開発用)。本番では固定鍵を設定し、再起動で鍵がローテートしないようにする。
 
 ## 開発
 
