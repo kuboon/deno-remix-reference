@@ -11,6 +11,7 @@
 
 import type { BuildAction } from "@remix-run/fetch-router";
 import { IDP_ORIGIN } from "../../client/idp.ts";
+import { PushCard } from "../../client/push_card.tsx";
 import { SignInCard } from "../../client/signin_card.tsx";
 import type { routes } from "../routes.ts";
 import { renderPage } from "../utils/render.tsx";
@@ -32,6 +33,8 @@ export const myAction = {
         </p>
 
         <SignInCard idpOrigin={idpOrigin} />
+
+        <PushCard idpOrigin={idpOrigin} />
 
         <div class="card card-border bg-base-100">
           <div class="card-body">

@@ -10,9 +10,11 @@ import { createRouter } from "@remix-run/fetch-router";
 import { staticFiles } from "@remix-run/static-middleware";
 
 import { apiController } from "./controllers/api/controller.ts";
+import { notifyAction } from "./controllers/api/notify.ts";
 import { homeAction } from "./controllers/home.tsx";
 import { hydrationAction } from "./controllers/hydration.tsx";
 import { myAction } from "./controllers/my.tsx";
+import { jwksAction } from "./controllers/well_known.ts";
 import { routes } from "./routes.ts";
 
 const router = createRouter({
@@ -24,6 +26,8 @@ const router = createRouter({
 router.get(routes.home, homeAction);
 router.get(routes.hydration, hydrationAction);
 router.get(routes.my, myAction);
+router.get(routes.jwks, jwksAction);
+router.post(routes.notify, notifyAction);
 router.map(routes.api, apiController);
 
 export default router;

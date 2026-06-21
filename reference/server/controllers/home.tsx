@@ -64,6 +64,16 @@ export const homeAction = {
                 <code>/api/protected</code>{" "}
                 — DPoP 保護。セッションにデータを書き込む
               </li>
+              <li>
+                <span class="badge badge-warning badge-sm mr-2">POST</span>
+                <code>/api/notify</code>{" "}
+                — id.kbn.one 経由でサーバ起点のプッシュ通知を送信
+              </li>
+              <li>
+                <span class="badge badge-success badge-sm mr-2">GET</span>
+                <code>/.well-known/jwks.json</code>{" "}
+                — RP の公開鍵 (IdP がアサーション検証に使用)
+              </li>
             </ul>
           </div>
         </div>
