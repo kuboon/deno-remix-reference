@@ -225,8 +225,16 @@ export const PushCard = clientEntry(
               </div>
             )}
 
+            {
+              /*
+              Must be wrapped in a single element, not a bare <>…</> fragment:
+              the client reconciler does not commit a fragment when it replaces
+              a previously-empty conditional slot (handle.update silently
+              no-ops), which would freeze the card on the "loading" render.
+            */
+            }
             {phase === "ready" && push && (
-              <>
+              <div class="space-y-3">
                 <ul class="mt-2 space-y-3">
                   {push.subscriptions.length === 0 && (
                     <li class="text-base-content/60 italic">
@@ -325,7 +333,7 @@ export const PushCard = clientEntry(
                     サーバーから送信
                   </button>
                 </div>
-              </>
+              </div>
             )}
           </div>
         </div>
