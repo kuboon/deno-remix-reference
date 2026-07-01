@@ -23,6 +23,10 @@
   },
   "nodeModulesDir": "auto",
   "unstable": ["bundle", "kv"],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "@remix-run/ui"
+  },
   "imports": {
     "@lightpanda/browser": "npm:@lightpanda/browser@^1.2.0"
   },

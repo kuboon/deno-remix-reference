@@ -24,6 +24,8 @@ export interface PushNotificationContent {
   url?: string;
   icon?: string;
   badge?: string;
+  /** App badge count (Badging API); the IdP forwards it to the device. */
+  badgeCount?: number;
   tag?: string;
   requireInteraction?: boolean;
   data?: unknown;
