@@ -41,6 +41,8 @@ const isClientEnv = typeof globalThis !== "undefined" &&
   typeof (globalThis as { document?: unknown }).document !== "undefined" &&
   typeof (globalThis as { window?: unknown }).window !== "undefined";
 
+const BADGE_INPUT_ID = "rmx-push-badge-input";
+
 const formatDate = (value: number): string => {
   try {
     const date = new Date(value);
@@ -127,6 +129,17 @@ export const PushCard = clientEntry(
       await pushManager.rename(id, next);
     };
 
+    // Read the optional demo badge count from the number input.
+    const readBadgeCount = (): number | undefined => {
+      const el = document.getElementById(
+        BADGE_INPUT_ID,
+      ) as HTMLInputElement | null;
+      const raw = el?.value.trim();
+      if (!raw) return undefined;
+      const n = Number(raw);
+      return Number.isInteger(n) && n >= 0 ? n : undefined;
+    };
+
     // Server-initiated path: ask *our* server to deliver a push to the
     // signed-in user's devices via the IdP's `POST /rp/notifications`.
     const onServerSend = async () => {
@@ -134,17 +147,19 @@ export const PushCard = clientEntry(
       sending = true;
       handle.update();
       try {
+        const badgeCount = readBadgeCount();
+        const notification: Record<string, unknown> = {
+          title: "サーバーからの通知",
+          body: badgeCount != null
+            ? `バッジ数 ${badgeCount} を送信しました。`
+            : "RP サーバーが id.kbn.one 経由で送信しました。",
+          url: globalThis.location.href,
+        };
+        if (badgeCount != null) notification.badgeCount = badgeCount;
         const r = await fetch("/api/notify", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userIds: [userId],
-            notification: {
-              title: "サーバーからの通知",
-              body: "RP サーバーが id.kbn.one 経由で送信しました。",
-              url: globalThis.location.href,
-            },
-          }),
+          body: JSON.stringify({ userIds: [userId], notification }),
         });
         const data = await r.json().catch(() => ({})) as {
           message?: string;
@@ -322,6 +337,16 @@ export const PushCard = clientEntry(
                       ? "このデバイスを更新"
                       : "このデバイスへの通知を登録"}
                   </button>
+                  <input
+                    id={BADGE_INPUT_ID}
+                    type="number"
+                    min="0"
+                    step="1"
+                    inputmode="numeric"
+                    placeholder="バッジ数"
+                    aria-label="バッジ数"
+                    class="input input-bordered input-sm w-24"
+                  />
                   <button
                     type="button"
                     disabled={sending || push.subscriptions.length === 0}
@@ -333,6 +358,10 @@ export const PushCard = clientEntry(
                     サーバーから送信
                   </button>
                 </div>
+                <p class="text-xs text-base-content/50">
+                  「バッジ数」に数字を入れて送信すると、その値がアプリの バッジ
+                  (Badging API) に反映されます。空欄なら通常の通知のみ。
+                </p>
               </div>
             )}
           </div>

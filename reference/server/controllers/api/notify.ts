@@ -34,6 +34,13 @@ const parseNotification = (
   if (typeof v.url === "string" && v.url.trim()) out.url = v.url;
   if (typeof v.icon === "string" && v.icon.trim()) out.icon = v.icon;
   if (typeof v.tag === "string" && v.tag.trim()) out.tag = v.tag;
+  // Demo: an arbitrary app-badge count. Accept any non-negative integer.
+  if (
+    typeof v.badgeCount === "number" && Number.isInteger(v.badgeCount) &&
+    v.badgeCount >= 0
+  ) {
+    out.badgeCount = v.badgeCount;
+  }
   return out;
 };
 

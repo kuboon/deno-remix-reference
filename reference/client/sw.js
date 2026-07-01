@@ -36,6 +36,22 @@ const parsePushData = (event) => {
   }
 };
 
+// Apply the app-badge count (Badging API) the IdP forwarded in the payload.
+// A count of 0 clears the badge; anything else sets it. No-op where the API
+// is unavailable (e.g. desktop Chrome without an installed PWA).
+const applyBadgeCount = async (badgeCount) => {
+  if (typeof badgeCount !== "number" || !Number.isFinite(badgeCount)) return;
+  try {
+    if (badgeCount > 0 && "setAppBadge" in navigator) {
+      await navigator.setAppBadge(Math.trunc(badgeCount));
+    } else if ("clearAppBadge" in navigator) {
+      await navigator.clearAppBadge();
+    }
+  } catch {
+    /* Badging API unavailable or rejected — ignore. */
+  }
+};
+
 self.addEventListener("push", (event) => {
   const data = parsePushData(event);
   const title = typeof data.title === "string" && data.title.trim()
@@ -53,7 +69,10 @@ self.addEventListener("push", (event) => {
     },
   };
 
-  event.waitUntil(self.registration.showNotification(title, options));
+  event.waitUntil(Promise.all([
+    self.registration.showNotification(title, options),
+    applyBadgeCount(data.badgeCount),
+  ]));
 });
 
 self.addEventListener("notificationclick", (event) => {
