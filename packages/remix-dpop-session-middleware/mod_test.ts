@@ -121,9 +121,8 @@ Deno.test("DpopSession は @remix-run/session の Session と共存できる", a
   router.map("/whoami", (context) => {
     const dpop = context.get(DpopSession);
     // Simulate a separate Session set by another middleware/handler.
-    const cookie = context.has(Session)
-      ? context.get(Session)
-      : createSession("cookie-id", cookieStore.get("cookie-id"));
+    const cookie = context.get(Session) ??
+      createSession("cookie-id", cookieStore.get("cookie-id"));
     if (!context.has(Session)) context.set(Session, cookie);
 
     dpop.set("dpopCount", Number(dpop.get("dpopCount") ?? 0) + 1);

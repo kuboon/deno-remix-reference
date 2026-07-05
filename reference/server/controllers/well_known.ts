@@ -7,7 +7,7 @@
  * consumable by `jose.createRemoteJWKSet`.
  */
 
-import type { BuildAction } from "@remix-run/fetch-router";
+import type { Action } from "@remix-run/fetch-router";
 import type { routes } from "../routes.ts";
 import { getSigningKey } from "../lib/signing-key.ts";
 
@@ -22,4 +22,4 @@ export const jwksAction = {
       },
     });
   },
-} satisfies BuildAction<"GET", typeof routes.jwks>;
+} satisfies Action<typeof routes.jwks>;

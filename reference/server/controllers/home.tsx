@@ -7,7 +7,7 @@
  * client `run()`) get just the fragment.
  */
 
-import type { BuildAction } from "@remix-run/fetch-router";
+import type { Action } from "@remix-run/fetch-router";
 import type { routes } from "../routes.ts";
 import { renderPage } from "../utils/render.tsx";
 
@@ -80,4 +80,4 @@ export const homeAction = {
       </main>,
     );
   },
-} satisfies BuildAction<"GET", typeof routes.home>;
+} satisfies Action<typeof routes.home>;

@@ -5,12 +5,12 @@
  * GET returns the session payload; POST merges the request body into it.
  */
 
-import type { Controller } from "@remix-run/fetch-router";
+import { createController } from "@remix-run/fetch-router";
 
 import { dpop, DpopSession } from "../../middleware/dpop.ts";
-import type { routes } from "../../routes.ts";
+import { routes } from "../../routes.ts";
 
-export const apiController = {
+export const apiController = createController(routes.api, {
   middleware: [dpop],
   actions: {
     protectedGet(context) {
@@ -38,4 +38,4 @@ export const apiController = {
       });
     },
   },
-} satisfies Controller<typeof routes.api>;
+});

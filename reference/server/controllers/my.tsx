@@ -9,7 +9,7 @@
  * unlike a `<script type="module">` tag that wouldn't execute on swap.
  */
 
-import type { BuildAction } from "@remix-run/fetch-router";
+import type { Action } from "@remix-run/fetch-router";
 import { IDP_ORIGIN } from "../../client/idp.ts";
 import { PushCard } from "../../client/push_card.tsx";
 import { SignInCard } from "../../client/signin_card.tsx";
@@ -62,4 +62,4 @@ export const myAction = {
       </main>,
     );
   },
-} satisfies BuildAction<"GET", typeof routes.my>;
+} satisfies Action<typeof routes.my>;
