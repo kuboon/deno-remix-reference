@@ -10,7 +10,7 @@
  * diff and the Counter stays interactive after navigation.
  */
 
-import type { BuildAction } from "@remix-run/fetch-router";
+import type { Action } from "@remix-run/fetch-router";
 import { Counter } from "../../client/counter.tsx";
 import type { routes } from "../routes.ts";
 import { renderPage } from "../utils/render.tsx";
@@ -86,4 +86,4 @@ export const hydrationAction = {
       </main>,
     );
   },
-} satisfies BuildAction<"GET", typeof routes.hydration>;
+} satisfies Action<typeof routes.hydration>;

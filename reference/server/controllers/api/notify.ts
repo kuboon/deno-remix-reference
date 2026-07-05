@@ -10,7 +10,7 @@
  * or restrict callers to trusted backends) before invoking the send helper.
  */
 
-import type { BuildAction } from "@remix-run/fetch-router";
+import type { Action } from "@remix-run/fetch-router";
 import type { routes } from "../../routes.ts";
 import {
   type PushNotificationContent,
@@ -82,4 +82,4 @@ export const notifyAction = {
       );
     }
   },
-} satisfies BuildAction<"POST", typeof routes.notify>;
+} satisfies Action<typeof routes.notify>;
