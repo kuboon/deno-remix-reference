@@ -74,6 +74,11 @@ export const homeAction = {
                 <code>/.well-known/jwks.json</code>{" "}
                 — RP の公開鍵 (IdP がアサーション検証に使用)
               </li>
+              <li>
+                <span class="badge badge-success badge-sm mr-2">GET</span>
+                <code>/api/turso</code>{" "}
+                — Turso (libSQL) サンプル。訪問を記録して累計を返す
+              </li>
             </ul>
           </div>
         </div>

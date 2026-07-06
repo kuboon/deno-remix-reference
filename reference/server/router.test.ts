@@ -52,3 +52,12 @@ Deno.test("GET /api/protected without DPoP proof is rejected", async () => {
   );
   await res.body?.cancel();
 });
+
+Deno.test("GET /api/turso reports unconfigured without Turso env", async () => {
+  // No TURSO_DATABASE_URL in the test environment — the sample degrades to a
+  // 503 instead of attempting a connection.
+  const res = await router.fetch(new Request("http://x/api/turso"));
+  assertEquals(res.status, 503);
+  const body = await res.json() as { configured?: boolean };
+  assertEquals(body.configured, false);
+});
