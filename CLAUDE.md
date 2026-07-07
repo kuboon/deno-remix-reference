@@ -5,7 +5,7 @@ Remix v3 + Deno のリファレンス実装。DPoP (RFC 9449)
 
 ## 構造
 
-- `packages/kv/` — `KvRepo` 抽象 (memory / Deno KV / Cloudflare KV)
+- `packages/kv/` — `KvRepo` 抽象 (memory / Deno KV / Turso libSQL)
 - `packages/session-storage-kv/` — `@remix-run/session` の `SessionStorage` を
   `KvRepo` で実装。
 - `packages/remix-dpop-session-middleware/` — DPoP セッション middleware (Remix

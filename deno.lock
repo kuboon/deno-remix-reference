@@ -1023,7 +1023,8 @@
       "packages/kv": {
         "dependencies": [
           "jsr:@std/assert@^1.0.19",
-          "jsr:@std/ulid@1"
+          "jsr:@std/ulid@1",
+          "npm:@libsql/client@~0.17.4"
         ]
       },
       "packages/remix-dpop-session-middleware": {
