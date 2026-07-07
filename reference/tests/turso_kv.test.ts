@@ -86,6 +86,49 @@ Deno.test("list: genKey で作成したエントリをイテレートできる",
   client.close();
 });
 
+Deno.test("マルチバイト・記号 (/ _ ?) を含むキーを base64url で往復できる", async () => {
+  const client = createClient({ url: ":memory:" });
+  const repo = new TursoKvRepo<string>(client, ["🔑/pre?fix"]);
+  const key = "ゑ_value?/x"; // `/` や `_` を含んでも base64url 化され区切りと衝突しない
+  await repo.entry(key).update(() => "ok");
+  assertEquals(await repo.entry(key).get(), "ok");
+
+  const values: string[] = [];
+  for await (const e of repo) {
+    const v = await e.get();
+    if (v) values.push(v);
+  }
+  assertEquals(values, ["ok"]);
+  client.close();
+});
+
+Deno.test("prefix の base64url に含まれる `_` を LIKE のワイルドカード扱いしない", async () => {
+  const client = createClient({ url: ":memory:" });
+  // base64url("ÿÿ") は `_` を含む → prefix エンコードにも `_` が入る。
+  const repo = new TursoKvRepo<string>(client, ["ÿÿ"]);
+  await repo.entry("k").update(() => "mine");
+
+  // 実際に保存された prefix トークン（末尾 `/` まで）を取り出す。
+  const stored = (await client.execute("SELECT key FROM kv")).rows[0]
+    .key as string;
+  const prefixToken = stored.slice(0, stored.indexOf("/") + 1);
+  assertEquals(prefixToken.includes("_"), true);
+
+  // `_` を別文字に差し替えた「論理的には別 prefix」の囮行を直接挿入する。
+  // `_` をワイルドカードとして扱うと prefix の LIKE にマッチしてしまう。
+  const decoyKey = prefixToken.replace("_", "A") + "sZGVjb3k/";
+  await client.execute({
+    sql: "INSERT INTO kv (key, value) VALUES (?, ?)",
+    args: [decoyKey, JSON.stringify("decoy")],
+  });
+
+  // ESCAPE '\' で `_` はリテラル扱いになるので、囮は列挙されない。
+  let yielded = 0;
+  for await (const _e of repo) yielded++;
+  assertEquals(yielded, 1);
+  client.close();
+});
+
 Deno.test("prefix が異なるリポジトリ間で分離される (同一テーブル)", async () => {
   const client = createClient({ url: ":memory:" });
   const repoA = new TursoKvRepo<string>(client, ["a"]);
