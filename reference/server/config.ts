@@ -25,3 +25,12 @@ export const rpOrigin = Deno.env.get("RP_ORIGIN") ?? "";
  * the key out from under the IdP's JWKS cache.
  */
 export const rpSigningKeyJwk = Deno.env.get("RP_SIGNING_KEY_JWK") ?? "";
+
+/**
+ * Turso (libSQL) connection for the `/api/turso` sample. `TURSO_DATABASE_URL`
+ * is the database URL (e.g. `libsql://<db>-<org>.turso.io`), `TURSO_AUTH_TOKEN`
+ * the access token. Both empty by default; the sample reports "not configured"
+ * until `TURSO_DATABASE_URL` is set.
+ */
+export const tursoDatabaseUrl = Deno.env.get("TURSO_DATABASE_URL") ?? "";
+export const tursoAuthToken = Deno.env.get("TURSO_AUTH_TOKEN") ?? "";
