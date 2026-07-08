@@ -1,6 +1,5 @@
 {
   "workspace": [
-    "./packages/kv",
     "./packages/session-storage-kv",
     "./packages/remix-dpop-session-middleware",
     "./reference",
