@@ -22,7 +22,7 @@ import {
 } from "@remix-run/data-table";
 import { createTursoDatabaseAdapter } from "@kuboon/remix-data-table-sqlite-turso";
 
-import { tursoAuthToken, tursoDatabaseUrl } from "../../config.ts";
+import { getConfig } from "../../config.ts";
 
 /** The `visits` table: one row per request to `/api/turso`. */
 export const visits = table({
@@ -63,7 +63,8 @@ export function createTursoDatabase(client: Client): TursoDatabase {
 let cached: TursoDatabase | null | undefined;
 
 /** True when a Turso database URL is configured. */
-export const isTursoConfigured = (): boolean => Boolean(tursoDatabaseUrl);
+export const isTursoConfigured = (): boolean =>
+  Boolean(getConfig().tursoDatabaseUrl);
 
 /**
  * The shared app database, or `null` when unconfigured. Built lazily from the
@@ -71,6 +72,7 @@ export const isTursoConfigured = (): boolean => Boolean(tursoDatabaseUrl);
  */
 export function getTursoDb(): TursoDatabase | null {
   if (cached === undefined) {
+    const { tursoDatabaseUrl, tursoAuthToken } = getConfig();
     cached = tursoDatabaseUrl
       ? createTursoDatabase(createClient({
         url: tursoDatabaseUrl,
