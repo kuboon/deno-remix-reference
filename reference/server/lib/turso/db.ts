@@ -62,17 +62,13 @@ export function createTursoDatabase(client: Client): TursoDatabase {
 
 let cached: TursoDatabase | null | undefined;
 
-/** True when a Turso database URL is configured. */
-export const isTursoConfigured = (): boolean =>
-  Boolean(getConfig().tursoDatabaseUrl);
-
 /**
  * The shared app database, or `null` when unconfigured. Built lazily from the
  * environment using the edge-friendly `@libsql/client/web` client.
  */
-export function getTursoDb(): TursoDatabase | null {
+export async function getTursoDb(): Promise<TursoDatabase | null> {
   if (cached === undefined) {
-    const { tursoDatabaseUrl, tursoAuthToken } = getConfig();
+    const { tursoDatabaseUrl, tursoAuthToken } = await getConfig();
     cached = tursoDatabaseUrl
       ? createTursoDatabase(createClient({
         url: tursoDatabaseUrl,

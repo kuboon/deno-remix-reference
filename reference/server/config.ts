@@ -7,12 +7,11 @@
  * {@link denoEnv} reads the same keys from `Deno.env` into an {@link Env} — the
  * single point of `Deno.env` access, kept here so it is easy to swap per host.
  *
- * Usage:
- * - Deno: {@link getConfig} lazily builds the config from `Deno.env`; nothing
- *   else to wire up.
- * - Cloudflare Workers: call {@link configureFromEnv}(env) from the worker's
- *   `fetch` handler (env is stable per isolate) before handling requests, then
- *   {@link getConfig} returns it.
+ * {@link getConfig} self-sources the env on both hosts — no wiring needed:
+ * `Deno.env` on Deno, otherwise the Cloudflare Workers `cloudflare:workers`
+ * `env` module. The latter is a dynamic `import()` so Deno (which has no such
+ * module) falls through instead of crashing at load — a static import of
+ * `cloudflare:workers` throws an uncatchable "Unsupported scheme" error on Deno.
  */
 
 /** Environment as Cloudflare Workers passes it to `fetch(request, env)`. */
@@ -85,20 +84,27 @@ export function denoEnv(): Env {
   return env;
 }
 
-let active: Config | undefined;
-
 /**
- * Set the active config from a host-provided env (e.g. the Cloudflare Workers
- * `fetch(request, env)` parameter). Call once per isolate before handling.
+ * Read the raw host env: `Deno.env` on Deno, otherwise the Cloudflare Workers
+ * `cloudflare:workers` `env` module. That module is imported dynamically so
+ * Deno can catch the failure and fall through.
  */
-export function configureFromEnv(env: Env): Config {
-  return (active = loadConfig(env));
+async function readEnv(): Promise<Env> {
+  if ((globalThis as { Deno?: unknown }).Deno) return denoEnv();
+  try {
+    const { env } = await import("cloudflare:workers");
+    return env as unknown as Env;
+  } catch {
+    return {};
+  }
 }
 
+let cached: Promise<Config> | undefined;
+
 /**
- * The active {@link Config}. Returns the env set via {@link configureFromEnv}
- * when present, otherwise lazily reads `Deno.env` (the default on Deno).
+ * The active {@link Config}, resolved once from the host env and cached. Async
+ * because obtaining the Cloudflare `env` module is a dynamic import.
  */
-export function getConfig(): Config {
-  return active ??= loadConfig(denoEnv());
+export function getConfig(): Promise<Config> {
+  return (cached ??= readEnv().then(loadConfig));
 }
