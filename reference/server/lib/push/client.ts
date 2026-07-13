@@ -13,7 +13,7 @@
 import { SignJWT } from "jose";
 
 import { getSigningKey } from "../signing-key.ts";
-import { idpOrigin, rpOrigin } from "../../config.ts";
+import { getConfig } from "../../config.ts";
 
 const CLIENT_ASSERTION_TYP = "client-assertion+jwt";
 
@@ -53,6 +53,7 @@ export interface SendNotificationResult {
 
 /** Build a single-use `private_key_jwt` client assertion for the IdP. */
 const buildClientAssertion = async (): Promise<string> => {
+  const { rpOrigin, idpOrigin } = getConfig();
   if (!rpOrigin) {
     throw new Error(
       "RP_ORIGIN is not configured — set it to this app's public origin (a clientId whitelisted on the IdP).",
@@ -80,6 +81,7 @@ export const sendRpNotification = async (
   input: SendNotificationInput,
 ): Promise<SendNotificationResult[]> => {
   const assertion = await buildClientAssertion();
+  const { idpOrigin } = getConfig();
   const res = await fetch(`${idpOrigin}/rp/notifications`, {
     method: "POST",
     headers: {

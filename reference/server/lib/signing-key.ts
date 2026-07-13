@@ -13,7 +13,7 @@
 
 import { calculateJwkThumbprint, exportJWK, generateKeyPair } from "jose";
 
-import { rpSigningKeyJwk } from "../config.ts";
+import { getConfig } from "../config.ts";
 
 const ALG = "ES256";
 
@@ -68,6 +68,7 @@ const generate = async (): Promise<
 export const getSigningKey = (): Promise<SigningKey> => {
   if (!signingKeyPromise) {
     signingKeyPromise = (async () => {
+      const { rpSigningKeyJwk } = getConfig();
       const { privateKey, publicJwk } = rpSigningKeyJwk
         ? await importPrivateJwk(rpSigningKeyJwk)
         : await generate();
