@@ -68,7 +68,7 @@ const generate = async (): Promise<
 export const getSigningKey = (): Promise<SigningKey> => {
   if (!signingKeyPromise) {
     signingKeyPromise = (async () => {
-      const { rpSigningKeyJwk } = await getConfig();
+      const { rpSigningKeyJwk } = getConfig();
       const { privateKey, publicJwk } = rpSigningKeyJwk
         ? await importPrivateJwk(rpSigningKeyJwk)
         : await generate();

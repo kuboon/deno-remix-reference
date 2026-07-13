@@ -99,12 +99,12 @@ async function readEnv(): Promise<Env> {
   }
 }
 
-let cached: Promise<Config> | undefined;
+// Resolve the config once, at module load, via top-level await. On Cloudflare
+// this reads string vars/secrets from the `cloudflare:workers` env at global
+// scope (allowed — it performs no binding I/O). This keeps getConfig() sync.
+const config: Config = loadConfig(await readEnv());
 
-/**
- * The active {@link Config}, resolved once from the host env and cached. Async
- * because obtaining the Cloudflare `env` module is a dynamic import.
- */
-export function getConfig(): Promise<Config> {
-  return (cached ??= readEnv().then(loadConfig));
+/** The active {@link Config}, resolved from the host env at module load. */
+export function getConfig(): Config {
+  return config;
 }

@@ -13,7 +13,7 @@ import { getTursoDb, visits } from "../../lib/turso/db.ts";
 
 export const tursoAction = {
   async handler(): Promise<Response> {
-    const turso = await getTursoDb();
+    const turso = getTursoDb();
     if (!turso) {
       return Response.json({
         configured: false,
