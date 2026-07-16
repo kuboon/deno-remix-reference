@@ -22,77 +22,45 @@ import {
   type SerializableValue,
 } from "@remix-run/ui";
 
-import { type FetchDpop, loadDpopSession } from "./session.ts";
+import { sessionStore } from "./session.ts";
 
 export interface SignInCardProps {
   idpOrigin: string;
   [key: string]: SerializableValue;
 }
 
+type Variant = "info" | "success" | "error" | "";
+
 export const SignInCard = clientEntry(
   "/signin_card.js#SignInCard",
   function SignInCard(handle: Handle<SignInCardProps>) {
-    let status = "セッションを確認しています…";
-    let statusVariant: "info" | "success" | "error" | "" = "info";
-    let userInfo = "…";
-    let thumbprint = "…";
-    let signedIn = false;
-    let ready = false;
     let signoutBusy = false;
-    let fetchDpop: FetchDpop | null = null;
-
-    const setStatus = (
-      message: string,
-      variant: "info" | "success" | "error" | "" = "",
-    ) => {
-      status = message;
-      statusVariant = variant;
-    };
+    // Transient message for a user action (sign-out); otherwise the status is
+    // derived from the shared session state in render.
+    let actionStatus: { message: string; variant: Variant } | null = null;
 
     if (typeof document !== "undefined") {
-      (async () => {
-        try {
-          const session = await loadDpopSession(handle.props.idpOrigin);
-          fetchDpop = session.fetchDpop;
-          thumbprint = session.thumbprint;
-
-          if (session.userId) {
-            signedIn = true;
-            userInfo = `サインイン中: ${session.userId}`;
-            setStatus("セッションを取得しました。", "success");
-          } else {
-            userInfo = "サインインしていません。";
-            setStatus("");
-          }
-        } catch (error) {
-          userInfo = "サインインしていません。";
-          setStatus(
-            `初期化に失敗: ${(error as Error).message}`,
-            "error",
-          );
-        } finally {
-          ready = true;
-          handle.update();
-        }
-      })();
+      sessionStore.addEventListener("change", () => handle.update(), {
+        signal: handle.signal,
+      });
+      void sessionStore.load();
     }
 
     const onSignoutClick = async () => {
-      if (!fetchDpop) return;
       signoutBusy = true;
+      actionStatus = null;
       handle.update();
       try {
-        await fetchDpop(`${handle.props.idpOrigin}/session/logout`, {
-          method: "POST",
-        });
-        signedIn = false;
-        userInfo = "サインインしていません。";
-        setStatus("サインアウトしました。", "success");
+        await sessionStore.signOut();
+        actionStatus = {
+          message: "サインアウトしました。",
+          variant: "success",
+        };
       } catch (error) {
-        setStatus(
-          `サインアウトに失敗: ${(error as Error).message}`,
-          "error",
-        );
+        actionStatus = {
+          message: `サインアウトに失敗: ${(error as Error).message}`,
+          variant: "error",
+        };
       } finally {
         signoutBusy = false;
         handle.update();
@@ -100,6 +68,32 @@ export const SignInCard = clientEntry(
     };
 
     return () => {
+      const ready = sessionStore.ready;
+      const signedIn = sessionStore.userId !== null;
+
+      let status: string;
+      let statusVariant: Variant;
+      if (actionStatus) {
+        status = actionStatus.message;
+        statusVariant = actionStatus.variant;
+      } else if (!ready) {
+        status = "セッションを確認しています…";
+        statusVariant = "info";
+      } else if (signedIn) {
+        status = "セッションを取得しました。";
+        statusVariant = "success";
+      } else {
+        status = "";
+        statusVariant = "";
+      }
+
+      const userInfo = signedIn
+        ? `サインイン中: ${sessionStore.userId}`
+        : ready
+        ? "サインインしていません。"
+        : "…";
+      const thumbprint = sessionStore.thumbprint || "…";
+
       const alertClass = statusVariant
         ? `alert alert-${statusVariant} alert-soft`
         : "alert alert-soft";

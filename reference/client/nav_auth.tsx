@@ -20,7 +20,7 @@ import {
 } from "@remix-run/ui";
 
 import { IDP_ORIGIN } from "./idp.ts";
-import { loadDpopSession } from "./session.ts";
+import { sessionStore } from "./session.ts";
 
 export interface NavAuthProps {
   /** App-relative href of the my-page, e.g. `/my`. */
@@ -31,44 +31,33 @@ export interface NavAuthProps {
 export const NavAuth = clientEntry(
   "/nav_auth.js#NavAuth",
   function NavAuth(handle: Handle<NavAuthProps>) {
-    let ready = false;
-    let signedIn = false;
-    let thumbprint = "";
-
     if (typeof document !== "undefined") {
-      (async () => {
-        try {
-          const session = await loadDpopSession(IDP_ORIGIN);
-          thumbprint = session.thumbprint;
-          signedIn = session.userId !== null;
-        } catch {
-          signedIn = false;
-        } finally {
-          ready = true;
-          handle.update();
-        }
-      })();
+      // Re-render whenever the shared session changes (sign-in/out anywhere).
+      sessionStore.addEventListener("change", () => handle.update(), {
+        signal: handle.signal,
+      });
+      void sessionStore.load();
     }
 
     const onSigninClick = () => {
       const redirectUri =
         new URL(handle.props.myHref, globalThis.location.origin).href;
       const params = new URLSearchParams({
-        dpop_jkt: thumbprint,
+        dpop_jkt: sessionStore.thumbprint,
         redirect_uri: redirectUri,
       });
       globalThis.location.href = `${IDP_ORIGIN}/authorize?${params.toString()}`;
     };
 
     return () => {
-      if (!ready) {
+      if (!sessionStore.ready) {
         return (
           <button type="button" class="btn btn-ghost btn-sm" disabled>
             Sign In
           </button>
         );
       }
-      if (signedIn) {
+      if (sessionStore.userId !== null) {
         return (
           <a
             class="btn btn-ghost btn-sm"
