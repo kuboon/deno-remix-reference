@@ -23,7 +23,7 @@ import {
   type SerializableValue,
 } from "@remix-run/ui";
 
-import { loadDpopSession } from "./session.ts";
+import { sessionStore } from "./session.ts";
 import {
   createPushManager,
   type PushManager,
@@ -87,21 +87,24 @@ export const PushCard = clientEntry(
 
     const initialize = async () => {
       try {
-        const session = await loadDpopSession(handle.props.idpOrigin);
+        await sessionStore.load();
+        if (!sessionStore.fetchDpop) {
+          throw new Error("DPoP セッションを初期化できませんでした。");
+        }
         pushManager = createPushManager({
-          fetchDpop: session.fetchDpop,
+          fetchDpop: sessionStore.fetchDpop,
           idpOrigin: handle.props.idpOrigin,
           isClientEnv,
           setStatus,
           onChange: () => handle.update(),
         });
         pushManager.init();
-        if (!session.userId) {
+        if (!sessionStore.userId) {
           phase = "signedout";
           handle.update();
           return;
         }
-        userId = session.userId;
+        userId = sessionStore.userId;
         await pushManager.load(true);
         phase = "ready";
       } catch (e) {
