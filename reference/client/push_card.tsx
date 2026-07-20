@@ -20,6 +20,7 @@ import {
   clientEntry,
   type Handle,
   on,
+  ref,
   type SerializableValue,
 } from "@remix-run/ui";
 
@@ -40,8 +41,6 @@ export interface PushCardProps {
 const isClientEnv = typeof globalThis !== "undefined" &&
   typeof (globalThis as { document?: unknown }).document !== "undefined" &&
   typeof (globalThis as { window?: unknown }).window !== "undefined";
-
-const BADGE_INPUT_ID = "rmx-push-badge-input";
 
 const formatDate = (value: number): string => {
   try {
@@ -64,6 +63,7 @@ export const PushCard = clientEntry(
     let statusTimeout: ReturnType<typeof setTimeout> | null = null;
 
     let pushManager: PushManager | null = null;
+    let badgeInput: HTMLInputElement | undefined;
 
     const setStatus = (
       message: string,
@@ -134,10 +134,7 @@ export const PushCard = clientEntry(
 
     // Read the optional demo badge count from the number input.
     const readBadgeCount = (): number | undefined => {
-      const el = document.getElementById(
-        BADGE_INPUT_ID,
-      ) as HTMLInputElement | null;
-      const raw = el?.value.trim();
+      const raw = badgeInput?.value.trim();
       if (!raw) return undefined;
       const n = Number(raw);
       return Number.isInteger(n) && n >= 0 ? n : undefined;
@@ -341,7 +338,6 @@ export const PushCard = clientEntry(
                       : "このデバイスへの通知を登録"}
                   </button>
                   <input
-                    id={BADGE_INPUT_ID}
                     type="number"
                     min="0"
                     step="1"
@@ -349,6 +345,9 @@ export const PushCard = clientEntry(
                     placeholder="バッジ数"
                     aria-label="バッジ数"
                     class="input input-bordered input-sm w-24"
+                    mix={[ref((node) => {
+                      badgeInput = node as HTMLInputElement;
+                    })]}
                   />
                   <button
                     type="button"
