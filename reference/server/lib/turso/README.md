@@ -8,25 +8,29 @@
 
 - `@remix-run/data-table` — DB 非依存のクエリ/リレーション API。
 - `@kuboon/remix-data-table-sqlite-turso` — data-table の **非同期** SQLite
-  アダプタ(`createTursoDatabaseAdapter`)。Turso の `@libsql/client` は全ビルドが
+  データベース(`createTursoDatabase`)。Turso の `@libsql/client` は全ビルドが
   非同期なので、同期前提の公式 `@remix-run/data-table-sqlite` では駆動できない。
-  このアダプタが各ドライバ呼び出しを await するので Turso を扱える。
+  このパッケージが各クライアント呼び出しを await するので Turso を扱える。
 - `@libsql/client` — libSQL クライアント。アプリ側は edge 対応の
   `@libsql/client/web`(fetch/WebSocket のみ、ネイティブ addon 無し)を使うので
   Deno Deploy でそのまま動く。
 
 ```ts
 import { createClient } from "@libsql/client/web";
-import { createDatabase } from "@remix-run/data-table";
-import { createTursoDatabaseAdapter } from "@kuboon/remix-data-table-sqlite-turso";
+import { createTursoDatabase } from "@kuboon/remix-data-table-sqlite-turso";
 
 const client = createClient({ url, authToken });
-const db = createDatabase(createTursoDatabaseAdapter(client));
+const db = createTursoDatabase(client);
 // db.create(table, {...}) / db.count(table) / db.findMany(table, {...}) …
 ```
 
-`lib/turso/db.ts` は `createTursoDatabase(client)`(任意の libSQL クライアントを
-受け取るコア)と、環境変数から web クライアントを組み立てる `getTursoDb()` を
+> Remix v3 `beta.6`(`@remix-run/data-table@0.4.0`)でアダプタ層が廃止された。
+> `createDatabase(createTursoDatabaseAdapter(client))` は
+> `createTursoDatabase(client)` に置き換わり、`Database` を直接継承する。
+
+`lib/turso/db.ts` は `createTursoSample(client)`(任意の libSQL クライアントを
+受け取るコア。パッケージ側の `createTursoDatabase` に `visits` スキーマ作成を
+足したもの)と、環境変数から web クライアントを組み立てる `getTursoDb()` を
 公開する。
 
 ## 環境変数(`config.ts`)
@@ -44,7 +48,7 @@ const db = createDatabase(createTursoDatabaseAdapter(client));
 ## テスト
 
 `reference/tests/turso_data_table.test.ts` が `@libsql/client/node` の
-**インメモリ**(`:memory:`)DB に対して `createTursoDatabase` を実行し、 create /
+**インメモリ**(`:memory:`)DB に対して `createTursoSample` を実行し、 create /
 count / findMany を検証する(ネットワークや Turso 認証情報は不要)。 ネイティブ
 addon が FFI を使うため `-A` で走る `deno task test:browser` に含めている(`-P`
 のユニットテストとは分離)。
@@ -52,8 +56,8 @@ addon が FFI を使うため `-A` で走る `deno task test:browser` に含め�
 ## 他のデプロイ形態
 
 - **同期 SQLite**(Node の `node:sqlite` / Bun の `bun:sqlite`)を使う場合は、
-  この非同期アダプタではなく公式の `@remix-run/data-table-sqlite` を使う。
+  この非同期パッケージではなく公式の `@remix-run/data-table-sqlite` を使う。
 - **embedded replica**(ローカル同期ファイル + バックグラウンド同期)を使いたい
-  場合は `@libsql/client` のローカル/replica クライアントをこのアダプタに渡せる
-  (ネイティブ addon + 永続ファイルシステムが要るため Deno Deploy のエッジでは
-  不可)。
+  場合は `@libsql/client` のローカル/replica クライアントをそのまま
+  `createTursoDatabase` に渡せる(ネイティブ addon + 永続ファイルシステムが
+  要るため Deno Deploy のエッジでは不可)。

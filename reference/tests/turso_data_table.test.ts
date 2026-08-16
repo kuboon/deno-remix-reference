@@ -1,8 +1,8 @@
 /**
  * End-to-end check that `@remix-run/data-table` drives Turso's async libSQL
- * adapter (`@kuboon/remix-data-table-sqlite-turso`). Runs against an in-memory
+ * client (`@kuboon/remix-data-table-sqlite-turso`). Runs against an in-memory
  * libSQL database via `@libsql/client/node` — no network or Turso credentials
- * needed — exercising the same `createTursoDatabase` code path the app uses.
+ * needed — exercising the same `createTursoSample` code path the app uses.
  *
  * Lives under `reference/tests` so it runs with `-A` (the native libSQL addon
  * needs FFI), separate from the `-P` unit tests.
@@ -11,11 +11,11 @@
 import { assertEquals } from "@std/assert";
 import { createClient } from "@libsql/client/node";
 
-import { createTursoDatabase, visits } from "../server/lib/turso/db.ts";
+import { createTursoSample, visits } from "../server/lib/turso/db.ts";
 
 Deno.test("data-table create/count/findMany over in-memory libSQL", async () => {
   const client = createClient({ url: ":memory:" });
-  const turso = createTursoDatabase(client);
+  const turso = createTursoSample(client);
   await turso.ensureSchema();
 
   await turso.db.create(visits, { at: "2026-01-01T00:00:00.000Z" });

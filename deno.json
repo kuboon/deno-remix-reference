@@ -21,6 +21,10 @@
     "permissions": "default"
   },
   "nodeModulesDir": "auto",
+  "minimumDependencyAge": {
+    "age": "P1D",
+    "exclude": ["jsr:@kuboon/*"]
+  },
   "unstable": ["bundle", "kv"],
   "compilerOptions": {
     "jsx": "react-jsx",

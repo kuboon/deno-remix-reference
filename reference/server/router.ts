@@ -6,7 +6,7 @@
  * just wires middleware + maps routes to controllers.
  */
 
-import { createRouter } from "@remix-run/fetch-router";
+import { createRouter, type Middleware } from "@remix-run/fetch-router";
 import { staticFiles } from "@remix-run/static-middleware";
 
 import { apiController } from "./controllers/api/controller.ts";
@@ -18,10 +18,23 @@ import { tursoAction } from "./controllers/api/turso.ts";
 import { jwksAction } from "./controllers/well_known.ts";
 import { routes } from "./routes.ts";
 
+/**
+ * `@remix-run/static-middleware@0.4.13` — still the latest as of Remix v3
+ * beta.6 — pins `@remix-run/fetch-router@^0.20.1`, which excludes 0.21.0. Deno
+ * therefore resolves a second copy of fetch-router for it, and the two
+ * `Middleware` types stop matching: `RequestContext` carries a private-field
+ * brand, so they do not even overlap enough for a single cast.
+ *
+ * static-middleware imports fetch-router with `import type` only and never
+ * calls into it at runtime, so the duplicate is purely nominal and re-typing it
+ * here is sound. Drop this once static-middleware widens its range.
+ */
+const serveBundled = staticFiles(
+  new URL("../bundled", import.meta.url).pathname,
+) as unknown as Middleware;
+
 const router = createRouter({
-  middleware: [
-    staticFiles(new URL("../bundled", import.meta.url).pathname),
-  ],
+  middleware: [serveBundled],
 });
 
 router.get(routes.home, homeAction);
