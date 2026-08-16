@@ -13,22 +13,14 @@
 
 import { run } from "@remix-run/ui";
 
-const FRAME_HEADER = "rmx-frame";
+import { resolveFrame } from "./frame.ts";
 
 const app = run({
   async loadModule(moduleUrl: string, exportName: string) {
     const mod = await import(moduleUrl);
     return mod[exportName];
   },
-  async resolveFrame(src: string, signal?: AbortSignal, target?: string) {
-    const headers = new Headers({
-      accept: "text/html",
-      [FRAME_HEADER]: "1",
-    });
-    if (target) headers.set("rmx-target", target);
-    const response = await fetch(src, { headers, signal });
-    return response.body ?? (await response.text());
-  },
+  resolveFrame,
 });
 
 await app.ready();

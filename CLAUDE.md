@@ -65,10 +65,10 @@ Deno で catch 不能なエラーになる)。env は top-level await
 
 `GET /api/turso` が `@remix-run/data-table` のリレーショナル API で Turso に
 アクセスし、`visits` を記録して累計を返す。Turso の `@libsql/client` は非同期
-なので、公式の同期 SQLite アダプタではなく非同期アダプタ
+なので、公式の同期 SQLite 実装ではなく非同期の
 [`@kuboon/remix-data-table-sqlite-turso`](https://jsr.io/@kuboon/remix-data-table-sqlite-turso)
-を使う。クライアントは edge 対応の `@libsql/client/web`。詳細は
-`reference/server/lib/turso/README.md`。
+(`createTursoDatabase(client)`) を使う。クライアントは edge 対応の
+`@libsql/client/web`。詳細は `reference/server/lib/turso/README.md`。
 
 ## 開発
 
