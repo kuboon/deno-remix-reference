@@ -5,7 +5,7 @@
     "jsr:@kuboon/dpop@~0.1.1": "0.1.2",
     "jsr:@kuboon/dpop@~0.1.2": "0.1.2",
     "jsr:@kuboon/kv@0.2": "0.2.0",
-    "jsr:@kuboon/remix-data-table-sqlite-turso@^0.0.0": "0.0.0",
+    "jsr:@kuboon/remix-data-table-sqlite-turso@0.2": "0.2.0",
     "jsr:@kuboon/tailwindcss-deno@~0.1.3": "0.1.3",
     "jsr:@panva/jose@^6.2.3": "6.2.3",
     "jsr:@std/assert@^1.0.19": "1.0.19",
@@ -17,15 +17,15 @@
     "npm:@jridgewell/remapping@^2.3.5": "2.3.5",
     "npm:@libsql/client@~0.17.4": "0.17.4",
     "npm:@lightpanda/browser@^1.2.0": "1.2.0",
-    "npm:@remix-run/cors-middleware@0.1.7": "0.1.7",
-    "npm:@remix-run/data-table@0.3": "0.3.0",
-    "npm:@remix-run/fetch-router@0.20.1": "0.20.1",
+    "npm:@remix-run/cors-middleware@0.1.8": "0.1.8",
+    "npm:@remix-run/data-table@0.4": "0.4.0",
+    "npm:@remix-run/fetch-router@0.21.0": "0.21.0",
     "npm:@remix-run/html-template@0.3.1": "0.3.1",
-    "npm:@remix-run/logger-middleware@0.3.4": "0.3.4",
-    "npm:@remix-run/response@0.3.7": "0.3.7",
+    "npm:@remix-run/logger-middleware@0.3.5": "0.3.5",
+    "npm:@remix-run/response@0.3.8": "0.3.8",
     "npm:@remix-run/session@~0.4.2": "0.4.2",
     "npm:@remix-run/static-middleware@0.4.13": "0.4.13",
-    "npm:@remix-run/ui@0.4": "0.4.0",
+    "npm:@remix-run/ui@0.5": "0.5.0",
     "npm:@tailwindcss/oxide@^4.1.18": "4.2.4",
     "npm:daisyui@^5.5.19": "5.5.19",
     "npm:lightningcss@^1.31.1": "1.32.0",
@@ -51,8 +51,8 @@
         "npm:@libsql/client"
       ]
     },
-    "@kuboon/remix-data-table-sqlite-turso@0.0.0": {
-      "integrity": "b965ecffb1a8637abfb4c58bd3c878fff2674862149dd1622138fc29b5d003d5",
+    "@kuboon/remix-data-table-sqlite-turso@0.2.0": {
+      "integrity": "8db3e4ed0258beb3339274e68d300cc6ad3793de5139c8c99c7ffb217e913ed1",
       "dependencies": [
         "npm:@libsql/client",
         "npm:@remix-run/data-table"
@@ -224,20 +224,26 @@
       ],
       "bin": true
     },
-    "@remix-run/cors-middleware@0.1.7": {
-      "integrity": "sha512-zbjwCFDwtHDSjyt6sgVVPkFiFfSkmkYPT74nrHClbF+pZx1ra+q93Rpcthbok0cv4IH1f0cagLbf8Jh+IEWNwA==",
+    "@remix-run/cors-middleware@0.1.8": {
+      "integrity": "sha512-Vhgtvrbafl1ng8tGmoYKNZ0nxa6vDtNKR2QwLbrW/xwjprTcwkJPSP2IiyQI+75HTzG5zWgJ/Z6OMO+iKdBjuQ==",
       "dependencies": [
-        "@remix-run/fetch-router",
+        "@remix-run/fetch-router@0.21.0",
         "@remix-run/headers"
       ]
     },
-    "@remix-run/data-table@0.3.0": {
-      "integrity": "sha512-2Ikjlm3T2qtMTeWm5v/76iXEP2fqqdJGxjTZ6OFre5b5BFoRyaq/iBmDc0lkXPoOGvkeOxNuRo7L0dRkMTXwJQ=="
+    "@remix-run/data-table@0.4.0": {
+      "integrity": "sha512-Flh2PP85hhjNZikxaQvdsrgna3Qv1OWJ/l7RTAKD+K9YdpVL+VnJMOKjyiMzehNBPuCVZB9ST7dF+5A/nfVXtg=="
     },
     "@remix-run/fetch-router@0.20.1": {
       "integrity": "sha512-vxlIu4LHY5KyqOdlXFjJeUefUJxgc7499/cSsBl2bzhQnU5DayPHN/dklBOiG+U7GIYQMmObAinmubkwzaXyuw==",
       "dependencies": [
-        "@remix-run/route-pattern"
+        "@remix-run/route-pattern@0.23.0"
+      ]
+    },
+    "@remix-run/fetch-router@0.21.0": {
+      "integrity": "sha512-dN3Lsd4dHAV0USTF3Dm04effXcdr7GMgXiqeozTFDfvVIx2DbRAl94bwF6UdAWurgTOK2Oyz4cs9uadW/ylWXA==",
+      "dependencies": [
+        "@remix-run/route-pattern@0.24.0"
       ]
     },
     "@remix-run/fs@0.4.6": {
@@ -259,18 +265,18 @@
         "@remix-run/mime"
       ]
     },
-    "@remix-run/logger-middleware@0.3.4": {
-      "integrity": "sha512-hHCZKt1mzqm+pxl/TlkFnaMCSbnLRdad6G9ZWsM0V/hpNPvCYuPjL5eEHiHl8QQeio9xXVOpdefL0X6vDpwRAg==",
+    "@remix-run/logger-middleware@0.3.5": {
+      "integrity": "sha512-UBIUjdhfD9kvYH3ZtMjXycyvEjhcCPAc3g4SytNVB9uKZzpX3SwrnYHmqNNYFONFsX9dI4P9cefdZEIk55U/QQ==",
       "dependencies": [
-        "@remix-run/fetch-router",
+        "@remix-run/fetch-router@0.21.0",
         "@remix-run/terminal"
       ]
     },
     "@remix-run/mime@0.4.2": {
       "integrity": "sha512-KpZZxBYIrLsvUtt2ZdwK+E2ClVmyvW11Nej6fPgwJpohBMpbCHtR78wtCTv0vqvK5ckLZ7ks2q4pV5dMYFypiA=="
     },
-    "@remix-run/response@0.3.7": {
-      "integrity": "sha512-f3VWP4NNxgBt+oJfRbgqLYaMXonMdeHhbzAyLfqMzZAwe/ukUwwGoTtER2xlRPDxFlr9Tqa3NFC8PrSmp+rfmA==",
+    "@remix-run/response@0.3.8": {
+      "integrity": "sha512-ydrfv+ykKBRQg6DTHU0mSbxbOcWc3m1O7UVivO5Rgrp+K1u4Z3nqbhaMDkHbCPEFhuv1sKlQwS0Z5ClO/jGAiQ==",
       "dependencies": [
         "@remix-run/headers",
         "@remix-run/html-template",
@@ -280,13 +286,16 @@
     "@remix-run/route-pattern@0.23.0": {
       "integrity": "sha512-8eZfG9owfdvC1OqWemjyIqbFTjWbKTW8RrcbppXrnv1GHMIpFOQx9Ly6F1OXNM03aK1c923JypacoRjamyfVEw=="
     },
+    "@remix-run/route-pattern@0.24.0": {
+      "integrity": "sha512-w0/lhgY40l2GrBQjJIOeYWIuKm1rxlOsc9Hvt+nyydnka0v4aI9Vv0VK4XzLD3aP08JzGtTlxFxwf1PZ8SGdLg=="
+    },
     "@remix-run/session@0.4.2": {
       "integrity": "sha512-NGzu6/gC5xD/tq40W0WqzTt4JhCdSCIwDHM1aa13JBqb4Ml/Mb0kmXqjfOe/gBYfu6AA11nRQ/BJyr+VduTodA=="
     },
     "@remix-run/static-middleware@0.4.13": {
       "integrity": "sha512-32oI2hbVR+GN/sduxOZSY1WNaEasKDm7X7o79eBGG5E78dV5mi0ijGLldHfAEazyRQyqeYzvG292RWUfkFJetA==",
       "dependencies": [
-        "@remix-run/fetch-router",
+        "@remix-run/fetch-router@0.20.1",
         "@remix-run/fs",
         "@remix-run/html-template",
         "@remix-run/mime",
@@ -296,8 +305,8 @@
     "@remix-run/terminal@0.1.1": {
       "integrity": "sha512-M8JNcsYp/mWZ0yOB12Ir+Ud1eLxodPr8YSKQcG2PTPeiq9p9c59D9gvF9m6EU2Hmd4esJMiTyy6lJHc/VKKvcw=="
     },
-    "@remix-run/ui@0.4.0": {
-      "integrity": "sha512-0whpy2s0V5ZHsErcEPESUZ7McmKQ3Nn1Ut5j4CkQVeos5VT3e1z/+osERMywUNTo2nyeUMpEMte5bFmaoleI3g==",
+    "@remix-run/ui@0.5.0": {
+      "integrity": "sha512-Cc8GZcXMp/E/3xy6yUTPqCOgVo34GH9OHMM4mdx4RMadCK7C/XzAOJHqLWX1d+yEMl0d1YUK0WV3ZyzFVTOC/w==",
       "dependencies": [
         "@types/dom-navigation"
       ]
@@ -653,8 +662,8 @@
     "is-fullwidth-code-point@3.0.0": {
       "integrity": "sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg=="
     },
-    "js-base64@3.8.0": {
-      "integrity": "sha512-65kvbemyZhj+ExQt1PEFyBEjL5vAHysu1lJdW1AwhhChkO8ZBPizYk/m9GVrpbS2Je1hF+UYZ+6KywqtZV8mHw=="
+    "js-base64@3.9.2": {
+      "integrity": "sha512-6zayE8QlUdiweYI6cETD/XBSqFcoCUlufn/29PJR99r82x1yDnIprRca0YvAYpAW+ez0GuQkVBC6xG5QkD7OjA=="
     },
     "libsql@0.5.29": {
       "integrity": "sha512-8lMP8iMgiBzzoNbAPQ59qdVcj6UaE/Vnm+fiwX4doX4Narook0a4GPKWBEv+CR8a1OwbfkgL18uBfBjWdF0Fzg==",
@@ -1033,7 +1042,7 @@
           "jsr:@kuboon/dpop@~0.1.1",
           "jsr:@kuboon/kv@0.2",
           "jsr:@std/assert@^1.0.19",
-          "npm:@remix-run/fetch-router@0.20.1",
+          "npm:@remix-run/fetch-router@0.21.0",
           "npm:@remix-run/session@~0.4.2"
         ]
       },
@@ -1059,26 +1068,27 @@
       "reference/client": {
         "dependencies": [
           "jsr:@kuboon/dpop@~0.1.2",
-          "npm:@remix-run/fetch-router@0.20.1",
-          "npm:@remix-run/ui@0.4"
+          "jsr:@std/assert@^1.0.19",
+          "npm:@remix-run/fetch-router@0.21.0",
+          "npm:@remix-run/ui@0.5"
         ]
       },
       "reference/server": {
         "dependencies": [
           "jsr:@kuboon/kv@0.2",
-          "jsr:@kuboon/remix-data-table-sqlite-turso@^0.0.0",
+          "jsr:@kuboon/remix-data-table-sqlite-turso@0.2",
           "jsr:@panva/jose@^6.2.3",
           "jsr:@std/assert@^1.0.19",
           "npm:@libsql/client@~0.17.4",
-          "npm:@remix-run/cors-middleware@0.1.7",
-          "npm:@remix-run/data-table@0.3",
-          "npm:@remix-run/fetch-router@0.20.1",
+          "npm:@remix-run/cors-middleware@0.1.8",
+          "npm:@remix-run/data-table@0.4",
+          "npm:@remix-run/fetch-router@0.21.0",
           "npm:@remix-run/html-template@0.3.1",
-          "npm:@remix-run/logger-middleware@0.3.4",
-          "npm:@remix-run/response@0.3.7",
+          "npm:@remix-run/logger-middleware@0.3.5",
+          "npm:@remix-run/response@0.3.8",
           "npm:@remix-run/session@~0.4.2",
           "npm:@remix-run/static-middleware@0.4.13",
-          "npm:@remix-run/ui@0.4"
+          "npm:@remix-run/ui@0.5"
         ]
       },
       "reference/tests": {
