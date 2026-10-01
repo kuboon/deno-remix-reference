@@ -15,7 +15,16 @@
     "check": "deno task --cwd web/client check && deno task --cwd web/server check && deno check packages && deno lint && deno fmt --check"
   },
   "permissions": {
-    "default": {}
+    "default": {
+      "read": true,
+      "env": true,
+      "net": [
+        "id.kbn.one",
+        "localhost",
+        "127.0.0.1"
+      ],
+      "import": true
+    }
   },
   "test": {
     "permissions": "default"
