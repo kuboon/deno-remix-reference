@@ -13,7 +13,13 @@ Remix v3 + Deno のリファレンス実装。DPoP (RFC 9449)
   v3 fetch-router 用)。`context.get(DpopSession)` でアクセスでき、
   `@remix-run/session` の `Session` と共存可能。DPoP proof 生成・検証は
   [jsr:@kuboon/dpop](https://jsr.io/@kuboon/dpop) を利用。
-- `reference/` — Remix v3 リファレンス Web アプリ
+- `web/` — Remix v3 リファレンス Web アプリ (Deno Deploy へ server
+  として、GitHub Pages へ静的サイトとして同時にデプロイ)。
+  [remix3-ssg-gh-pages](https://github.com/kuboon/remix3-ssg-gh-pages)
+  の構成に準拠
+  - `web/client/` — ブラウザに渡るもの全て (routes / pages / islands / layout /
+    static)。`deno.ns` 無しで型チェックされる
+  - `web/server/` — router・asset bundler・API・config・og 画像
   - `/my` — id.kbn.one を IdP として使うサインインフロー +
     プッシュ通知のサンプル
 
@@ -22,12 +28,15 @@ Remix v3 + Deno のリファレンス実装。DPoP (RFC 9449)
 id.kbn.one を Web Push のバックエンドとして使う最小構成。購読情報は IdP
 が保持し、RP (このアプリ) は購読 UI と送信トリガーだけを持つ。
 
-- ブラウザ側 (`reference/client/lib/push/`, `push_card.tsx`, `sw.js`):
-  - `/sw.js` をこのオリジンに登録し push を受信。
+- ブラウザ側 (`web/client/lib/push/`, `web/client/islands/push_card.tsx`,
+  `web/client/sw.js`):
+  - `${base}/sw.js` をこのオリジンに登録し push を受信 (`router.tsx`
+    の専用ルートが配信。scope を `${base}/` にするため `static/`
+    配下には置かない)。
   - 購読の取得/登録/改名/削除/テストは DPoP-bound fetch で IdP の
     `${IDP_ORIGIN}/push/*` を直接叩く (cross-origin)。VAPID 公開鍵も IdP
     のもの。
-- サーバ側 (`reference/server/lib/push/client.ts`, `lib/signing-key.ts`):
+- サーバ側 (`web/server/lib/push/client.ts`, `lib/signing-key.ts`):
   - `POST /api/notify` がサーバ起点で通知を送る。RP は ES256 鍵で
     `private_key_jwt` クライアントアサーション ([RFC 7521]/[RFC 7523]) を作り、
     IdP の `POST /rp/notifications` へ送信する。
@@ -41,7 +50,7 @@ id.kbn.one を Web Push のバックエンドとして使う最小構成。購�
 
 ## 環境変数
 
-env アクセスは `reference/server/config.ts` に集約し、ホスト非依存にしてある。
+env アクセスは `web/server/config.ts` に集約し、ホスト非依存にしてある。
 `loadConfig(env)` が env レコードから型付き `Config` を作り、`getConfig()` が
 ホストに応じて env を自前で取得する (配線不要): Deno は `Deno.env`、Cloudflare
 Workers は `cloudflare:workers` の `env`。後者は動的 `import()` なので、その
@@ -68,14 +77,35 @@ Deno で catch 不能なエラーになる)。env は top-level await
 なので、公式の同期 SQLite 実装ではなく非同期の
 [`@kuboon/remix-data-table-sqlite-turso`](https://jsr.io/@kuboon/remix-data-table-sqlite-turso)
 (`createTursoDatabase(client)`) を使う。クライアントは edge 対応の
-`@libsql/client/web`。詳細は `reference/server/lib/turso/README.md`。
+`@libsql/client/web`。詳細は `web/server/lib/turso/README.md`。
+
+## デプロイ (Deno Deploy + GitHub Pages)
+
+`web/server/router.tsx` が唯一のエントリ。default export は素の
+`@remix-run/fetch-router` の router で、2 通りに使う。
+
+- **Deno Deploy**: エントリポイント `web/server/router.tsx`
+  (`deno serve`)。ページと server 専用ルート (`/api/*`,
+  `/.well-known/jwks.json`) の両方がライブで応答する。
+- **GitHub Pages**: `.github/workflows/pages.yml` が `deno task build`
+  (`@remix-kbn/ssg`) を走らせ、同じ router を `fetch()` でクロールして
+  `web/dist` に静的 HTML を書き出す。クロールは `entryPoints` (`/`、og
+  画像、`/sw.js`) とそこからの リンクだけを辿る。どこからもリンクしていない
+  `/api/*` は静的化されない。 main は Pages ルート、PR は preview
+  サブパスにデプロイされる (`BASE_URL` から `base` が決まる)。
+
+静的版では API が無いので、`/my` の「サーバーから送信」(`POST /api/notify`) は
+動かない。それ以外 (DPoP + IdP は全てブラウザ → id.kbn.one の直接通信)
+は静的版でも動く。
 
 ## 開発
 
 ```bash
-deno task dev      # reference アプリの開発サーバー起動
-deno task test     # パッケージのテスト実行
-deno task check    # 型チェック
+deno task dev      # web アプリの開発サーバー起動
+deno task build    # GitHub Pages 用の静的サイトを web/dist へ生成
+deno task test     # パッケージ/サーバーのテスト実行
+deno task test:browser  # ブラウザ smoke テスト (lightpanda)
+deno task check    # 型チェック + lint + fmt
 ```
 
 ## コーディング規約
@@ -84,3 +114,6 @@ deno task check    # 型チェック
 - TypeScript strict mode
 - テストは `Deno.test()` + `@std/assert`
 - ファイル名はスネークケース（例: `dpop_test.ts`）
+- ページ/island の見た目は `@remix-run/ui` の `css()` mixin と
+  `web/client/tokens.ts` のトークンで書く (Tailwind / daisyUI は使わない)
+- ブラウザへ渡るコードは `web/client/` に置き、`Deno.` を参照しない

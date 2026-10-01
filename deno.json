@@ -2,20 +2,29 @@
   "workspace": [
     "./packages/session-storage-kv",
     "./packages/remix-dpop-session-middleware",
-    "./reference",
-    "./reference/bundler",
-    "./reference/server",
-    "./reference/client",
-    "./reference/tests"
+    "./web/client",
+    "./web/server",
+    "./web/tests"
   ],
   "tasks": {
-    "dev": "deno task --cwd reference/server dev",
-    "test": "deno test -P --ignore=reference/tests",
-    "test:browser": "deno task --cwd reference/tests pretest && deno task --cwd reference/tests test",
-    "check": "deno check && deno lint && deno fmt --check"
+    "dev": "deno task --cwd web/server dev",
+    "serve": "deno task --cwd web/server serve",
+    "build": "deno task --cwd web/server build",
+    "test": "deno test -P --ignore=web/tests",
+    "test:browser": "deno task --cwd web/tests test",
+    "check": "deno task --cwd web/client check && deno task --cwd web/server check && deno check packages && deno lint && deno fmt --check"
   },
   "permissions": {
-    "default": {}
+    "default": {
+      "read": true,
+      "env": true,
+      "net": [
+        "id.kbn.one",
+        "localhost",
+        "127.0.0.1"
+      ],
+      "import": true
+    }
   },
   "test": {
     "permissions": "default"
@@ -23,17 +32,53 @@
   "nodeModulesDir": "auto",
   "minimumDependencyAge": {
     "age": "P1D",
-    "exclude": ["jsr:@kuboon/*"]
+    "exclude": [
+      "jsr:@kuboon/*",
+      "jsr:@remix-kbn/*",
+      "npm:@remix-run/*"
+    ]
   },
-  "unstable": ["bundle", "kv"],
+  "unstable": [
+    "bundle",
+    "kv"
+  ],
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "@remix-run/ui"
   },
   "imports": {
-    "@lightpanda/browser": "npm:@lightpanda/browser@^1.2.0"
+    "@lightpanda/browser": "npm:@lightpanda/browser@^1.2.0",
+    "@std/assert": "jsr:@std/assert@^1.0.19",
+    "@kuboon/dpop": "jsr:@kuboon/dpop@^0.1.2",
+    "@kuboon/kv": "jsr:@kuboon/kv@^0.2.0",
+    "@kuboon/remix-data-table-sqlite-turso": "jsr:@kuboon/remix-data-table-sqlite-turso@^0.2.0",
+    "@libsql/client": "npm:@libsql/client@^0.17.4",
+    "jose": "jsr:@panva/jose@^6.2.3",
+    "@remix-kbn/assets-deno": "jsr:@remix-kbn/assets-deno@^0.8.0",
+    "@remix-kbn/ssg": "jsr:@remix-kbn/ssg@^0.12.0",
+    "@remix-run/data-table": "npm:@remix-run/data-table@^0.4.0",
+    "@remix-run/fetch-router": "npm:@remix-run/fetch-router@^0.22.2",
+    "@remix-run/render-middleware": "npm:@remix-run/render-middleware@^0.3.2",
+    "@remix-run/session": "npm:@remix-run/session@^0.4.2",
+    "@remix-run/ui": "npm:@remix-run/ui@^0.11.0",
+    "canvaskit-wasm": "npm:canvaskit-wasm@^0.40.0",
+    "puppeteer-core": "npm:puppeteer-core@^23.11.1"
   },
   "allowScripts": {
-    "allow": ["npm:@lightpanda/browser@1.2.0"]
+    "allow": [
+      "npm:@lightpanda/browser@1.2.0"
+    ]
+  },
+  "fmt": {
+    "exclude": [
+      "web/dist",
+      "node_modules"
+    ]
+  },
+  "lint": {
+    "exclude": [
+      "web/dist",
+      "node_modules"
+    ]
   }
 }
