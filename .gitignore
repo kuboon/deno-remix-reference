@@ -1,6 +1,5 @@
 node_modules/
-reference/bundled/
-reference/.bin/
+web/dist/
 
 
 # APM dependencies
