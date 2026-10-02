@@ -2,12 +2,7 @@ import { clientEntry, css, type Handle } from "@remix-run/component";
 import * as tabs from "@remix-run/ui/tabs";
 
 import { theme } from "./_lib/tokens.ts";
-import { DemoCard, Field, Readout, Segmented } from "./_lib/controls.tsx";
-
-const sizes = [
-  { value: "md", label: "md" },
-  { value: "lg", label: "lg" },
-];
+import { DemoCard, Readout } from "./_lib/controls.tsx";
 
 // The headless primitive only wires roles/state; all visuals are app-owned.
 const listStyle = css({
@@ -16,13 +11,10 @@ const listStyle = css({
   borderBottom: `1px solid ${theme.colors.border.subtle}`,
 });
 
-const tabStyles = {
-  md: css({ padding: "8px 14px", fontSize: theme.fontSize.sm }),
-  lg: css({ padding: "10px 18px", fontSize: theme.fontSize.md }),
-};
-
 const tabStyle = css({
   appearance: "none",
+  padding: "8px 14px",
+  fontSize: theme.fontSize.sm,
   background: "transparent",
   border: 0,
   borderBottom: "2px solid transparent",
@@ -74,7 +66,6 @@ export const TabsDemo = clientEntry(
   import.meta.url,
   function TabsDemo(handle: Handle) {
     let active = "overview";
-    let size: "md" | "lg" = "md";
 
     return () => (
       <DemoCard
@@ -102,7 +93,6 @@ export const TabsDemo = clientEntry(
                       type="button"
                       mix={[
                         tabStyle,
-                        tabStyles[size],
                         tabs.tab({ name: item.name }),
                       ]}
                     >
@@ -124,18 +114,8 @@ export const TabsDemo = clientEntry(
         }
         controls={
           <>
-            <Field label="size">
-              <Segmented
-                options={sizes}
-                value={size}
-                onChange={(value) => {
-                  size = value as "md" | "lg";
-                  void handle.update();
-                }}
-              />
-            </Field>
             <Readout>
-              {`<tabs.Context activeTab="${active}"> // size="${size}" is app css`}
+              {`<tabs.Context activeTab="${active}">`}
             </Readout>
           </>
         }

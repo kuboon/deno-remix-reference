@@ -2,12 +2,7 @@ import { clientEntry, css, type Handle } from "@remix-run/component";
 import * as toggle from "@remix-run/ui/toggle";
 
 import { theme } from "./_lib/tokens.ts";
-import { DemoCard, Field, Readout, Segmented } from "./_lib/controls.tsx";
-
-const sizes = [
-  { value: "md", label: "md" },
-  { value: "lg", label: "lg" },
-];
+import { DemoCard, Readout } from "./_lib/controls.tsx";
 
 const rowStyle = css({
   display: "flex",
@@ -58,16 +53,11 @@ function switchStyle(width: number, height: number) {
   });
 }
 
-const switchStyles = {
-  md: switchStyle(36, 20),
-  lg: switchStyle(48, 28),
-};
+const switchMix = switchStyle(36, 20);
 
 export const ToggleDemo = clientEntry(
   import.meta.url,
-  function ToggleDemo(handle: Handle) {
-    let size: "md" | "lg" = "md";
-
+  function ToggleDemo(_handle: Handle) {
     return () => (
       <DemoCard
         id="toggle"
@@ -80,7 +70,7 @@ export const ToggleDemo = clientEntry(
               <input
                 type="checkbox"
                 mix={[
-                  switchStyles[size],
+                  switchMix,
                   toggle.control({ defaultChecked: true }),
                 ]}
               />
@@ -91,14 +81,14 @@ export const ToggleDemo = clientEntry(
                 type="checkbox"
                 // Always pass an options object: the server renderer appends the host props
                 // positionally, so an empty call would hand them to `options` instead.
-                mix={[switchStyles[size], toggle.control({})]}
+                mix={[switchMix, toggle.control({})]}
               />
               Weekly digest
             </label>
             <label mix={rowStyle}>
               <input
                 type="checkbox"
-                mix={[switchStyles[size], toggle.control({ disabled: true })]}
+                mix={[switchMix, toggle.control({ disabled: true })]}
               />
               SMS alerts (disabled)
             </label>
@@ -106,18 +96,8 @@ export const ToggleDemo = clientEntry(
         }
         controls={
           <>
-            <Field label="size">
-              <Segmented
-                options={sizes}
-                value={size}
-                onChange={(value) => {
-                  size = value as "md" | "lg";
-                  void handle.update();
-                }}
-              />
-            </Field>
             <Readout>
-              {`<input type="checkbox" mix={toggle.control({ defaultChecked: true })} /> // size="${size}" is app css`}
+              {`<input type="checkbox" mix={toggle.control({ defaultChecked: true })} />`}
             </Readout>
           </>
         }
