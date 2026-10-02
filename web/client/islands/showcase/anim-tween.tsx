@@ -1,5 +1,5 @@
-import { clientEntry, css, type Handle, on, ref } from "@remix-run/ui";
-import button from "@remix-run/ui/button";
+import { clientEntry, css, type Handle, on, ref } from "@remix-run/component";
+import button from "./_lib/button.ts";
 import { easings, tween } from "@remix-run/ui/animation";
 
 import { iconButtonStyle, PlayIcon } from "./_lib/icons.tsx";
@@ -150,7 +150,14 @@ export const TweenDemo = clientEntry(
               />
             </Field>
             <Readout>
-              {`tween({ from: 0, to: 100, duration: ${duration}, curve: easings.${curve} })`}
+              {[
+                `let animation = tween({ from: 0, to: 100, duration: ${duration}, curve: easings.${curve} })`,
+                `requestAnimationFrame(function tick(t) {`,
+                `  let { value, done } = animation.next(t)`,
+                `  bar.style.width = \`\${value}%\``,
+                `  if (!done) requestAnimationFrame(tick)`,
+                `})`,
+              ].join("\n")}
             </Readout>
           </>
         }

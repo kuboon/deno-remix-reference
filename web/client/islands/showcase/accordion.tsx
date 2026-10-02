@@ -1,10 +1,5 @@
-import { clientEntry, css, type Handle } from "@remix-run/ui";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@remix-run/ui/accordion";
+import { clientEntry, css, type Handle } from "@remix-run/component";
+import * as accordion from "@remix-run/ui/accordion";
 import { theme } from "./_lib/tokens.ts";
 
 import {
@@ -22,10 +17,81 @@ const types = [
   { value: "multiple", label: "Multiple" },
 ];
 
+// The headless primitive only wires ARIA/state; all visuals are app-owned.
+const rootStyle = css({
+  border: `1px solid ${theme.colors.border.subtle}`,
+  borderRadius: theme.radius.md,
+  overflow: "hidden",
+  background: theme.surface.lvl0,
+});
+
+const itemStyle = css({
+  "& + &": { borderTop: `1px solid ${theme.colors.border.subtle}` },
+});
+
+const headingStyle = css({ margin: 0, font: "inherit" });
+
+const triggerStyle = css({
+  appearance: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  width: "100%",
+  padding: "12px 14px",
+  border: 0,
+  background: "transparent",
+  color: theme.colors.text.primary,
+  fontFamily: "inherit",
+  fontSize: theme.fontSize.sm,
+  fontWeight: theme.fontWeight.medium,
+  textAlign: "left",
+  cursor: "pointer",
+  "&::after": {
+    content: '""',
+    width: "7px",
+    height: "7px",
+    borderRight: "2px solid currentColor",
+    borderBottom: "2px solid currentColor",
+    transform: "rotate(45deg)",
+    transition: "transform 120ms ease",
+  },
+  "&[data-state='open']::after": { transform: "rotate(-135deg)" },
+  "&:hover:not(:disabled)": { background: theme.surface.lvl1 },
+  "&:focus-visible": {
+    outline: `2px solid ${theme.colors.focus.ring}`,
+    outlineOffset: "-2px",
+  },
+  "&:disabled": { opacity: 0.5, cursor: "not-allowed" },
+  "&[aria-disabled='true']": { cursor: "default" },
+});
+
 const contentStyle = css({
+  padding: "0 14px 14px",
   color: theme.colors.text.secondary,
   fontSize: theme.fontSize.sm,
+  "&[data-state='closed']": { display: "none" },
+  "& p": { margin: 0 },
 });
+
+const sections = [
+  {
+    value: "account",
+    label: "Account",
+    text: "Manage profile, email, and password preferences.",
+  },
+  {
+    value: "billing",
+    label: "Billing",
+    text: "Review invoices and update the payment method.",
+  },
+  {
+    value: "notifications",
+    label: "Notifications",
+    text: "Choose which events send email and in-app alerts.",
+  },
+];
+
+type HeadingTag = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
 export const AccordionDemo = clientEntry(
   import.meta.url,
@@ -37,67 +103,67 @@ export const AccordionDemo = clientEntry(
 
     return () => {
       const multiple = type === "multiple";
-      // Remount when the mode changes — single/multiple use different value shapes.
-      const body = (
-        <>
-          <AccordionItem value="account">
-            <AccordionTrigger>Account</AccordionTrigger>
-            <AccordionContent>
-              <p mix={contentStyle}>
-                Manage profile, email, and password preferences.
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="billing" disabled={disableItem}>
-            <AccordionTrigger>
-              Billing {disableItem ? "(disabled)" : ""}
-            </AccordionTrigger>
-            <AccordionContent>
-              <p mix={contentStyle}>
-                Review invoices and update the payment method.
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="notifications">
-            <AccordionTrigger>Notifications</AccordionTrigger>
-            <AccordionContent>
-              <p mix={contentStyle}>
-                Choose which events send email and in-app alerts.
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-        </>
+      const Heading = `h${headingLevel}` as HeadingTag;
+      const items = (
+        <div mix={[rootStyle, accordion.root()]}>
+          {sections.map((section) => {
+            const disabled = section.value === "billing" && disableItem;
+            return (
+              <accordion.ItemContext
+                key={section.value}
+                value={section.value}
+                disabled={disabled}
+              >
+                <div mix={[itemStyle, accordion.item()]}>
+                  <Heading mix={headingStyle}>
+                    <button
+                      type="button"
+                      mix={[triggerStyle, accordion.trigger()]}
+                    >
+                      {section.label}
+                      {disabled ? " (disabled)" : ""}
+                    </button>
+                  </Heading>
+                  <div mix={[contentStyle, accordion.content()]}>
+                    <p>{section.text}</p>
+                  </div>
+                </div>
+              </accordion.ItemContext>
+            );
+          })}
+        </div>
       );
 
       return (
         <DemoCard
           id="accordion"
           title="Accordion"
-          badge="remix/ui/accordion"
+          badge="@remix-run/ui/accordion"
           tagline="A disclosure set with single or multiple expandable items."
           stage={
             <div mix={css({ width: "min(420px, 100%)" })}>
+              {/* Remount when the mode changes: single/multiple use different value shapes. */}
               {multiple
                 ? (
-                  <Accordion
+                  <accordion.Context
                     key="multiple"
                     type="multiple"
                     defaultValue={["account"]}
                     headingLevel={headingLevel as 1 | 2 | 3 | 4 | 5 | 6}
                   >
-                    {body}
-                  </Accordion>
+                    {items}
+                  </accordion.Context>
                 )
                 : (
-                  <Accordion
+                  <accordion.Context
                     key="single"
                     type="single"
                     defaultValue="account"
                     collapsible={collapsible}
                     headingLevel={headingLevel as 1 | 2 | 3 | 4 | 5 | 6}
                   >
-                    {body}
-                  </Accordion>
+                    {items}
+                  </accordion.Context>
                 )}
             </div>
           }
@@ -145,12 +211,14 @@ export const AccordionDemo = clientEntry(
               <Readout>
                 {[
                   multiple
-                    ? `<Accordion type="multiple" defaultValue={['account']} headingLevel={${headingLevel}}>`
-                    : `<Accordion defaultValue="account" collapsible={${collapsible}} headingLevel={${headingLevel}}>`,
-                  `  <AccordionItem value="billing"${
+                    ? `<accordion.Context type="multiple" defaultValue={['account']}>`
+                    : `<accordion.Context defaultValue="account" collapsible={${collapsible}}>`,
+                  `  <accordion.ItemContext value="billing"${
                     disableItem ? " disabled" : ""
-                  }>...</AccordionItem>`,
-                  `</Accordion>`,
+                  }>`,
+                  `    <h${headingLevel}><button mix={accordion.trigger()} /></h${headingLevel}>`,
+                  `  </accordion.ItemContext>`,
+                  `</accordion.Context>`,
                 ].join("\n")}
               </Readout>
             </>

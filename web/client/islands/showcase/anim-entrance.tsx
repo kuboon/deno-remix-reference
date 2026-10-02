@@ -1,5 +1,5 @@
-import { clientEntry, css, type Handle, on } from "@remix-run/ui";
-import button from "@remix-run/ui/button";
+import { clientEntry, css, type Handle, on } from "@remix-run/component";
+import button from "./_lib/button.ts";
 import {
   animateEntrance,
   animateExit,
@@ -166,9 +166,16 @@ export const EntranceExitDemo = clientEntry(
                 </Field>
               </ControlGrid>
               <Readout>
-                {`animateEntrance({ opacity: 0, transform: ${
-                  transform ? `"${transform}"` : "undefined"
-                }, ...spring("${preset}") })`}
+                {[
+                  `<li mix={[`,
+                  `  animateEntrance({ opacity: 0${
+                    transform ? `, transform: "${transform}"` : ""
+                  }, ...spring("${preset}") }),`,
+                  `  animateExit({ opacity: 0${
+                    transform ? `, transform: "${transform}"` : ""
+                  }, ...spring("${preset}") }),`,
+                  `]} />`,
+                ].join("\n")}
               </Readout>
             </>
           }

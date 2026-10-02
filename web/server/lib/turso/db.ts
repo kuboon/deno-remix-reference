@@ -1,7 +1,7 @@
 /**
  * Turso (libSQL) sample wired through `@remix-run/data-table`.
  *
- * Uses `@kuboon/remix-data-table-sqlite-turso` — an *asynchronous* SQLite
+ * Uses `@remix-kbn/data-table-sqlite-turso` — an *asynchronous* SQLite
  * database for data-table — so the relational query API works against a remote
  * Turso database. (The upstream `@remix-run/data-table-sqlite` needs a
  * *synchronous* client like `node:sqlite`, which cannot drive remote Turso.)
@@ -18,7 +18,7 @@ import { column, table } from "@remix-run/data-table";
 import {
   createTursoDatabase,
   type TursoDatabase,
-} from "@kuboon/remix-data-table-sqlite-turso";
+} from "@remix-kbn/data-table-sqlite-turso";
 
 import { getConfig } from "../../config.ts";
 

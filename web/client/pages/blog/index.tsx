@@ -7,7 +7,7 @@
  * something links to, so an article missing from this list is an article missing from `dist/`.
  */
 
-import { css, type Handle } from "@remix-run/ui";
+import { css, type Handle } from "@remix-run/component";
 
 import { routes } from "../../routes.ts";
 import { metaStyle } from "../../theme.ts";

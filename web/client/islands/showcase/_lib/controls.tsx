@@ -1,4 +1,4 @@
-import { css, type Handle, on, type RemixNode } from "@remix-run/ui";
+import { css, type Handle, on, type RemixNode } from "@remix-run/component";
 
 import { brandTint, theme } from "./tokens.ts";
 

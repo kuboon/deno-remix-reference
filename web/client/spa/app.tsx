@@ -20,7 +20,7 @@ import {
   type RouterContext,
 } from "@remix-run/fetch-router";
 import { render } from "@remix-run/spa";
-import type { Handle } from "@remix-run/ui";
+import type { Handle } from "@remix-run/component";
 
 import { HELPER_SRC } from "../helper/install.ts";
 import { Shell } from "../layout.tsx";

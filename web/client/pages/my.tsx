@@ -1,4 +1,4 @@
-import { css, type Handle } from "@remix-run/ui";
+import { css, type Handle } from "@remix-run/component";
 
 import { IDP_ORIGIN } from "../idp.ts";
 import { PushCard } from "../islands/push_card.tsx";

@@ -37,8 +37,8 @@ id.kbn.one 連携の push 通知を含む。
   `deno task test:browser` を通す。 `TEMPLATE.md`
   の削除リストが本当に通るか、確かめるには scratch の `git worktree` で static
   用と server 用の リストをそれぞれ実際に消して `check`/`build`(`test`) を回す。
-- `@remix-run/render-middleware` は `0.3.2` 固定（`TEMPLATE.md`
-  参照）。依存を上げたら `/about` の本文を確認する。
+- `@remix-run/render-middleware` / `@remix-run/spa` は 1.0.0 で固定を外した
+  （`TEMPLATE.md` 参照）。依存を上げたら `/about` の本文を確認する。
 
 ## 構造
 
@@ -112,7 +112,7 @@ Deno で catch 不能なエラーになる)。env は top-level await
 `GET /api/turso` が `@remix-run/data-table` のリレーショナル API で Turso に
 アクセスし、`visits` を記録して累計を返す。Turso の `@libsql/client` は非同期
 なので、公式の同期 SQLite 実装ではなく非同期の
-[`@kuboon/remix-data-table-sqlite-turso`](https://jsr.io/@kuboon/remix-data-table-sqlite-turso)
+[`@remix-kbn/data-table-sqlite-turso`](https://jsr.io/@remix-kbn/data-table-sqlite-turso)
 (`createTursoDatabase(client)`) を使う。クライアントは edge 対応の
 `@libsql/client/web`。詳細は `web/server/lib/turso/README.md`。
 
@@ -151,6 +151,6 @@ deno task check    # 型チェック + lint + fmt
 - TypeScript strict mode
 - テストは `Deno.test()` + `@std/assert`
 - ファイル名はスネークケース（例: `dpop_test.ts`）
-- ページ/island の見た目は `@remix-run/ui` の `css()` mixin と
+- ページ/island の見た目は `@remix-run/component` の `css()` mixin と
   `web/client/tokens.ts` のトークンで書く (Tailwind / daisyUI は使わない)
 - ブラウザへ渡るコードは `web/client/` に置き、`Deno.` を参照しない

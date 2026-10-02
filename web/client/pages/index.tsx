@@ -1,4 +1,4 @@
-import { css, type Handle } from "@remix-run/ui";
+import { css, type Handle } from "@remix-run/component";
 
 import { routes } from "../routes.ts";
 import { cardStyle } from "../theme.ts";

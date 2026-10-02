@@ -1,4 +1,4 @@
-import { clientEntry, css, type Handle } from "@remix-run/ui";
+import { clientEntry, css, type Handle } from "@remix-run/component";
 import * as listbox from "@remix-run/ui/listbox";
 import type { ListboxValue } from "@remix-run/ui/listbox";
 
@@ -59,7 +59,7 @@ export const ListboxDemo = clientEntry(
       <DemoCard
         id="listbox"
         title="Listbox"
-        badge="remix/ui/listbox"
+        badge="@remix-run/ui/listbox"
         tagline="The headless option-list primitive with controlled selection and highlighting."
         stage={
           <listbox.Context
@@ -96,9 +96,17 @@ export const ListboxDemo = clientEntry(
         }
         controls={
           <Readout>
-            {`value      = "${value ?? "null"}"\nhighlighted = "${
-              activeValue ?? "null"
-            }"`}
+            {[
+              `<listbox.Context value="${value ?? "null"}" activeValue="${
+                activeValue ?? "null"
+              }" onSelect={…} onHighlight={…}>`,
+              `  <div mix={listbox.list()}>`,
+              `    <div mix={listbox.option({ value: "remix", label: "Remix" })} />`,
+              `    <div mix={listbox.option({ value: "react-router", label: "React Router", disabled: true })} />`,
+              `    …`,
+              `  </div>`,
+              `</listbox.Context>`,
+            ].join("\n")}
           </Readout>
         }
         note="Selection and highlighting are fully controlled — arrow keys, typeahead, and click all route through onSelect / onHighlight."

@@ -1,7 +1,7 @@
 /**
  * The `css(...)` mixins more than one module uses.
  *
- * Every rule here is a mixin from `@remix-run/ui`. The server collects the mixins a page actually
+ * Every rule here is a mixin from `@remix-run/component`. The server collects the mixins a page actually
  * rendered and emits them as `<style>` tags in that page's `<head>`, so each page ships its own
  * CSS and nothing else: no extra request, and no rules for parts of the site the reader never
  * opened.
@@ -18,7 +18,7 @@
  *   in that file, next to the markup it dresses.
  */
 
-import { css } from "@remix-run/ui";
+import { css } from "@remix-run/component";
 
 import { color, radius } from "./tokens.ts";
 

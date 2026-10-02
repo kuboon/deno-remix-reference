@@ -1,5 +1,5 @@
-import { clientEntry, css } from "@remix-run/ui";
-import type { Handle } from "@remix-run/ui";
+import { clientEntry, css } from "@remix-run/component";
+import type { Handle } from "@remix-run/component";
 
 import { color, radius } from "../tokens.ts";
 import { clicks } from "./store.ts";

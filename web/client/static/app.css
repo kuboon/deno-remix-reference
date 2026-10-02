@@ -1,7 +1,7 @@
 /*
  * The site's design tokens and document-level defaults.
  *
- * Everything else on this site is a `css(...)` mixin from `@remix-run/ui`, rendered into each
+ * Everything else on this site is a `css(...)` mixin from `@remix-run/component`, rendered into each
  * page's <head>. Two things cannot be, and they are both here.
  *
  * The cascade order, first. Generated `css(...)` rules — this site's mixins and the styling

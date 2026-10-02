@@ -1,5 +1,5 @@
-import { clientEntry, css, type Handle, on } from "@remix-run/ui";
-import button from "@remix-run/ui/button";
+import { clientEntry, css, type Handle, on } from "@remix-run/component";
+import button from "./_lib/button.ts";
 import * as popover from "@remix-run/ui/popover";
 
 import { theme } from "./_lib/tokens.ts";
@@ -65,7 +65,7 @@ export const PopoverDemo = clientEntry(
       <DemoCard
         id="popover"
         title="Popover"
-        badge="remix/ui/popover"
+        badge="@remix-run/ui/popover"
         tagline="The low-level anchored, dismissible floating surface primitive."
         stage={
           <popover.Context>
@@ -147,7 +147,14 @@ export const PopoverDemo = clientEntry(
               />
             </Field>
             <Readout>
-              {`popover.anchor({ placement: "${placement}", offset: ${offset} })`}
+              {[
+                `<popover.Context>`,
+                `  <button mix={[popover.anchor({ placement: "${placement}", offset: ${offset} }), popover.focusOnHide()]} />`,
+                `  <div mix={popover.surface({ open, onHide })}>`,
+                `    <button mix={popover.focusOnShow()} />`,
+                `  </div>`,
+                `</popover.Context>`,
+              ].join("\n")}
             </Readout>
           </>
         }

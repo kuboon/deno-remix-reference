@@ -10,7 +10,7 @@
  * ships, which is nothing.
  */
 
-import { css, type Handle, type RemixNode } from "@remix-run/ui";
+import { css, type Handle, type RemixNode } from "@remix-run/component";
 
 import { ShareRow } from "../../islands/share.tsx";
 import { routes } from "../../routes.ts";

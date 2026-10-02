@@ -1,7 +1,7 @@
 /**
  * Local design tokens for the showcase.
  *
- * remix/ui 0.5.0 removed the public `theme` token contract (components are now
+ * @remix-run/ui 0.5.0 removed the public `theme` token contract (components are now
  * self-styled), so the showcase carries its own token object. It keeps the same
  * nested shape the demos already consume — `theme.colors.text.primary`, etc. —
  * with concrete light-mode values, so styling stays consistent across the page

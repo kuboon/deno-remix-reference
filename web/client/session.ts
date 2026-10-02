@@ -15,7 +15,7 @@
  */
 
 import { init } from "@kuboon/dpop";
-import { TypedEventTarget } from "@remix-run/ui";
+import { TypedEventTarget } from "@remix-run/component";
 
 import { IDP_ORIGIN } from "./idp.ts";
 

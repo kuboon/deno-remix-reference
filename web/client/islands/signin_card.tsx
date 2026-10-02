@@ -1,5 +1,5 @@
 /**
- * SignInCard — a @remix-run/ui `clientEntry` for the /my page.
+ * SignInCard — a @remix-run/component `clientEntry` for the /my page.
  *
  * Shows the DPoP session status, thumbprint, and a sign-out button. Signing in
  * is initiated from the navbar (NavAuth); when signed out this card just points
@@ -18,7 +18,7 @@ import {
   type Handle,
   on,
   type SerializableValue,
-} from "@remix-run/ui";
+} from "@remix-run/component";
 
 import { sessionStore } from "../session.ts";
 import { actionStyle, alertStyle, cardStyle } from "../theme.ts";

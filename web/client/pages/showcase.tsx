@@ -1,5 +1,5 @@
 /**
- * The `@remix-run/ui` component showcase — a port of
+ * The `@remix-run/component` + `@remix-run/ui` showcase — a port of
  * https://github.com/kuboon/remix3-ui-showcase onto this framework.
  *
  * DELETE ME in a repository made from this template: this page, its route and
@@ -8,11 +8,11 @@
  * `@remix-run/ui/*` subpath entries in `deno.json`. See the root README.
  *
  * It stays here because it is the honest stress test of the island pipeline:
- * 18 entrypoints compiled as one graph, sharing the component library through
- * code-split chunks instead of carrying 18 copies of it.
+ * 13 entrypoints compiled as one graph, sharing the component library through
+ * code-split chunks instead of carrying 13 copies of it.
  */
 
-import { css, type Handle, type RemixNode } from "@remix-run/ui";
+import { css, type Handle, type RemixNode } from "@remix-run/component";
 
 import { AccordionDemo } from "../islands/showcase/accordion.tsx";
 import { EntranceExitDemo } from "../islands/showcase/anim-entrance.tsx";
@@ -20,15 +20,10 @@ import { LayoutDemo } from "../islands/showcase/anim-layout.tsx";
 import { SpringDemo } from "../islands/showcase/anim-spring.tsx";
 import { TweenDemo } from "../islands/showcase/anim-tween.tsx";
 import { AnchorDemo } from "../islands/showcase/anchor.tsx";
-import { BreadcrumbsDemo } from "../islands/showcase/breadcrumbs.tsx";
-import { ButtonsDemo } from "../islands/showcase/buttons.tsx";
-import { CheckboxDemo } from "../islands/showcase/checkbox.tsx";
 import { ComboboxDemo } from "../islands/showcase/combobox.tsx";
-import { InputDemo } from "../islands/showcase/input.tsx";
 import { ListboxDemo } from "../islands/showcase/listbox.tsx";
 import { MenuDemo } from "../islands/showcase/menu.tsx";
 import { PopoverDemo } from "../islands/showcase/popover.tsx";
-import { RadioDemo } from "../islands/showcase/radio.tsx";
 import { SelectDemo } from "../islands/showcase/select.tsx";
 import { TabsDemo } from "../islands/showcase/tabs.tsx";
 import { ToggleDemo } from "../islands/showcase/toggle.tsx";
@@ -36,19 +31,14 @@ import { brandTint, fontSans, theme } from "../islands/showcase/_lib/tokens.ts";
 
 export const title = "UI showcase — Remix3 on Deno";
 export const description =
-  "Every first-party @remix-run/ui component and the animation primitives, " +
-  "each one a hydrated island whose parameters you can change live.";
+  "Headless @remix-run/ui primitives with app-owned styling, and the animation " +
+  "helpers, each one a hydrated island whose parameters you can change live.";
 
 /** This page places client entries, so the shell boots the runtime for it. */
 export const hydrate = true;
 
 const componentLinks = [
-  { id: "button", label: "Button" },
-  { id: "input", label: "Input" },
-  { id: "checkbox", label: "Checkbox" },
-  { id: "radio", label: "Radio" },
   { id: "toggle", label: "Toggle" },
-  { id: "breadcrumbs", label: "Breadcrumbs" },
   { id: "tabs", label: "Tabs" },
   { id: "accordion", label: "Accordion" },
   { id: "menu", label: "Menu" },
@@ -87,16 +77,11 @@ export default function ShowcasePage(
         <Section
           id="components"
           eyebrow="Components"
-          title="Every first-party component in remix/ui"
-          description="Each card renders a real component from remix/ui. Use the controls below each preview to change its parameters live — the previews are hydrated Remix UI islands."
+          title="Headless primitives from @remix-run/ui, styled by the app"
+          description="Each card is built on a headless primitive from @remix-run/ui — behavior and accessibility from the package, styling from this app. Use the controls below each preview to change its parameters live; the previews are hydrated islands."
         >
           <div mix={gridStyle}>
-            <ButtonsDemo />
-            <InputDemo />
-            <CheckboxDemo />
-            <RadioDemo />
             <ToggleDemo />
-            <BreadcrumbsDemo />
             <TabsDemo />
             <AccordionDemo />
             <MenuDemo />
@@ -112,7 +97,7 @@ export default function ShowcasePage(
           id="animation"
           eyebrow="Animation"
           title="The animation primitives, parameterised"
-          description="Spring, tween, entrance/exit, and layout helpers from remix/ui/animation. Tune the presets and curves and replay the motion in place."
+          description="Spring, tween, entrance/exit, and layout helpers from @remix-run/ui/animation. Tune the presets and curves and replay the motion in place."
         >
           <div mix={gridStyle}>
             <SpringDemo />
@@ -132,14 +117,15 @@ function Hero(handle: Handle<{ versions: readonly Version[] }>) {
   return () => (
     <header mix={heroStyle}>
       <div mix={css({ display: "grid", gap: "18px" })}>
-        <span mix={eyebrowChipStyle}>Remix 3 · remix/ui</span>
+        <span mix={eyebrowChipStyle}>Remix 3 · component + ui</span>
         <h1 mix={heroTitleStyle}>Interactive UI &amp; animation showcase</h1>
         <p mix={heroLeadStyle}>
-          A living catalogue of every component in{" "}
-          <code mix={codeStyle}>remix/ui</code> plus the{" "}
-          <code mix={codeStyle}>remix/ui/animation</code>{" "}
-          primitives. Every preview is a server-rendered, client-hydrated Remix
-          island whose parameters you can change on the fly.
+          A living catalogue of the headless primitives in{" "}
+          <code mix={codeStyle}>@remix-run/ui</code> plus its{" "}
+          <code mix={codeStyle}>animation</code>{" "}
+          helpers, styled by this app. Every preview is a server-rendered,
+          client-hydrated Remix island whose parameters you can change on the
+          fly.
         </p>
         <nav
           aria-label="Jump to a demo"
@@ -253,7 +239,7 @@ function Footer(_handle: Handle) {
         href="https://github.com/remix-run/remix/tree/main/packages/ui"
         mix={footerLinkStyle}
       >
-        remix/ui source ↗
+        @remix-run/ui source ↗
       </a>
     </footer>
   );

@@ -1,7 +1,7 @@
 /**
  * The two navigations the runtime should not be handling, handed back to the browser.
  *
- * Calling `run()` — either one, `@remix-run/ui`'s or `@remix-run/spa`'s — starts a Navigation API
+ * Calling `run()` — either one, `@remix-run/component`'s or `@remix-run/spa`'s — starts a Navigation API
  * listener that intercepts every same-origin navigation it can. Two of those are not navigations
  * at all in the sense the runtime means, and intercepting them is a regression rather than an
  * enhancement:
@@ -15,8 +15,8 @@
  *   people reload *for*: component state survives it. A counter at 3 is still at 3 afterwards.
  *
  * Remix's own documentation site ships this same guard in its browser entry, with a comment saying
- * to remove it once `remix/ui` ignores these itself, so this is a workaround with an expiry date
- * rather than a disagreement with the framework. Check it against `@remix-run/ui`'s changelog when
+ * to remove it once `@remix-run/component` ignores these itself, so this is a workaround with an expiry date
+ * rather than a disagreement with the framework. Check it against `@remix-run/component`'s changelog when
  * bumping the version, and delete this file when it lands upstream.
  *
  * `stopImmediatePropagation()` in the capture phase is what hands the navigation back: the

@@ -1,5 +1,5 @@
-import { clientEntry, css, type Handle, on } from "@remix-run/ui";
-import button from "@remix-run/ui/button";
+import { clientEntry, css, type Handle, on } from "@remix-run/component";
+import button from "./_lib/button.ts";
 import { spring, type SpringPreset } from "@remix-run/ui/animation";
 
 import { iconButtonStyle, PlayIcon } from "./_lib/icons.tsx";
@@ -130,7 +130,13 @@ export const SpringDemo = clientEntry(
                   </ControlGrid>
                 )
                 : null}
-              <Readout>{`transition: ${transition}`}</Readout>
+              <Readout>
+                {`<div style={{ transition: spring.transition("left", ${
+                  custom
+                    ? `{ duration: ${duration}, bounce: ${bounce.toFixed(2)} }`
+                    : `"${mode}"`
+                }) }} />`}
+              </Readout>
             </>
           }
         />

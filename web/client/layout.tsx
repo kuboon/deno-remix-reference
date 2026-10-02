@@ -35,7 +35,7 @@
  * before `</head>`, so the link has to come first.
  */
 
-import { attrs, css, type Handle, type RemixNode } from "@remix-run/ui";
+import { attrs, css, type Handle, type RemixNode } from "@remix-run/component";
 
 import { base, BASE_META_NAME } from "./base.ts";
 import { HELPER_BUTTON_ID, HELPER_SRC_ATTRIBUTE } from "./helper/button.ts";
