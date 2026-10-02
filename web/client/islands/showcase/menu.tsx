@@ -226,16 +226,28 @@ export const MenuDemo = clientEntry(
             </ControlGrid>
             <Readout>
               {[
-                `menu.item({ name: "minimap"${
+                `<menu.Context label="View">`,
+                `  <button mix={menu.trigger({ placement: "bottom-start", offset: 6 })} />`,
+                `  <div mix={menu.popover()}>`,
+                `    <div mix={menu.list()}>`,
+                `      <div mix={menu.item({ name: "wordWrap", type: "checkbox", checked: ${wordWrap} })} />`,
+                `      <div mix={menu.item({ name: "minimap"${
                   disableMinimap ? ", disabled: true" : ""
-                } })`,
-                includeSubmenu
-                  ? `menu.submenuTrigger({ label: "Zoom" })`
-                  : `{/* submenu omitted */}`,
+                } })} />`,
+                `      <div mix={menu.item({ name: "density", type: "radio", value: "${density}", checked: true })} />`,
+                ...(includeSubmenu
+                  ? [
+                    `      <menu.Context>`,
+                    `        <div mix={menu.submenuTrigger({ label: "Zoom" })} />`,
+                    `        …`,
+                    `      </menu.Context>`,
+                  ]
+                  : []),
+                `    </div>`,
+                `  </div>`,
+                `</menu.Context>`,
                 ``,
-                `wordWrap = ${wordWrap}`,
-                `density  = "${density}"`,
-                `last     = ${lastAction}`,
+                `// last select: ${lastAction}`,
               ].join("\n")}
             </Readout>
           </>

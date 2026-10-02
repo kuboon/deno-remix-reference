@@ -156,9 +156,26 @@ export const ComboboxDemo = clientEntry(
               />
             </Field>
             <Readout>
-              {`combobox.Context({ name: "airport"${
-                disabled ? ", disabled: true" : ""
-              } })\n\nvalue = "${value}"\nlabel = "${label}"`}
+              {[
+                `<combobox.Context name="airport"${
+                  disabled ? " disabled" : ""
+                }>`,
+                `  <input mix={combobox.input()} />`,
+                `  <div mix={combobox.popover()}>`,
+                `    <div mix={combobox.list()}>`,
+                `      <div mix={combobox.option({ value: "LAX", label: "Los Angeles International", searchValue: ["lax", "los angeles"] })} />`,
+                `      …`,
+                `    </div>`,
+                `  </div>`,
+                `  <input type="hidden" mix={combobox.hiddenInput()} />`,
+                `</combobox.Context>`,
+                ``,
+                value === "(none)"
+                  ? `// value = null`
+                  : `// value = ${JSON.stringify(value)}, label = ${
+                    JSON.stringify(label)
+                  }`,
+              ].join("\n")}
             </Readout>
           </>
         }

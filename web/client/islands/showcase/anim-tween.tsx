@@ -150,7 +150,14 @@ export const TweenDemo = clientEntry(
               />
             </Field>
             <Readout>
-              {`tween({ from: 0, to: 100, duration: ${duration}, curve: easings.${curve} })`}
+              {[
+                `let animation = tween({ from: 0, to: 100, duration: ${duration}, curve: easings.${curve} })`,
+                `requestAnimationFrame(function tick(t) {`,
+                `  let { value, done } = animation.next(t)`,
+                `  bar.style.width = \`\${value}%\``,
+                `  if (!done) requestAnimationFrame(tick)`,
+                `})`,
+              ].join("\n")}
             </Readout>
           </>
         }

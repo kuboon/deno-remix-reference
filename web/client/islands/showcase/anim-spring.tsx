@@ -130,7 +130,13 @@ export const SpringDemo = clientEntry(
                   </ControlGrid>
                 )
                 : null}
-              <Readout>{`transition: ${transition}`}</Readout>
+              <Readout>
+                {`<div style={{ transition: spring.transition("left", ${
+                  custom
+                    ? `{ duration: ${duration}, bounce: ${bounce.toFixed(2)} }`
+                    : `"${mode}"`
+                }) }} />`}
+              </Readout>
             </>
           }
         />

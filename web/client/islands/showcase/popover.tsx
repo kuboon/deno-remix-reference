@@ -147,7 +147,14 @@ export const PopoverDemo = clientEntry(
               />
             </Field>
             <Readout>
-              {`popover.anchor({ placement: "${placement}", offset: ${offset} })`}
+              {[
+                `<popover.Context>`,
+                `  <button mix={[popover.anchor({ placement: "${placement}", offset: ${offset} }), popover.focusOnHide()]} />`,
+                `  <div mix={popover.surface({ open, onHide })}>`,
+                `    <button mix={popover.focusOnShow()} />`,
+                `  </div>`,
+                `</popover.Context>`,
+              ].join("\n")}
             </Readout>
           </>
         }

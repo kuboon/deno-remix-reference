@@ -158,9 +158,28 @@ export const SelectDemo = clientEntry(
               />
             </Field>
             <Readout>
-              {`select.Context({ name: "framework"${
-                disabled ? ", disabled: true" : ""
-              } })\n\nvalue = "${value}"\nlabel = "${label}"`}
+              {[
+                `<select.Context name="framework"${
+                  disabled ? " disabled" : ""
+                }>`,
+                `  <button mix={select.trigger()} />`,
+                `  <popover.Context>`,
+                `    <div mix={select.popover()}>`,
+                `      <div mix={select.list()}>`,
+                `        <div mix={select.option({ value: "remix", label: "Remix" })} />`,
+                `        …`,
+                `      </div>`,
+                `    </div>`,
+                `  </popover.Context>`,
+                `  <input mix={select.hiddenInput()} />`,
+                `</select.Context>`,
+                ``,
+                value === "(none)"
+                  ? `// value = null`
+                  : `// value = ${JSON.stringify(value)}, label = ${
+                    JSON.stringify(label)
+                  }`,
+              ].join("\n")}
             </Readout>
           </>
         }

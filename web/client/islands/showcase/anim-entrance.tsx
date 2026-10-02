@@ -166,9 +166,16 @@ export const EntranceExitDemo = clientEntry(
                 </Field>
               </ControlGrid>
               <Readout>
-                {`animateEntrance({ opacity: 0, transform: ${
-                  transform ? `"${transform}"` : "undefined"
-                }, ...spring("${preset}") })`}
+                {[
+                  `<li mix={[`,
+                  `  animateEntrance({ opacity: 0${
+                    transform ? `, transform: "${transform}"` : ""
+                  }, ...spring("${preset}") }),`,
+                  `  animateExit({ opacity: 0${
+                    transform ? `, transform: "${transform}"` : ""
+                  }, ...spring("${preset}") }),`,
+                  `]} />`,
+                ].join("\n")}
               </Readout>
             </>
           }

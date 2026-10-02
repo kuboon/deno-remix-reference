@@ -104,9 +104,9 @@ export const LayoutDemo = clientEntry(
                 Toggle layout
               </button>
               <Readout>
-                {`animateLayout({ ...spring("${preset}")${
+                {`<div mix={animateLayout({ ...spring("${preset}")${
                   animateSize ? "" : ", size: false"
-                } })`}
+                } })} />`}
               </Readout>
             </>
           }

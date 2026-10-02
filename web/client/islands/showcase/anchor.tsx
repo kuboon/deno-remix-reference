@@ -32,10 +32,18 @@ export const AnchorDemo = clientEntry(
     let offset = 10;
     let inset = false;
 
+    // `anchor()` keeps the floating element inside the viewport, which is right for a transient
+    // surface but would drag this always-on demo along the screen edge while the card is scrolled
+    // away. So it only runs, and the floating element only shows, while the anchor is on screen.
+    let onScreen = false;
+    // Created in the anchor's `ref`, which only runs in the browser.
+    let observer: IntersectionObserver | null = null;
+
     function reposition() {
       cleanup?.();
       cleanup = null;
-      if (anchorEl && floatEl) {
+      if (floatEl) floatEl.hidden = !onScreen;
+      if (onScreen && anchorEl && floatEl) {
         cleanup = anchor(floatEl, anchorEl, {
           placement: placement as AnchorPlacement,
           offset,
@@ -44,7 +52,10 @@ export const AnchorDemo = clientEntry(
       }
     }
 
-    handle.signal.addEventListener("abort", () => cleanup?.());
+    handle.signal.addEventListener("abort", () => {
+      observer?.disconnect();
+      cleanup?.();
+    });
 
     return () => {
       // Re-run positioning after each render so parameter changes take effect.
@@ -58,8 +69,9 @@ export const AnchorDemo = clientEntry(
           tagline="The positioning engine that keeps a floating element pinned to an anchor."
           stage={
             <div
+              // No `position` here: `anchor()` writes document coordinates, so the floating element's
+              // containing block has to be the document, not this stage.
               mix={css({
-                position: "relative",
                 display: "grid",
                 placeItems: "center",
                 minHeight: "120px",
@@ -70,6 +82,11 @@ export const AnchorDemo = clientEntry(
                 mix={[
                   ref((node) => {
                     anchorEl = node as HTMLElement;
+                    observer ??= new IntersectionObserver(([entry]) => {
+                      onScreen = entry.isIntersecting;
+                      reposition();
+                    });
+                    observer.observe(anchorEl);
                   }),
                   css({
                     padding: "12px 18px",
@@ -88,6 +105,7 @@ export const AnchorDemo = clientEntry(
                 mix={[
                   ref((node) => {
                     floatEl = node as HTMLElement;
+                    floatEl.hidden = !onScreen;
                   }),
                   css({
                     position: "fixed",
@@ -143,7 +161,15 @@ export const AnchorDemo = clientEntry(
                 />
               </ControlGrid>
               <Readout>
-                {`anchor(floating, target, {\n  placement: "${placement}",\n  offset: ${offset},\n  inset: ${inset},\n})`}
+                {[
+                  `<div mix={ref((floating) =>`,
+                  `  anchor(floating, target, {`,
+                  `    placement: "${placement}",`,
+                  `    offset: ${offset},`,
+                  `    inset: ${inset},`,
+                  `  })`,
+                  `)} />`,
+                ].join("\n")}
               </Readout>
             </>
           }
