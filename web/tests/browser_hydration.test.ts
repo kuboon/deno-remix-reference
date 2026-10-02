@@ -32,6 +32,22 @@ async function waitForCdp(cdpPort: number, timeoutMs = 5000): Promise<string> {
   );
 }
 
+/**
+ * `@lightpanda/browser` downloads its binary on first use and leaves it without the executable bit
+ * on some hosts (GitHub's runners among them), so the first spawn fails with `EACCES`. Mark it
+ * executable and spawn again.
+ */
+async function serveLightpanda(port: number) {
+  try {
+    return await lightpanda.serve({ host: "127.0.0.1", port });
+  } catch (error) {
+    if (!String(error).includes("EACCES")) throw error;
+    const home = Deno.env.get("HOME") ?? "";
+    await Deno.chmod(`${home}/.cache/lightpanda-node/lightpanda`, 0o755);
+    return await lightpanda.serve({ host: "127.0.0.1", port });
+  }
+}
+
 Deno.test({
   name: "lightpanda: /hydration の Counter がクリックで +1 される",
   sanitizeResources: false,
@@ -40,7 +56,7 @@ Deno.test({
     const cdpPort = findFreePort();
     const appPort = findFreePort();
 
-    const lpProc = await lightpanda.serve({ host: "127.0.0.1", port: cdpPort });
+    const lpProc = await serveLightpanda(cdpPort);
 
     const app = Deno.serve(
       { port: appPort, hostname: "127.0.0.1", onListen: () => {} },
