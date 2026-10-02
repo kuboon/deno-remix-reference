@@ -24,8 +24,6 @@ import { base } from "./base.ts";
 
 export const routes = route(base, {
   home: get("/"),
-  // [feature:about]
-  about: get("/about"),
   // [feature:hydration-demo]
   hydration: get("/hydration"),
   // [feature:signin] (the push card on this page is [feature:push])

@@ -111,7 +111,7 @@ const replies = [
         "It deploys to GitHub Pages, including a preview per pull request under its own sub-path. " +
         "That sub-path is why the deploy prefix is a value the site reads rather than a string " +
         "anyone types: routes are built on it, and the browser is told it through a `<meta>` tag " +
-        "because `/repo/about` and `/about` are the same page under two deploys.",
+        "because `/repo/blog` and `/blog` are the same page under two deploys.",
     },
   },
   {

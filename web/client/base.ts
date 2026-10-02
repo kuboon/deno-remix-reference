@@ -4,13 +4,18 @@
  * Every URL the site emits carries this, and no output path does. The Pages workflow passes the
  * full public URL in `BASE_URL`; locally it is unset and the site is served from the root.
  *
+ * Only the static build has a prefix. A live server (`deno serve`, Deno Deploy) is always served
+ * from its own origin's root, so the `dev` permission set ignores `BASE_URL` and the prefix is
+ * empty there whatever the shell exports. A server-mode app can delete this file — see
+ * `TEMPLATE.md`.
+ *
  * Where it comes from depends on who is asking, and that is the whole of this file:
  *
  * - **On the server**, from `BASE_URL`, read off `globalThis` rather than through `Deno.env`
  *   because nothing in `client/` is type-checked with `deno.ns` — a file here may not name a
  *   runtime the browser does not have.
  * - **In the browser**, from the `<meta>` the shell writes, because there is no environment to
- *   read and the prefix is not guessable from the URL: `/repo/preview/about` and `/about` are the
+ *   read and the prefix is not guessable from the URL: `/repo/preview/blog` and `/blog` are the
  *   same page under two deploys.
  *
  * The browser used to have no reason to ask — a prefix is a render-time value, and by the time a

@@ -38,7 +38,7 @@ id.kbn.one 連携の push 通知を含む。
   の削除リストが本当に通るか、確かめるには scratch の `git worktree` で static
   用と server 用の リストをそれぞれ実際に消して `check`/`build`(`test`) を回す。
 - `@remix-run/render-middleware` / `@remix-run/spa` は 1.0.0 で固定を外した
-  （`TEMPLATE.md` 参照）。依存を上げたら `/about` の本文を確認する。
+  （`TEMPLATE.md` 参照）。依存を上げたら `/blog` の本文を確認する。
 
 ## 構造
 
@@ -104,6 +104,9 @@ Deno で catch 不能なエラーになる)。env は top-level await
 - `RP_SIGNING_KEY_JWK` — 任意。ES256 秘密鍵 (JWK JSON)。未設定ならプロセス毎に
   生成
   (開発用)。本番では固定鍵を設定し、再起動で鍵がローテートしないようにする。
+- `BASE_URL` — 静的ビルド専用。Pages のサブパス（PR プレビュー等）を `base`
+  にする。server（`deno serve` / Deno Deploy）は常にルート配信なので読まない
+  （`web/server/deno.json` の `dev` 権限で ignore）。
 - `TURSO_DATABASE_URL` / `TURSO_AUTH_TOKEN` — `GET /api/turso` サンプル用の
   Turso (libSQL) 接続。未設定なら 503 を返すのみ。
 

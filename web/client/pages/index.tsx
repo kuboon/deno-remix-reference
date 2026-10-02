@@ -3,7 +3,7 @@ import { css, type Handle } from "@remix-run/component";
 import { routes } from "../routes.ts";
 import { cardStyle } from "../theme.ts";
 
-export const title = "Remix3 on Deno";
+export const title = "Remix3 on Deno Template";
 export const description =
   "Remix v3 + Deno reference app with a DPoP session middleware. Served live on Deno Deploy and statically on GitHub Pages.";
 
@@ -13,7 +13,7 @@ export const hydrate = true;
 export default function Home(_handle: Handle) {
   return () => (
     <>
-      <h1>Remix v3 + DPoP Session Manager</h1>
+      <h1>Remix3 on Deno Template</h1>
       <p>Deno + Remix v3 (fetch-router) リファレンス実装。</p>
       <p>
         デモ:{" "}
