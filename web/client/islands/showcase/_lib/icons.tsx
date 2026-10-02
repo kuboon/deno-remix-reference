@@ -15,7 +15,7 @@ export const iconButtonStyle = css({
 /**
  * Small inline-SVG icon set for the showcase.
  *
- * remix/ui 0.5.0 removed the `Glyph` sprite component, so the demos carry a few
+ * @remix-run/ui 0.5.0 removed the `Glyph` sprite component, so the demos carry a few
  * hand-rolled icons. They inherit `currentColor` and accept the usual host
  * props (`mix`, `width`, `aria-label`, …), which are spread onto the `<svg>`.
  */

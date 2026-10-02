@@ -65,7 +65,7 @@ export const PopoverDemo = clientEntry(
       <DemoCard
         id="popover"
         title="Popover"
-        badge="remix/ui/popover"
+        badge="@remix-run/ui/popover"
         tagline="The low-level anchored, dismissible floating surface primitive."
         stage={
           <popover.Context>

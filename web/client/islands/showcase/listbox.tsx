@@ -59,7 +59,7 @@ export const ListboxDemo = clientEntry(
       <DemoCard
         id="listbox"
         title="Listbox"
-        badge="remix/ui/listbox"
+        badge="@remix-run/ui/listbox"
         tagline="The headless option-list primitive with controlled selection and highlighting."
         stage={
           <listbox.Context

@@ -54,7 +54,7 @@ export const AnchorDemo = clientEntry(
         <DemoCard
           id="anchor"
           title="Anchor"
-          badge="remix/ui/anchor"
+          badge="@remix-run/ui/anchor"
           tagline="The positioning engine that keeps a floating element pinned to an anchor."
           stage={
             <div
