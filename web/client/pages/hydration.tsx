@@ -1,6 +1,7 @@
 import { css, type Handle } from "@remix-run/ui";
 
 import { Counter } from "../islands/counter.tsx";
+import { Total } from "../islands/total.tsx";
 import { cardStyle } from "../theme.ts";
 import { color } from "../tokens.ts";
 
@@ -35,11 +36,25 @@ export default function Hydration(_handle: Handle) {
           初期カウントはサーバー (静的ビルドではビルド時)
           が決定。ボタンはクライアントのハイドレート後に動きます。
         </p>
-        <Counter initialCount={initialCount} label={label} />
+        <div mix={demoRowStyle}>
+          <Counter initialCount={initialCount} label="Left" />
+          <Counter initialCount={0} label="Right" />
+          <Total label="Shared total" />
+        </div>
         <p mix={noteStyle}>
           JavaScript 無効でもカウンターの初期値は表示されます (progressive
           enhancement)。
         </p>
+        <p>
+          3 つとも<em>
+            別々のブラウザ entrypoint
+          </em>で、互いに直接は通信しません。 Counter は同じ click store を
+          import し、Total はそれを購読しているだけです。bundler がその store
+          を共有 chunk に 1 つだけ出力するので、合計が追従します。entry
+          ごとに別々にコンパイルすると store が複製され、合計はずっと 0
+          のままになります。
+        </p>
+        <p mix={noteStyle}>{label}</p>
       </section>
 
       <section mix={cardStyle}>
@@ -67,6 +82,13 @@ export default function Hydration(_handle: Handle) {
     </>
   );
 }
+
+const demoRowStyle = css({
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: "0.75rem",
+});
 
 const noteStyle = css({ color: color.muted, fontSize: "0.9rem" });
 

@@ -15,6 +15,16 @@ export default function Home(_handle: Handle) {
     <>
       <h1>Remix v3 + DPoP Session Manager</h1>
       <p>Deno + Remix v3 (fetch-router) リファレンス実装。</p>
+      <p>
+        デモ:{" "}
+        <a href="https://kuboon.github.io/deno-remix-tmpl/">
+          GitHub Pages (静的版)
+        </a>
+        {" / "}
+        <a href="https://deno-remix-reference.kuboon-tokyo.deno.net/">
+          Deno Deploy (サーバー版)
+        </a>
+      </p>
 
       <section mix={cardStyle}>
         <h2>構成</h2>

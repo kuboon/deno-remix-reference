@@ -23,19 +23,28 @@ import {
 } from "@remix-run/fetch-router";
 import { render } from "@remix-run/render-middleware";
 import { createFileTree, githubPages } from "@remix-kbn/ssg/site";
+import { stripBase } from "@remix-kbn/ssg/base";
 import type { FileServerBehavior } from "@remix-kbn/ssg/site";
 
 import { assets, assetsPath } from "./assets.ts";
-import { clientRuntime } from "./runtime.ts";
+// [feature:spa] `spaRuntime`
+import { clientRuntime, spaRuntime } from "./runtime.ts";
 import { ogImage, ogPaths, serveOgImage } from "./og/mod.ts";
 import { base } from "../client/base.ts";
 import { Layout, type PageModule } from "../client/layout.tsx";
 import { routes } from "../client/routes.ts";
 
+import * as About from "../client/pages/about.tsx";
+import { blogController } from "./blog/mod.tsx"; // [feature:blog]
+import * as Fullscreen from "../client/pages/fullscreen.tsx"; // [feature:fullscreen]
 import * as Home from "../client/pages/index.tsx";
+import * as Showcase from "../client/pages/showcase.tsx"; // [feature:showcase]
+import * as Spa from "../client/pages/spa.tsx"; // [feature:spa]
+import { versions } from "./versions.ts"; // [feature:showcase]
 import * as Hydration from "../client/pages/hydration.tsx";
 import * as My from "../client/pages/my.tsx";
 
+// [feature:protected-api] / [feature:server-send] / [feature:turso]: the server API.
 import { apiController } from "./controllers/api/controller.ts";
 import { notifyAction } from "./controllers/api/notify.ts";
 import { tursoAction } from "./controllers/api/turso.ts";
@@ -63,6 +72,8 @@ function pageAction(route: { href(): string }, page: PageModule) {
         title={page.title}
         description={page.description}
         image={image}
+        viewport={page.viewport}
+        bare={page.bare}
         script={page.hydrate ? clientRuntime : null}
       >
         <Page />
@@ -107,9 +118,25 @@ declare module "@remix-run/fetch-router" {
 const top = createController(routes, {
   actions: {
     home: pageAction(routes.home, Home),
+    about: pageAction(routes.about, About),
+    // [feature:fullscreen]
+    fullscreen: pageAction(routes.fullscreen, Fullscreen),
+    // [feature:showcase] Written out rather than built by `pageAction` because its badges are
+    // read off the import map, which a page in `client/` cannot open.
+    showcase: (context) =>
+      context.render(
+        <Layout
+          title={Showcase.title}
+          description={Showcase.description}
+          image={showcaseImage}
+          script={Showcase.hydrate ? clientRuntime : null}
+        >
+          <Showcase.default versions={versions()} />
+        </Layout>,
+      ),
     hydration: pageAction(routes.hydration, Hydration),
     my: pageAction(routes.my, My),
-    jwks: jwksAction,
+    jwks: jwksAction, // [feature:server-send]
   },
 });
 
@@ -121,18 +148,76 @@ const top = createController(routes, {
  */
 const api = createController(routes.api, {
   actions: {
-    notify: notifyAction,
-    turso: tursoAction,
+    notify: notifyAction, // [feature:server-send]
+    turso: tursoAction, // [feature:turso]
+  },
+});
+
+/** [feature:showcase] */
+const showcaseImage = ogImage(routes.showcase.href(), Showcase);
+
+// [feature:spa] Everything down to `router.map` below. It
+// has a controller of its own because the view its `:id` names is handed to the screen rather than
+// read back out of the router, and because it loads a different script than every other page.
+const spaImages = new Map(
+  Spa.SPA_IDS.map((id) => [
+    id,
+    ogImage(routes.spa.show.href({ id }), {
+      title: Spa.titleFor(id),
+      description: Spa.description,
+    }),
+  ]),
+);
+
+const spa = createController(routes.spa, {
+  actions: {
+    show: (context) => {
+      const id = Spa.parseSpaId(context.params.id);
+      // A `404` for anything that is not one of the demo's views, which is what an unknown id is.
+      // The router in the browser answers the same URL the same way — see `client/spa/app.tsx`.
+      if (id === null) {
+        return new Response("Not Found", {
+          status: 404,
+          headers: { "content-type": "text/plain; charset=utf-8" },
+        });
+      }
+
+      return context.render(
+        <Layout
+          title={Spa.titleFor(id)}
+          description={Spa.description}
+          image={spaImages.get(id) ?? null}
+          // Not `clientRuntime`: this page starts a router rather than hydrating islands, and a
+          // document gets one runtime. See `client/spa/entry.ts`.
+          script={spaRuntime}
+          // The shell's links leave the client router's world, so they go to the browser.
+          documentLinks
+        >
+          {
+            /*
+            What the build writes into the file. `run()` replaces it with its own first render as
+            soon as the script loads, which is the takeover the screen reports.
+          */
+          }
+          <Spa.default id={id} renderedBy="server" navigations={0} />
+        </Layout>,
+      );
+    },
   },
 });
 
 router.map(routes, top);
+// [feature:spa]
+router.map(routes.spa, spa);
+// [feature:blog] Both blog routes at once: the listing, and one article.
+router.map(routes.blog, blogController);
 router.map(routes.api, api);
-router.map(routes.api.protected, apiController);
+router.map(routes.api.protected, apiController); // [feature:protected-api]
 
 router.get(`${base}/static/*path`, ({ request }) => staticFiles.fetch(request));
 router.get(`${assetsPath}/*path`, ({ request }) => assets.fetch(request));
 router.get(`${base}/og/*path`, ({ request }) => serveOgImage(request));
+// [feature:push] The service worker.
 router.get(
   `${base}/sw.js`,
   () =>
@@ -155,7 +240,10 @@ router.get(
 export const entryPoints: readonly string[] = [
   "/",
   ...ogPaths(),
-  "/sw.js",
+  "/sw.js", // [feature:push]
+  // [feature:helper] The chat's chunk is only named by an attribute on the help button, which a
+  // link-following crawl never reads — see `client/helper/install.ts`.
+  `/${stripBase(clientRuntime.helper, base)}`,
 ];
 
 export default router;

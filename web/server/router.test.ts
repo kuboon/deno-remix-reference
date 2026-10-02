@@ -8,6 +8,7 @@ Deno.test("GET / returns the shell with nav links and the runtime script", async
   const html = await res.text();
   assertStringIncludes(html, "<!DOCTYPE html>");
   assertStringIncludes(html, "Remix v3 + DPoP Session Manager");
+  assertStringIncludes(html, "kuboon.github.io/deno-remix-tmpl");
   assertStringIncludes(html, 'href="/hydration"');
   assertStringIncludes(html, '<script type="module" src="/assets/hydration');
   // Soft navigation is the runtime's default now; no frame target attributes.
@@ -64,4 +65,36 @@ Deno.test("GET /.well-known/jwks.json publishes the RP key", async () => {
   assertEquals(res.status, 200);
   const body = await res.json() as { keys: { kty: string }[] };
   assertEquals(body.keys[0].kty, "EC");
+});
+
+for (
+  const [path, needle] of [
+    ["/about", "About"],
+    ["/blog", "Blog"],
+    ["/blog/hello-remix-ssg", "Hello, remix-ssg"],
+    ["/showcase", "showcase"],
+    ["/spa/1", "SPA"],
+  ] as const
+) {
+  Deno.test(`GET ${path} renders inside the shell`, async () => {
+    const res = await router.fetch(new Request(`http://x${path}`));
+    assertEquals(res.status, 200);
+    const html = await res.text();
+    assertStringIncludes(html, "<main");
+    assertStringIncludes(html, needle);
+  });
+}
+
+Deno.test("GET /fullscreen is a bare page with no shell", async () => {
+  const res = await router.fetch(new Request("http://x/fullscreen"));
+  assertEquals(res.status, 200);
+  const html = await res.text();
+  assert(!html.includes("<main"));
+  assertStringIncludes(html, "FullscreenGame");
+});
+
+Deno.test("GET /spa/unknown is a 404", async () => {
+  const res = await router.fetch(new Request("http://x/spa/nope"));
+  assertEquals(res.status, 404);
+  await res.body?.cancel();
 });
