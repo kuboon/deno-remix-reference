@@ -31,11 +31,26 @@ server API に依存する機能だけ （サーバーからの通知送信 =
 ### static モードにする
 
 削除: `[feature:server-send]` `[feature:turso]`
-`[feature:protected-api]`（下の機能表）。 残す:
-`.github/workflows/pages.yml`、`mise.toml` の `build`、`router.tsx` の
-`fileServer`/`entryPoints`。 `routes.ts` から `jwks` と `api`
-を消し、`router.tsx` の対応する `createController`/`router.map` を消す。
-`push_card.tsx` の「サーバーから送信」ボタンも消す。
+`[feature:protected-api]`（下の機能表）。
+
+残す: `.github/workflows/pages.yml`、`mise.toml` の `build`、`router.tsx` の
+`fileServer` / `entryPoints`。
+
+消した後に直す場所（scratch worktree で実際に消して `check` / `test` / `build`
+を回して確かめた）:
+
+- `routes.ts` から `jwks` と `api`、`router.tsx` の対応する import /
+  `createController` / `router.map`
+- `push_card.tsx`:
+  「サーバーから送信」ボタン、`onServerSend`、`sending`、`readBadgeCount`
+  とバッジ入力、`routes` の import（残すと lint の未使用変数で落ちる）
+- `pages/index.tsx` の「API エンドポイント」節（`routes.api`
+  を参照している。ステージ 1 でトップページを置き換えるなら不要）
+- `web/server/router.test.ts` の `/api/*` と `/.well-known/jwks.json` のテスト
+- ルート `deno.json`: workspace から `packages/*`、`check` タスクの
+  `deno check packages`、不要になった imports（`@kuboon/kv` `@libsql/client`
+  `@remix-run/data-table` `@kuboon/remix-data-table-sqlite-turso`
+  `@remix-run/session` `jose`）
 
 ### server モードにする
 
