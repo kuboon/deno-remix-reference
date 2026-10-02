@@ -1,6 +1,5 @@
 import { css, type Handle } from "@remix-run/ui";
 
-import { ClickCounter } from "../islands/click_counter.tsx";
 import { Counter } from "../islands/counter.tsx";
 import { Total } from "../islands/total.tsx";
 import { cardStyle } from "../theme.ts";
@@ -37,28 +36,25 @@ export default function Hydration(_handle: Handle) {
           初期カウントはサーバー (静的ビルドではビルド時)
           が決定。ボタンはクライアントのハイドレート後に動きます。
         </p>
-        <Counter initialCount={initialCount} label={label} />
+        <div mix={demoRowStyle}>
+          <Counter initialCount={initialCount} label="Left" />
+          <Counter initialCount={0} label="Right" />
+          <Total label="Shared total" />
+        </div>
         <p mix={noteStyle}>
           JavaScript 無効でもカウンターの初期値は表示されます (progressive
           enhancement)。
         </p>
-      </section>
-
-      <section mix={cardStyle}>
-        <h2>Two islands, one shared module</h2>
         <p>
-          Both controls below are server-rendered, then hydrated. They are{" "}
-          <em>separate browser entrypoints</em>{" "}
-          that never talk to each other. Each one imports the same click store,
-          and the running total keeps up because the bundler emitted that store
-          once, into a chunk they share. Compile the two entries independently
-          and each gets a private copy — the total would sit at zero forever.
+          3 つとも<em>
+            別々のブラウザ entrypoint
+          </em>で、互いに直接は通信しません。 Counter は同じ click store を
+          import し、Total はそれを購読しているだけです。bundler がその store
+          を共有 chunk に 1 つだけ出力するので、合計が追従します。entry
+          ごとに別々にコンパイルすると store が複製され、合計はずっと 0
+          のままになります。
         </p>
-        <div mix={demoRowStyle}>
-          <ClickCounter label="Left" start={0} />
-          <ClickCounter label="Right" start={0} />
-          <Total label="Shared total" />
-        </div>
+        <p mix={noteStyle}>{label}</p>
       </section>
 
       <section mix={cardStyle}>

@@ -5,6 +5,10 @@
  * to import is this function's own name (which is why it is a named function, not an arrow). The
  * server renders it to HTML like everything else and emits a hydration marker; `server/assets.ts`
  * turns the id into the chunk URL, and `run()` in `hydration.ts` imports it and hydrates in place.
+ *
+ * Every click also lands in the {@link clicks} store, which `total.tsx` — a *separate* entrypoint —
+ * reads. That the running total agrees with however many counters are on the page is the visible
+ * proof that the shared module was emitted once, into a chunk both islands import.
  */
 
 import {
@@ -16,6 +20,7 @@ import {
 } from "@remix-run/ui";
 
 import { color, radius } from "../tokens.ts";
+import { clicks } from "./store.ts";
 
 // Render props must satisfy `SerializableProps`, which is an index signature.
 // Declaring the index signature here keeps `label` strongly typed while
@@ -43,6 +48,7 @@ export const Counter = clientEntry(
             buttonStyle,
             on("click", () => {
               count--;
+              clicks.bump();
               handle.update();
             }),
           ]}
@@ -57,6 +63,7 @@ export const Counter = clientEntry(
             buttonStyle,
             on("click", () => {
               count++;
+              clicks.bump();
               handle.update();
             }),
           ]}

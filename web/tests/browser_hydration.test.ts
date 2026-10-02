@@ -100,6 +100,13 @@ Deno.test({
 
         assertEquals(Number(after), Number(before) + 1);
 
+        // The shared-total island is a separate entrypoint: it only moves if both resolved the
+        // click store to the same module instance.
+        await page.waitForFunction(
+          () => document.querySelector("output strong")?.textContent === "1",
+          { timeout: 5_000 },
+        );
+
         await page.close();
         await context.close();
       } finally {

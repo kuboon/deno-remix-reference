@@ -5,7 +5,7 @@ import { color, radius } from "../tokens.ts";
 import { clicks } from "./store.ts";
 
 /**
- * A second island, and a second browser entrypoint, that shares module state with `ClickCounter`.
+ * A second island, and a second browser entrypoint, that shares module state with `Counter`.
  *
  * It never talks to the counter directly — it subscribes to the {@link clicks} store both islands
  * import. The number below only moves because the two entrypoints resolved that import to the
