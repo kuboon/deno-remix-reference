@@ -327,10 +327,14 @@ export function Shell(handle: Handle<ShellProps>) {
               )
               : null}
             {/* [feature:signin] */}
-            <NavAuth
-              myHref={routes.my.href()}
-              documentLinks={handle.props.documentLinks ?? false}
-            />
+            {handle.props.documentLinks
+              ? (
+                // A `@remix-run/spa` router renders this shell in the browser and has no way to
+                // hydrate an island, so the sign-in island is replaced by a plain link that leaves
+                // the client router. `/my` has the real control.
+                <a href={routes.my.href()} data-rmx-document="">Sign in</a>
+              )
+              : <NavAuth myHref={routes.my.href()} />}
           </nav>
         </header>
         <main mix={[bandStyle, mainStyle]}>{handle.props.children}</main>

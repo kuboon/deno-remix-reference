@@ -3,7 +3,7 @@ import type { Handle } from "@remix-run/ui";
 import { routes } from "../routes.ts";
 
 export const title = "About — Remix3 on Deno";
-export const description = "What this starter is and how it works.";
+export const description = "What this template is and how it works.";
 
 /** Prose and links only — no island, so this page ships no JavaScript at all. */
 export const hydrate = false;
@@ -13,13 +13,13 @@ export default function About(_handle: Handle) {
     <>
       <h1>About</h1>
       <p>
-        <code>router.ts</code> is the whole site in one route map:{" "}
+        <code>server/router.tsx</code> is the whole site in one route map:{" "}
         <code>routes.ts</code> mapped to the pages that render them,{" "}
         <code>islands/</code> compiled as a single code-split bundle, and{" "}
         <code>static/</code> served verbatim.
       </p>
       <p>
-        <code>deno serve router.ts</code>{" "}
+        <code>deno serve server/router.tsx</code>{" "}
         runs that handler as the dev server. The build drives the very same
         object with{" "}
         <code>fetch()</code>, writes each response to disk, and follows the
@@ -31,7 +31,8 @@ export default function About(_handle: Handle) {
         in <code>entryPoints</code>, or it is not part of the site.
       </p>
       <p>
-        Articles are Markdown files under <code>pages/blog/</code>; see the{" "}
+        Articles are Markdown files under <code>server/blog/</code>; see the
+        {" "}
         <a href={routes.blog.index.href()}>blog</a>.
       </p>
       <p>

@@ -25,11 +25,6 @@ import { actionStyle, primaryStyle } from "../theme.ts";
 export interface NavAuthProps {
   /** App-relative href of the my-page, e.g. `/my` (carries the deploy prefix). */
   myHref: string;
-  /**
-   * Hand the link to the browser as a document navigation — set where the shell is rendered inside
-   * a `@remix-run/spa` router (see `client/spa/app.tsx`), which would otherwise swallow `/my`.
-   */
-  documentLinks?: boolean;
   [key: string]: SerializableValue;
 }
 
@@ -64,10 +59,7 @@ export const NavAuth = clientEntry(
       }
       if (sessionStore.userId !== null) {
         return (
-          <a
-            href={handle.props.myHref}
-            data-rmx-document={handle.props.documentLinks ? "" : undefined}
-          >
+          <a href={handle.props.myHref}>
             マイページ
           </a>
         );

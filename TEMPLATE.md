@@ -15,13 +15,13 @@
 
 **server API（`/api/*`、サーバー側の DB・秘密鍵）を使うか。**
 
-|                  | static モード                         | server モード                                   |
-| ---------------- | ------------------------------------- | ----------------------------------------------- |
-| 使う条件         | server API を使わない                 | server API を使う                               |
-| 配信             | SSG → GitHub Pages                    | ライブサーバー（Deno Deploy または Cloudflare） |
-| `@remix-kbn/ssg` | 使う（`deno task build`）             | 使わない                                        |
-| Pages deploy     | する（`.github/workflows/pages.yml`） | **しない**                                      |
-| デプロイ設定     | 不要                                  | **必要**（下記）                                |
+|                           | static モード                         | server モード                                   |
+| ------------------------- | ------------------------------------- | ----------------------------------------------- |
+| 使う条件                  | server API を使わない                 | server API を使う                               |
+| 配信                      | SSG → GitHub Pages                    | ライブサーバー（Deno Deploy または Cloudflare） |
+| `@remix-kbn/ssg` のビルド | 使う（`deno task build`）             | 使わない（ライブラリとしては残る）              |
+| Pages deploy              | する（`.github/workflows/pages.yml`） | **しない**                                      |
+| デプロイ設定              | 不要                                  | **必要**（下記）                                |
 
 DPoP セッション（サインイン）と push 通知の購読/テストは **ブラウザ → id.kbn.one
 の直接通信**なので、 **static モードでもある程度動く**。static で動かないのは
@@ -39,8 +39,9 @@ server API に依存する機能だけ （サーバーからの通知送信 =
 消した後に直す場所（scratch worktree で実際に消して `check` / `test` / `build`
 を回して確かめた）:
 
-- `routes.ts` から `jwks` と `api`、`router.tsx` の対応する import /
-  `createController` / `router.map`
+- `routes.ts` から `jwks` と `api`（`post` の import
+  も未使用になる）、`router.tsx` の対応する import / `createController` /
+  `router.map`
 - `push_card.tsx`:
   「サーバーから送信」ボタン、`onServerSend`、`sending`、`readBadgeCount`
   とバッジ入力、`routes` の import（残すと lint の未使用変数で落ちる）
@@ -54,12 +55,21 @@ server API に依存する機能だけ （サーバーからの通知送信 =
 
 ### server モードにする
 
-削除: `.github/workflows/pages.yml`、`mise.toml` の `build`
-タスク、`web/server/deno.json` の `build` タスクと
-`permissions.build`、`router.tsx` の
-`fileServer`/`entryPoints`/`stripBase`、`@remix-kbn/ssg` の
-`githubPages`（`createFileTree` は静的ファイル配信に使っているので、ssg
-を外すなら `@remix-run/static-middleware` 等に置き換える）。
+削除（scratch worktree で実際に消して `check` / `test` と `deno serve` の smoke
+を通した）:
+
+- `.github/workflows/pages.yml`、`mise.toml` の `build` タスク
+- ルートと `web/server/deno.json` の `build` タスク、`web/server/deno.json` の
+  `permissions.build`
+- `router.tsx`:
+  `fileServer`（`githubPages()`）、`entryPoints`、`FileServerBehavior` /
+  `githubPages` / `stripBase` の import、`ogPaths` の import（残すと lint
+  の未使用変数で落ちる）
+
+`@remix-kbn/ssg` の **ビルドは使わない**が、パッケージ自体は残る:
+`client/base.ts` と `og/mod.ts` が `@remix-kbn/ssg/base`（`normalizeBase` /
+`stripBase`）を、`router.tsx` が `createFileTree` を使っている。ssg
+を依存から外すなら、この三つを自前に置き換える。
 
 **デプロイ先（どちらか一つ）**
 
@@ -121,11 +131,26 @@ server API に依存する機能だけ （サーバーからの通知送信 =
 controller も消す。 `og/`（社会カード）は全ページが使うので残す。要らなければ
 `ogImage()` の呼び出しと `og/` と `canvaskit-wasm` ごと消す。
 
+### 最後の手順（init の締め）
+
+- [ ] この `TEMPLATE.md` を削除する
+- [ ] `CLAUDE.md`
+      の「テンプレ本体を保守するとき」の節と、冒頭の「このリポジトリは何か」の判定を、
+      自分のアプリの説明に置き換える（`TEMPLATE.md` が無く origin
+      が違う状態が、そのまま「普通のアプリ」になる）
+- [ ] `README.md` の `TEMPLATE.md` へのリンクを削除する
+- [ ] `grep -rn "feature:" web` で残ったタグ付きコメントを整理する
+
 ## 覚えておくこと
 
-- `@remix-run/render-middleware` は **`0.3.2` に固定**している。`0.3.3` は
-  `@remix-run/ui@0.11` と組み合わせると `<body>`
-  の中身が空で返る（エラーも出ない）。上げるときは `/about` の HTML
-  に本文があることを確認する。
+- `@remix-run/render-middleware` は **`0.3.2` に、`@remix-run/spa` は `0.1.3`
+  に固定**している。 `render-middleware@0.3.3` は `@remix-run/ui@0.11`
+  と組み合わせると `<body>` の中身が空で返る（エラーも出ない）。 `spa@0.1.4` は
+  takeover 後に `<body>` を空にする。どちらも上げるときは `/about` の HTML
+  に本文があること、
+  `deno task test:browser`（`web/tests/spa_navigation.test.ts`）が通ることを確認する。
+- SPA ページ（`@remix-run/spa`）はブラウザ側でシェルを描画し、island を hydrate
+  できない。そのため `layout.tsx` は `documentLinks` のとき `NavAuth` の代わりに
+  `/my` への素のリンクを出す。
 - 追加した `import` は `deno.json`（ルート）にだけ書く。メンバー側の `deno.json`
   には書かない。

@@ -23,8 +23,8 @@ id.kbn.one 連携の push 通知を含む。
 （派生アプリでは、init の最後にこの節を削除する。）
 
 - 方針: **機能は全部このテンプレに置く**。別の starter に機能を分散させない（旧
-  `remix3-ssg-gh-pages` の
-  機能もここに統合済み）。派生アプリが要らない機能を消せるよう、`TEMPLATE.md`
+  SSG starter
+  の機能もここに統合済み）。派生アプリが要らない機能を消せるよう、`TEMPLATE.md`
   の機能表と `[feature:名前]` タグを **機能を足す/消す/動かすたびに更新する**。
 - 機能を足したら: 配線行（`routes.ts` / `router.tsx` / `layout.tsx` /
   `assets.ts`）に `[feature:名前]` を付け、 `TEMPLATE.md`
