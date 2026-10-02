@@ -24,7 +24,7 @@
  * mode changes. Replace `draw()` with the game.
  */
 
-import { clientEntry, css, type Handle, on, ref } from "@remix-run/ui";
+import { clientEntry, css, type Handle, on, ref } from "@remix-run/component";
 
 import { routes } from "../routes.ts";
 import { color, font } from "../tokens.ts";

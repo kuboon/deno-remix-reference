@@ -1,4 +1,4 @@
-import { clientEntry, css, type Handle, ref } from "@remix-run/ui";
+import { clientEntry, css, type Handle, ref } from "@remix-run/component";
 import { anchor, type AnchorPlacement } from "@remix-run/ui/anchor";
 import { theme } from "./_lib/tokens.ts";
 

@@ -1,5 +1,5 @@
 /**
- * PushCard — a `@remix-run/ui` clientEntry for the `/my` page.
+ * PushCard — a `@remix-run/component` clientEntry for the `/my` page.
  *
  * The browser-facing half of the push foundation: it lets the signed-in user
  * register *this* device for notifications and manage every device registered
@@ -24,7 +24,7 @@ import {
   on,
   ref,
   type SerializableValue,
-} from "@remix-run/ui";
+} from "@remix-run/component";
 
 import { sessionStore } from "../session.ts";
 import {

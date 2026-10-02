@@ -1,5 +1,5 @@
-import { clientEntry, css } from "@remix-run/ui";
-import type { Handle, HostProps } from "@remix-run/ui";
+import { clientEntry, css } from "@remix-run/component";
+import type { Handle, HostProps } from "@remix-run/component";
 import type { ShareButtonsElement } from "@kuboon/share-element";
 // Imported for its side effect: this is what registers `<share-buttons>`.
 import "@kuboon/share-element";

@@ -1,4 +1,4 @@
-import { clientEntry, css, type Handle } from "@remix-run/ui";
+import { clientEntry, css, type Handle } from "@remix-run/component";
 import * as listbox from "@remix-run/ui/listbox";
 import type { ListboxValue } from "@remix-run/ui/listbox";
 

@@ -19,7 +19,7 @@
  * ones, in a document that has been running since the first page load.
  */
 
-import { TypedEventTarget } from "@remix-run/ui";
+import { TypedEventTarget } from "@remix-run/component";
 
 /** Click total, shared by every island on the page. */
 class ClickStore extends TypedEventTarget<{ change: Event }> {

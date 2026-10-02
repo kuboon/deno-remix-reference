@@ -1,6 +1,6 @@
 /**
  * End-to-end check that `@remix-run/data-table` drives Turso's async libSQL
- * client (`@kuboon/remix-data-table-sqlite-turso`). Runs against an in-memory
+ * client (`@remix-kbn/data-table-sqlite-turso`). Runs against an in-memory
  * libSQL database via `@libsql/client/node` — no network or Turso credentials
  * needed — exercising the same `createTursoSample` code path the app uses.
  *

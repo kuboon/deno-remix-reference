@@ -1,5 +1,5 @@
 /**
- * NavAuth — the navbar's sign-in control, a `@remix-run/ui` clientEntry.
+ * NavAuth — the navbar's sign-in control, a `@remix-run/component` clientEntry.
  *
  * Rendered into the shell (client/layout.tsx), so it hydrates on every page
  * and reflects the live DPoP session state:
@@ -16,7 +16,7 @@ import {
   type Handle,
   on,
   type SerializableValue,
-} from "@remix-run/ui";
+} from "@remix-run/component";
 
 import { IDP_ORIGIN } from "../idp.ts";
 import { sessionStore } from "../session.ts";

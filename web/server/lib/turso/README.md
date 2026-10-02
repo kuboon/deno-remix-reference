@@ -7,7 +7,7 @@
 ## 構成
 
 - `@remix-run/data-table` — DB 非依存のクエリ/リレーション API。
-- `@kuboon/remix-data-table-sqlite-turso` — data-table の **非同期** SQLite
+- `@remix-kbn/data-table-sqlite-turso` — data-table の **非同期** SQLite
   データベース(`createTursoDatabase`)。Turso の `@libsql/client` は全ビルドが
   非同期なので、同期前提の公式 `@remix-run/data-table-sqlite` では駆動できない。
   このパッケージが各クライアント呼び出しを await するので Turso を扱える。
@@ -17,7 +17,7 @@
 
 ```ts
 import { createClient } from "@libsql/client/web";
-import { createTursoDatabase } from "@kuboon/remix-data-table-sqlite-turso";
+import { createTursoDatabase } from "@remix-kbn/data-table-sqlite-turso";
 
 const client = createClient({ url, authToken });
 const db = createTursoDatabase(client);

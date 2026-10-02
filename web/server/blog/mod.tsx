@@ -17,8 +17,8 @@
  */
 
 import { createController } from "@remix-run/fetch-router";
-import { createElement } from "@remix-run/ui";
-import type { RemixNode } from "@remix-run/ui";
+import { createElement } from "@remix-run/component";
+import type { RemixNode } from "@remix-run/component";
 import { markdownToHast } from "@kuboon/md";
 import { hastToElement } from "@kuboon/md/hast_to_element.ts";
 import { extract } from "@std/front-matter/yaml";
@@ -117,7 +117,7 @@ async function listArticles(): Promise<Article[]> {
  * Renders an article body.
  *
  * `@kuboon/md` parses GitHub-flavored Markdown into a sanitized hast tree (heading anchors,
- * Shiki-highlighted code, tables, task lists) and `hastToElement` turns it into `@remix-run/ui`
+ * Shiki-highlighted code, tables, task lists) and `hastToElement` turns it into `@remix-run/component`
  * elements — with *our* `createElement`, which is the point: `@kuboon/md` depends on no UI
  * library, so there is one copy of the runtime, ours, whatever version we are on.
  *

@@ -1,4 +1,4 @@
-import { css, type Handle } from "@remix-run/ui";
+import { css, type Handle } from "@remix-run/component";
 
 import { Counter } from "../islands/counter.tsx";
 import { Total } from "../islands/total.tsx";
@@ -21,7 +21,7 @@ export default function Hydration(_handle: Handle) {
     <>
       <h1>コンポーネントハイドレーションのサンプル</h1>
       <p>
-        <code>@remix-run/ui</code> の <code>clientEntry</code>{" "}
+        <code>@remix-run/component</code> の <code>clientEntry</code>{" "}
         を使った SSR + hydrate。同じコンポーネント定義 (
         <code>web/client/islands/counter.tsx</code>) を、サーバーでは直接 JSX
         ツリーに埋め込んで <code>renderToStream</code>{" "}

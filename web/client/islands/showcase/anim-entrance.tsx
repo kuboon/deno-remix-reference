@@ -1,5 +1,5 @@
-import { clientEntry, css, type Handle, on } from "@remix-run/ui";
-import button from "@remix-run/ui/button";
+import { clientEntry, css, type Handle, on } from "@remix-run/component";
+import button from "./_lib/button.ts";
 import {
   animateEntrance,
   animateExit,

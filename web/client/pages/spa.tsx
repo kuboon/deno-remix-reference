@@ -34,7 +34,7 @@
  * build's crawler reads to learn those URLs exist. The build never runs the router.
  */
 
-import { css, type Handle, type RemixNode } from "@remix-run/ui";
+import { css, type Handle, type RemixNode } from "@remix-run/component";
 
 import { routes } from "../routes.ts";
 import { color, radius } from "../tokens.ts";

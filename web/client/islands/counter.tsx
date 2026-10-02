@@ -1,5 +1,5 @@
 /**
- * Counter — a `@remix-run/ui` client component ("island").
+ * Counter — a `@remix-run/component` client component ("island").
  *
  * `clientEntry(import.meta.url, …)` marks it for hydration: the module names itself, and the export
  * to import is this function's own name (which is why it is a named function, not an arrow). The
@@ -17,7 +17,7 @@ import {
   type Handle,
   on,
   type SerializableValue,
-} from "@remix-run/ui";
+} from "@remix-run/component";
 
 import { color, radius } from "../tokens.ts";
 import { clicks } from "./store.ts";

@@ -17,7 +17,7 @@ import type { Version } from "../client/pages/showcase.tsx";
  */
 export function versions(): Version[] {
   return [
-    { label: "@remix-run/ui", value: resolved("@remix-run/ui") },
+    { label: "@remix-run/component", value: resolved("@remix-run/component") },
     { label: "@remix-kbn/ssg", value: resolved("@remix-kbn/ssg") },
     { label: "Deno", value: Deno.version.deno },
   ];

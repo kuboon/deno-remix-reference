@@ -16,7 +16,7 @@
  * runtime is exactly the set of pages where a button can do anything.
  */
 
-import { run } from "@remix-run/ui";
+import { run } from "@remix-run/component";
 
 import { guardBrowserNavigations } from "./navigation-guard.ts";
 import { installHelper } from "./helper/install.ts";

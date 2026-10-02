@@ -131,7 +131,7 @@ const replies = [
     match: /showcase|components?|remix.?ui/i,
     turn: {
       text:
-        "The UI showcase has every `@remix-run/ui` component on one page, each a live island with " +
+        "The UI showcase has the headless `@remix-run/ui` primitives and animation helpers on one page, each a live island with " +
         "controls to change its parameters. It is also the page that proves the bundling works: " +
         "eighteen islands, one runtime.",
     },

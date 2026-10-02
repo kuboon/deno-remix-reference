@@ -11,7 +11,7 @@
  * exists, scroll to fullscreen on iPhone Safari where it does not. See the island.
  */
 
-import type { Handle } from "@remix-run/ui";
+import type { Handle } from "@remix-run/component";
 
 import { FullscreenGame } from "../islands/fullscreen-game.tsx";
 

@@ -1,4 +1,9 @@
-import { css, type Handle, type Props, type RemixElement } from "@remix-run/ui";
+import {
+  css,
+  type Handle,
+  type Props,
+  type RemixElement,
+} from "@remix-run/component";
 
 /** Aligns an inline icon next to a label inside a `button()` host. */
 export const iconButtonStyle = css({
