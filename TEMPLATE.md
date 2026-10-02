@@ -65,11 +65,25 @@ server API に依存する機能だけ （サーバーからの通知送信 =
   `fileServer`（`githubPages()`）、`entryPoints`、`FileServerBehavior` /
   `githubPages` / `stripBase` の import、`ogPaths` の import（残すと lint
   の未使用変数で落ちる）
+- **base（デプロイ先のサブパス）**: サブパスは Pages の PR
+  プレビュー等で生じるもので、ライブサーバーは常にオリジンのルートで配信される。
+  テンプレのままでも `dev` 権限が `BASE_URL` を ignore するので server
+  では空だが、server モードでは仕組みごと消す:
+  - `client/base.ts` を削除し、`base` の import をすべて外す（`routes.ts` は
+    `route(base, {` → `route("", {`、`layout.tsx` は `BASE_META_NAME` の
+    `<meta>` とそのコメント、`router.tsx` は `export { base }`）
+  - `${base}` の前置を外す: `router.tsx`（`/static`、`/og`、`/sw.js`、
+    `service-worker-allowed`）、`layout.tsx`（`app.css`、favicon）、`assets.ts`、
+    `helper/panel.ts`、`lib/push/manager.ts`、`og/mod.ts`
+  - `og/mod.ts`: `stripBase` の import と呼び出し（`serveOgImage` は
+    `decodeURIComponent(pathname)`、`imagePath` は
+    `decodeURIComponent(pagePath)` のまま使う）、`BASE_URL` を読む
+    `siteUrl`（`ogImage` は `path` を返し、カードの footer は `location`）
+  - `web/server/deno.json` の `dev` 権限の `BASE_URL`
 
-`@remix-kbn/ssg` の **ビルドは使わない**が、パッケージ自体は残る:
-`client/base.ts` と `og/mod.ts` が `@remix-kbn/ssg/base`（`normalizeBase` /
-`stripBase`）を、`router.tsx` が `createFileTree` を使っている。ssg
-を依存から外すなら、この三つを自前に置き換える。
+`@remix-kbn/ssg` の **ビルドは使わない**が、パッケージ自体は残る: `router.tsx`
+が `createFileTree`（`@remix-kbn/ssg/site`）を使っている。ssg
+を依存から外すなら、これを自前に置き換える。
 
 **デプロイ先（どちらか一つ）**
 
