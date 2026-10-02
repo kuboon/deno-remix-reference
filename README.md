@@ -8,6 +8,9 @@ Remix v3 + Deno のリファレンス実装 (DPoP セッションマネージャ
 - Deno Deploy (サーバー版、`/api/*` あり):
   <https://deno-remix-reference.kuboon-tokyo.deno.net/>
 
-詳細は [CLAUDE.md](./CLAUDE.md) を参照。
+このリポジトリは GitHub テンプレート。新しいアプリを作るときの手順は
+[TEMPLATE.md](./TEMPLATE.md)（static / server
+モードの選択、改変、不要機能の削除）、 開発のルールは [CLAUDE.md](./CLAUDE.md)
+を参照。
 
 ref: https://github.com/remix-run/remix

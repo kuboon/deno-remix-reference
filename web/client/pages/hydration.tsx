@@ -1,6 +1,8 @@
 import { css, type Handle } from "@remix-run/ui";
 
+import { ClickCounter } from "../islands/click_counter.tsx";
 import { Counter } from "../islands/counter.tsx";
+import { Total } from "../islands/total.tsx";
 import { cardStyle } from "../theme.ts";
 import { color } from "../tokens.ts";
 
@@ -43,6 +45,23 @@ export default function Hydration(_handle: Handle) {
       </section>
 
       <section mix={cardStyle}>
+        <h2>Two islands, one shared module</h2>
+        <p>
+          Both controls below are server-rendered, then hydrated. They are{" "}
+          <em>separate browser entrypoints</em>{" "}
+          that never talk to each other. Each one imports the same click store,
+          and the running total keeps up because the bundler emitted that store
+          once, into a chunk they share. Compile the two entries independently
+          and each gets a private copy — the total would sit at zero forever.
+        </p>
+        <div mix={demoRowStyle}>
+          <ClickCounter label="Left" start={0} />
+          <ClickCounter label="Right" start={0} />
+          <Total label="Shared total" />
+        </div>
+      </section>
+
+      <section mix={cardStyle}>
         <h2>仕組み</h2>
         <ol mix={listStyle}>
           <li>
@@ -67,6 +86,13 @@ export default function Hydration(_handle: Handle) {
     </>
   );
 }
+
+const demoRowStyle = css({
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: "0.75rem",
+});
 
 const noteStyle = css({ color: color.muted, fontSize: "0.9rem" });
 

@@ -1,7 +1,44 @@
-# deno-remix-reference
+# deno-remix-tmpl
 
-Remix v3 + Deno のリファレンス実装。DPoP (RFC 9449)
-セッションマネージャーを含む。
+Remix v3 + Deno のテンプレート。DPoP (RFC 9449) セッションマネージャーと
+id.kbn.one 連携の push 通知を含む。
+
+## このリポジトリは何か（最初に判定する）
+
+このリポジトリは **GitHub
+テンプレート**で、ここから新しいアプリを作る。ファイルは全部コピーされるので、
+同じ `CLAUDE.md` が **テンプレ本体**と**派生アプリ**の両方にある。次で区別する。
+
+1. `git remote get-url origin` が `kuboon/deno-remix-tmpl` →
+   **テンプレ本体**。「テンプレ本体を保守するとき」を読む。
+2. それ以外 → **派生アプリ**。`TEMPLATE.md` が残っていれば、init 前なので **まず
+   `TEMPLATE.md` の ステップ 0 とステージ 1 を済ませる**。`TEMPLATE.md`
+   が無ければ init 済みで、普通のアプリとして扱う
+   （テンプレ本体の事情は持ち込まない）。
+
+判定できない（remote が無い等）ときは、推測せずユーザーに聞く。
+
+## テンプレ本体を保守するとき
+
+（派生アプリでは、init の最後にこの節を削除する。）
+
+- 方針: **機能は全部このテンプレに置く**。別の starter に機能を分散させない（旧
+  `remix3-ssg-gh-pages` の
+  機能もここに統合済み）。派生アプリが要らない機能を消せるよう、`TEMPLATE.md`
+  の機能表と `[feature:名前]` タグを **機能を足す/消す/動かすたびに更新する**。
+- 機能を足したら: 配線行（`routes.ts` / `router.tsx` / `layout.tsx` /
+  `assets.ts`）に `[feature:名前]` を付け、 `TEMPLATE.md`
+  の表に行（消すファイル・配線・依存）を足す。
+- 二つのモードが両方動くことを保つ: static（SSG → Pages）と server（Deno
+  Deploy）。 デモは両方の URL を `README.md`
+  とトップページに載せている。`/api/*` を static に出さない
+  （どこからもリンクしない、`entryPoints` に入れない）。
+- 変更前後に `deno task check && deno task test && deno task build` と
+  `deno task test:browser` を通す。 `TEMPLATE.md`
+  の削除リストが本当に通るか、確かめるには scratch の `git worktree` で static
+  用と server 用の リストをそれぞれ実際に消して `check`/`build`(`test`) を回す。
+- `@remix-run/render-middleware` は `0.3.2` 固定（`TEMPLATE.md`
+  参照）。依存を上げたら `/about` の本文を確認する。
 
 ## 構造
 
@@ -14,9 +51,9 @@ Remix v3 + Deno のリファレンス実装。DPoP (RFC 9449)
   `@remix-run/session` の `Session` と共存可能。DPoP proof 生成・検証は
   [jsr:@kuboon/dpop](https://jsr.io/@kuboon/dpop) を利用。
 - `web/` — Remix v3 リファレンス Web アプリ (Deno Deploy へ server
-  として、GitHub Pages へ静的サイトとして同時にデプロイ)。
-  [remix3-ssg-gh-pages](https://github.com/kuboon/remix3-ssg-gh-pages)
-  の構成に準拠
+  として、GitHub Pages
+  へ静的サイトとして同時にデプロイ。派生アプリはどちらか一方を選ぶ —
+  `TEMPLATE.md`)
   - `web/client/` — ブラウザに渡るもの全て (routes / pages / islands / layout /
     static)。`deno.ns` 無しで型チェックされる
   - `web/server/` — router・asset bundler・API・config・og 画像
