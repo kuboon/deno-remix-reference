@@ -1,5 +1,5 @@
 /**
- * The `@remix-run/component` component showcase — a port of
+ * The `@remix-run/component` + `@remix-run/ui` showcase — a port of
  * https://github.com/kuboon/remix3-ui-showcase onto this framework.
  *
  * DELETE ME in a repository made from this template: this page, its route and
@@ -8,30 +8,42 @@
  * `@remix-run/ui/*` subpath entries in `deno.json`. See the root README.
  *
  * It stays here because it is the honest stress test of the island pipeline:
- * 8 entrypoints compiled as one graph, sharing the component library through
- * code-split chunks instead of carrying 8 copies of it.
+ * 13 entrypoints compiled as one graph, sharing the component library through
+ * code-split chunks instead of carrying 13 copies of it.
  */
 
 import { css, type Handle, type RemixNode } from "@remix-run/component";
 
+import { AccordionDemo } from "../islands/showcase/accordion.tsx";
 import { EntranceExitDemo } from "../islands/showcase/anim-entrance.tsx";
 import { LayoutDemo } from "../islands/showcase/anim-layout.tsx";
 import { SpringDemo } from "../islands/showcase/anim-spring.tsx";
 import { TweenDemo } from "../islands/showcase/anim-tween.tsx";
 import { AnchorDemo } from "../islands/showcase/anchor.tsx";
+import { ComboboxDemo } from "../islands/showcase/combobox.tsx";
 import { ListboxDemo } from "../islands/showcase/listbox.tsx";
+import { MenuDemo } from "../islands/showcase/menu.tsx";
 import { PopoverDemo } from "../islands/showcase/popover.tsx";
+import { SelectDemo } from "../islands/showcase/select.tsx";
+import { TabsDemo } from "../islands/showcase/tabs.tsx";
+import { ToggleDemo } from "../islands/showcase/toggle.tsx";
 import { brandTint, fontSans, theme } from "../islands/showcase/_lib/tokens.ts";
 
 export const title = "UI showcase — Remix3 on Deno";
 export const description =
-  "The headless @remix-run/ui primitives and animation helpers on the " +
-  "@remix-run/component runtime, each one a hydrated island whose parameters you can change live.";
+  "Headless @remix-run/ui primitives with app-owned styling, and the animation " +
+  "helpers, each one a hydrated island whose parameters you can change live.";
 
 /** This page places client entries, so the shell boots the runtime for it. */
 export const hydrate = true;
 
 const componentLinks = [
+  { id: "toggle", label: "Toggle" },
+  { id: "tabs", label: "Tabs" },
+  { id: "accordion", label: "Accordion" },
+  { id: "menu", label: "Menu" },
+  { id: "select", label: "Select" },
+  { id: "combobox", label: "Combobox" },
   { id: "listbox", label: "Listbox" },
   { id: "popover", label: "Popover" },
   { id: "anchor", label: "Anchor" },
@@ -65,10 +77,16 @@ export default function ShowcasePage(
         <Section
           id="components"
           eyebrow="Components"
-          title="Headless primitives from @remix-run/ui"
-          description="Each card drives a headless primitive from @remix-run/ui — styling is ours. Use the controls below each preview to change its parameters live; the previews are hydrated islands."
+          title="Headless primitives from @remix-run/ui, styled by the app"
+          description="Each card is built on a headless primitive from @remix-run/ui — behavior and accessibility from the package, styling from this app. Use the controls below each preview to change its parameters live; the previews are hydrated islands."
         >
           <div mix={gridStyle}>
+            <ToggleDemo />
+            <TabsDemo />
+            <AccordionDemo />
+            <MenuDemo />
+            <SelectDemo />
+            <ComboboxDemo />
             <ListboxDemo />
             <PopoverDemo />
             <AnchorDemo />
@@ -105,8 +123,9 @@ function Hero(handle: Handle<{ versions: readonly Version[] }>) {
           A living catalogue of the headless primitives in{" "}
           <code mix={codeStyle}>@remix-run/ui</code> plus its{" "}
           <code mix={codeStyle}>animation</code>{" "}
-          helpers. Every preview is a server-rendered, client-hydrated Remix
-          island whose parameters you can change on the fly.
+          helpers, styled by this app. Every preview is a server-rendered,
+          client-hydrated Remix island whose parameters you can change on the
+          fly.
         </p>
         <nav
           aria-label="Jump to a demo"

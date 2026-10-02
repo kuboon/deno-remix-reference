@@ -153,8 +153,10 @@ controller も消す。 `og/`（社会カード）は全ページが使うので
 - コンポーネントランタイムは `@remix-run/component`（`ui`
   ではない）。`@remix-run/ui` は headless プリミティブ（`/accordion` `/anchor`
   `/animation` `/combobox` `/listbox` `/menu` `/popover` `/select` `/tabs`
-  `/toggle`）だけで、styled コンポーネントは無い。showcase はその `animation` /
-  `anchor` / `popover` / `listbox` を使う。
+  `/toggle`）だけで、styled コンポーネントは無い。showcase はこの 10
+  個すべてのデモを持ち、見た目は app 側の `css()`。`ui@0.11` にあった styled の
+  Button / Input / Checkbox / Radio / Breadcrumbs は `0.12`
+  で消えたので、デモも無い。
 - SPA ページ（`@remix-run/spa`）はブラウザ側でシェルを描画し、island を hydrate
   できない。そのため `layout.tsx` は `documentLinks` のとき `NavAuth` の代わりに
   `/my` への素のリンクを出す。
