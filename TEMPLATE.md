@@ -65,11 +65,25 @@ server API に依存する機能だけ （サーバーからの通知送信 =
   `fileServer`（`githubPages()`）、`entryPoints`、`FileServerBehavior` /
   `githubPages` / `stripBase` の import、`ogPaths` の import（残すと lint
   の未使用変数で落ちる）
+- **base（デプロイ先のサブパス）**: サブパスは Pages の PR
+  プレビュー等で生じるもので、ライブサーバーは常にオリジンのルートで配信される。
+  テンプレのままでも `dev` 権限が `BASE_URL` を ignore するので server
+  では空だが、server モードでは仕組みごと消す:
+  - `client/base.ts` を削除し、`base` の import をすべて外す（`routes.ts` は
+    `route(base, {` → `route("", {`、`layout.tsx` は `BASE_META_NAME` の
+    `<meta>` とそのコメント、`router.tsx` は `export { base }`）
+  - `${base}` の前置を外す: `router.tsx`（`/static`、`/og`、`/sw.js`、
+    `service-worker-allowed`）、`layout.tsx`（`app.css`、favicon）、`assets.ts`、
+    `helper/panel.ts`、`lib/push/manager.ts`、`og/mod.ts`
+  - `og/mod.ts`: `stripBase` の import と呼び出し（`serveOgImage` は
+    `decodeURIComponent(pathname)`、`imagePath` は
+    `decodeURIComponent(pagePath)` のまま使う）、`BASE_URL` を読む
+    `siteUrl`（`ogImage` は `path` を返し、カードの footer は `location`）
+  - `web/server/deno.json` の `dev` 権限の `BASE_URL`
 
-`@remix-kbn/ssg` の **ビルドは使わない**が、パッケージ自体は残る:
-`client/base.ts` と `og/mod.ts` が `@remix-kbn/ssg/base`（`normalizeBase` /
-`stripBase`）を、`router.tsx` が `createFileTree` を使っている。ssg
-を依存から外すなら、この三つを自前に置き換える。
+`@remix-kbn/ssg` の **ビルドは使わない**が、パッケージ自体は残る: `router.tsx`
+が `createFileTree`（`@remix-kbn/ssg/site`）を使っている。ssg
+を依存から外すなら、これを自前に置き換える。
 
 **デプロイ先（どちらか一つ）**
 
@@ -95,8 +109,8 @@ server API に依存する機能だけ （サーバーからの通知送信 =
 ## ステージ 1: 改変 init（使うコードを自分のアプリ用に書き換える）
 
 - [ ] アプリ名: `CLAUDE.md` の見出し、`README.md`、`layout.tsx`
-      のブランド名（`Remix3 on Deno`）、 `og/mod.ts` の `SITE_NAME`、各
-      `pages/*.tsx` の `title`（`— Remix3 on Deno`）、`apm.yml`
+      のブランド名（`Remix3 on Deno Template`）、 `og/mod.ts` の `SITE_NAME`、各
+      `pages/*.tsx` の `title`（`— Remix3 on Deno Template`）、`apm.yml`
 - [ ] `client/idp.ts` の `IDP_ORIGIN`（サインインを使うなら）。`RP_ORIGIN` は
       IdP の `AUTHORIZE_WHITELIST` に登録が必要
 - [ ] `<html lang>`（`layout.tsx`）。ページが日本語なら `ja`
@@ -114,7 +128,6 @@ server API に依存する機能だけ （サーバーからの通知送信 =
 
 | 機能             | 消すファイル                                                                                                          | 配線（編集箇所）                                                                                                                                                                                                                                      | 依存する機能            |
 | ---------------- | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| `about`          | `client/pages/about.tsx`                                                                                              | `routes.ts`、`router.tsx`、`layout.tsx` の nav                                                                                                                                                                                                        | —                       |
 | `hydration-demo` | `client/pages/hydration.tsx`、`client/islands/{counter,total,store}.ts(x)`、`web/tests/browser_hydration.test.ts`     | `routes.ts`、`router.tsx`、`layout.tsx` の nav                                                                                                                                                                                                        | —                       |
 | `blog`           | `client/pages/blog/`、`server/blog/`、`client/islands/share.tsx`                                                      | `routes.ts`、`router.tsx`（`blogController`）、`layout.tsx` の nav、`app.css` の share 規則、`theme.ts` の `proseStyle`、`deno.json` の `@kuboon/md` `@kuboon/share-element` `@std/front-matter`                                                      | —                       |
 | `showcase`       | `client/pages/showcase.tsx`、`client/islands/showcase/`、`server/versions.ts`                                         | `routes.ts`、`router.tsx`、`assets.ts` の `islands/showcase/*.tsx`、`layout.tsx` の nav、`deno.json` の `@remix-run/ui`、`router.test.ts` の `/showcase` 行                                                                                           | —                       |
@@ -146,7 +159,7 @@ controller も消す。 `og/`（社会カード）は全ページが使うので
 - `@remix-run/render-middleware` と `@remix-run/spa` は 1.0.0 まで、
   `render-middleware@0.3.3`（`ui@0.11` と組み合わせると `<body>` が空で返る）と
   `spa@0.1.4`（takeover 後に `<body>` を空にする）を避けるため exact pin
-  していた。1.0.0 では `^1.0.0` で、`/about` の HTML に本文があり
+  していた。1.0.0 では `^1.0.0` で、`/blog` の HTML に本文があり
   `deno task test:browser`
   （`web/tests/spa_navigation.test.ts`）が通ることを確認済み。上げるときは同じ
   二点を確認する。

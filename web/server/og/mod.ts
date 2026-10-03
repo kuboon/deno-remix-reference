@@ -30,7 +30,7 @@ import { base } from "../../client/base.ts";
 import { type Card, renderCard } from "./card.ts";
 
 /** The eyebrow every card carries unless a page asks for its own. */
-const SITE_NAME = "Remix3 on Deno";
+const SITE_NAME = "Remix3 on Deno Template";
 
 /** What a page tells its card — the two things every page module already exports. */
 export interface OgPage {
@@ -135,7 +135,7 @@ function toCard(path: string, page: OgPage): Card {
 /**
  * The card's path for a page's path.
  *
- * `/about` becomes `/og/about.png` and the home page becomes `/og/index.png` — the same shape the
+ * `/blog` becomes `/og/blog.png` and the home page becomes `/og/index.png` — the same shape the
  * pages themselves are written to, which keeps `dist/og/` browsable next to `dist/`.
  *
  * @param pagePath The page's path, prefix included

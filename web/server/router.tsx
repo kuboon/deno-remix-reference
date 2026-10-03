@@ -34,7 +34,6 @@ import { base } from "../client/base.ts";
 import { Layout, type PageModule } from "../client/layout.tsx";
 import { routes } from "../client/routes.ts";
 
-import * as About from "../client/pages/about.tsx";
 import { blogController } from "./blog/mod.tsx"; // [feature:blog]
 import * as Fullscreen from "../client/pages/fullscreen.tsx"; // [feature:fullscreen]
 import * as Home from "../client/pages/index.tsx";
@@ -118,7 +117,6 @@ declare module "@remix-run/fetch-router" {
 const top = createController(routes, {
   actions: {
     home: pageAction(routes.home, Home),
-    about: pageAction(routes.about, About),
     // [feature:fullscreen]
     fullscreen: pageAction(routes.fullscreen, Fullscreen),
     // [feature:showcase] Written out rather than built by `pageAction` because its badges are

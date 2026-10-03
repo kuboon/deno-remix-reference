@@ -7,7 +7,7 @@ Deno.test("GET / returns the shell with nav links and the runtime script", async
   assertStringIncludes(res.headers.get("content-type") ?? "", "text/html");
   const html = await res.text();
   assertStringIncludes(html, "<!DOCTYPE html>");
-  assertStringIncludes(html, "Remix v3 + DPoP Session Manager");
+  assertStringIncludes(html, "Remix3 on Deno Template");
   assertStringIncludes(html, "kuboon.github.io/deno-remix-tmpl");
   assertStringIncludes(html, 'href="/hydration"');
   assertStringIncludes(html, '<script type="module" src="/assets/hydration');
@@ -69,7 +69,6 @@ Deno.test("GET /.well-known/jwks.json publishes the RP key", async () => {
 
 for (
   const [path, needle] of [
-    ["/about", "About"],
     ["/blog", "Blog"],
     ["/blog/hello-remix-ssg", "Hello, remix-ssg"],
     ["/showcase", "showcase"],

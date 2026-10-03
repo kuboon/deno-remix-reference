@@ -5,7 +5,7 @@ import { Total } from "../islands/total.tsx";
 import { cardStyle } from "../theme.ts";
 import { color } from "../tokens.ts";
 
-export const title = "Hydration — Remix3 on Deno";
+export const title = "Hydration — Remix3 on Deno Template";
 export const description = "clientEntry を使った SSR + hydrate のサンプル。";
 
 /** This page places a client entry, so the shell boots the runtime for it. */
@@ -56,29 +56,6 @@ export default function Hydration(_handle: Handle) {
         </p>
         <p mix={noteStyle}>{label}</p>
       </section>
-
-      <section mix={cardStyle}>
-        <h2>仕組み</h2>
-        <ol mix={listStyle}>
-          <li>
-            サーバー: <code>renderToStream</code>{" "}
-            が HTML と hydration メタデータ (<code>moduleUrl</code>,{" "}
-            <code>exportName</code>, <code>props</code>) を出力
-          </li>
-          <li>
-            ブラウザ: shell が読み込む <code>hydration.ts</code> が{" "}
-            <code>run()</code> を呼ぶ
-          </li>
-          <li>
-            <code>run()</code> が hydration マーカーを発見し、
-            <code>loadModule</code> → 動的 import で Counter を取得
-          </li>
-          <li>
-            Counter の render 関数を再実行し、既存 DOM
-            にイベントハンドラーを付与 (= hydrate)
-          </li>
-        </ol>
-      </section>
     </>
   );
 }
@@ -91,8 +68,3 @@ const demoRowStyle = css({
 });
 
 const noteStyle = css({ color: color.muted, fontSize: "0.9rem" });
-
-const listStyle = css({
-  paddingLeft: "1.1rem",
-  "& li": { marginBlock: "0.4rem" },
-});

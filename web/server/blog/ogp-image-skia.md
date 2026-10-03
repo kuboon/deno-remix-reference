@@ -24,7 +24,7 @@ CI
 に入るのと同じ値なので、カードもそこから作る。
 
 ```ts
-const image = ogImage(routes.about.href(), About);
+const image = ogImage(routes.showcase.href(), Showcase);
 ```
 
 この一回の呼び出しが、カードの描き方を記録し、`<meta property="og:image">`
