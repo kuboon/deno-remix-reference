@@ -39,7 +39,7 @@ import { attrs, css, type Handle, type RemixNode } from "@remix-run/component";
 
 import { base, BASE_META_NAME } from "./base.ts";
 import { HELPER_BUTTON_ID, HELPER_SRC_ATTRIBUTE } from "./helper/button.ts";
-import { NavAuth } from "./islands/nav_auth.tsx"; // [feature:signin]
+import { NavAuth, NavAuthView } from "./islands/nav_auth.tsx"; // [feature:signin]
 import { routes } from "./routes.ts";
 import { color, contentWidth } from "./tokens.ts";
 
@@ -328,10 +328,10 @@ export function Shell(handle: Handle<ShellProps>) {
             {/* [feature:signin] */}
             {handle.props.documentLinks
               ? (
-                // A `@remix-run/spa` router renders this shell in the browser and has no way to
-                // hydrate an island, so the sign-in island is replaced by a plain link that leaves
-                // the client router. `/my` has the real control.
-                <a href={routes.my.href()} data-rmx-document="">Sign in</a>
+                // A `@remix-run/spa` router renders this shell in the browser, where a component
+                // needs no hydrating — but its runtime cannot load an island's hydration marker
+                // either. So the SPA shell places the plain component, which leaves no marker.
+                <NavAuthView myHref={routes.my.href()} documentLink />
               )
               : <NavAuth myHref={routes.my.href()} />}
           </nav>

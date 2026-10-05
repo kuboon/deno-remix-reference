@@ -2,15 +2,16 @@
  * [feature:spa] The SPA demo in a real browser.
  *
  * `/spa/:id` hands `<body>` to a `@remix-run/spa` router, and the shell it renders there contains
- * the `NavAuth` island — which was written for the islands runtime and had never run under this
- * one. The router test only proves the server's HTML is right; this proves the takeover works and
- * that the shell's `/my` link still leaves the client router.
+ * the sign-in control. That runtime cannot hydrate an island, so the SPA shell places the plain
+ * `NavAuthView` rather than the `NavAuth` island. The router test only proves the server's HTML is
+ * right; this proves the takeover works, that the control comes alive under the client router,
+ * and that the server HTML left no island marker for the SPA runtime to fail on.
  *
  * It needs the Navigation API, which lightpanda does not have, so it drives Chromium. The test
  * is skipped when no Chromium is found (set `CHROMIUM_PATH` to point at one).
  */
 
-import { assert, assertEquals } from "@std/assert";
+import { assertEquals } from "@std/assert";
 import puppeteer from "puppeteer-core";
 
 import router from "../server/router.tsx";
@@ -63,6 +64,12 @@ Deno.test({
     });
     try {
       const page = await browser.newPage();
+      const loadFailures: string[] = [];
+      page.on("console", (message) => {
+        if (message.text().includes("Failed to load module")) {
+          loadFailures.push(message.text());
+        }
+      });
       const documents: string[] = [];
       page.on("request", (req) => {
         if (req.resourceType() === "document") documents.push(req.url());
@@ -80,13 +87,23 @@ Deno.test({
 
       const headingBefore = await page.$eval("h2", (el) => el.textContent);
 
-      // The shell the SPA router re-rendered cannot hydrate the sign-in island, so it shows a
-      // plain link that must hand `/my` to the browser rather than the client router.
-      const optsOut = await page.$eval(
-        'header nav a[href="/my"]',
-        (el) => el.hasAttribute("data-rmx-document"),
+      // The SPA shell places the sign-in control as a plain component: the client router renders
+      // it live (the session probe resolves and enables the button), and the server HTML carried
+      // no island marker for the SPA runtime to fail on.
+      await page.waitForFunction(
+        () => {
+          const button = document.querySelector<HTMLButtonElement>(
+            "header nav button:last-of-type",
+          );
+          return button?.textContent?.trim() === "Sign In" && !button.disabled;
+        },
+        { timeout: 10_000 },
       );
-      assert(optsOut, "the shell's /my link must opt out of the client router");
+      assertEquals(
+        loadFailures,
+        [],
+        "the SPA runtime tried to hydrate an island",
+      );
 
       await page.click('main a[href="/spa/2"]');
       await page.waitForFunction(

@@ -134,7 +134,7 @@ server API に依存する機能だけ （サーバーからの通知送信 =
 | `fullscreen`     | `client/pages/fullscreen.tsx`、`client/islands/fullscreen-game.tsx`                                                   | `routes.ts`、`router.tsx`、`layout.tsx` の nav、`PageModule` の `viewport`/`bare`                                                                                                                                                                     | —                       |
 | `spa`            | `client/pages/spa.tsx`、`client/spa/`                                                                                 | `routes.ts`、`router.tsx`（`spa` controller、`spaRuntime`）、`assets.ts` の `spa/entry.ts`、`runtime.ts`、`layout.tsx` の `documentLinks` と nav、`nav_auth.tsx` の `documentLinks`、`deno.json` の `@remix-run/spa`                                  | —                       |
 | `helper`         | `client/helper/`                                                                                                      | `assets.ts` の `helper/panel.ts`、`runtime.ts` の `helper`、`layout.tsx` の Help ボタンと `ClientRuntime.helper`、`hydration.ts` の `installHelper()`、`spa/entry.ts`、`router.tsx` の `entryPoints` 末尾、`deno.json` の `@remix-kbn/helper-agent/*` | —                       |
-| `signin`         | `client/islands/{nav_auth,signin_card}.tsx`、`client/session.ts`、`client/idp.ts`、`client/pages/my.tsx`              | `routes.ts` の `my`、`layout.tsx` の `<NavAuth>`、`router.tsx`、`deno.json` の `@kuboon/dpop`                                                                                                                                                         | `push` は signin に依存 |
+| `signin`         | `client/islands/{nav_auth,signin_card}.tsx`、`client/session.ts`、`client/idp.ts`、`client/pages/my.tsx`              | `routes.ts` の `my`、`layout.tsx` の `<NavAuth>` / `<NavAuthView>`、`router.tsx`、`deno.json` の `@kuboon/dpop`                                                                                                                                       | `push` は signin に依存 |
 | `push`           | `client/islands/push_card.tsx`、`client/lib/push/`、`client/sw.js`                                                    | `router.tsx` の `/sw.js` ルートと `entryPoints`、`pages/my.tsx` の `<PushCard>`                                                                                                                                                                       | `signin`                |
 | `server-send`    | `server/lib/push/`、`server/lib/signing-key*`、`server/controllers/api/notify.ts`、`server/controllers/well_known.ts` | `routes.ts` の `jwks` と `api.notify`、`router.tsx`、`push_card.tsx` の「サーバーから送信」、`server/config.ts` の `RP_*`                                                                                                                             | `push`、server モード   |
 | `turso`          | `server/lib/turso/`、`server/controllers/api/turso.ts`、`web/tests/turso_*`                                           | `routes.ts` の `api.turso`、`router.tsx`、`server/config.ts` の `TURSO_*`、`deno.json` の `@libsql/client` `@remix-run/data-table` `@remix-kbn/data-table-sqlite-turso`                                                                               | server モード           |
@@ -170,8 +170,13 @@ controller も消す。 `og/`（社会カード）は全ページが使うので
   個すべてのデモを持ち、見た目は app 側の `css()`。`ui@0.11` にあった styled の
   Button / Input / Checkbox / Radio / Breadcrumbs は `0.12`
   で消えたので、デモも無い。
-- SPA ページ（`@remix-run/spa`）はブラウザ側でシェルを描画し、island を hydrate
-  できない。そのため `layout.tsx` は `documentLinks` のとき `NavAuth` の代わりに
-  `/my` への素のリンクを出す。
+- SPA ページ（`@remix-run/spa`）のランタイムは island の hydration
+  マーカーを読み込めない （`loadModule` が "SPA responses cannot hydrate client
+  entries" を投げる）。ただしシェルは
+  ブラウザで描き直されるので、コンポーネントは hydrate
+  無しでそのまま動く。そのため `layout.tsx` は `documentLinks` のとき island の
+  `NavAuth` ではなく、マーカーを出さない 素のコンポーネント `NavAuthView`
+  を置く。`clientEntry()` は渡した関数自体に印を付ける ので、素の版は island
+  から呼ぶ別の関数として持つ（`islands/nav_auth.tsx`）。
 - 追加した `import` は `deno.json`（ルート）にだけ書く。メンバー側の `deno.json`
   には書かない。
